@@ -1,17 +1,16 @@
 import React, { Component } from 'react';
 import { SafeAreaView } from 'react-navigation';
-import { NavigationContainer } from '@react-navigation/native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
-import { Drawer as UIKittenDrawer, DrawerHeaderFooter, Icon, Layout, Text } from '@ui-kitten/components';
-import GivenTaskScreen from '../scenes/MyTask/GivenTask';
-import HandoutTaskScreen from '../scenes/MyTask/HandoutTask';
-import CreateTaskScreen from '../scenes/MyTask/CreateTask';
-import ApproveTaskScreen from '../scenes/MyTask/ApproveTask';
-import UsersInGroupScreen from '../scenes/MyGroup/UsersInGroup';
-import ViewUserScreen from '../scenes/SystemManagement/ViewUser';
-import CreateUserScreen from '../scenes/SystemManagement/CreateUser';
-import ViewGroupScreen from '../scenes/SystemManagement/ViewGroup';
-import CreateGroupScreen from '../scenes/SystemManagement/CreateGroup';
+import { Drawer as UIKittenDrawer, DrawerHeaderFooter, Icon } from '@ui-kitten/components';
+import GivenTaskScreen from '../scenes/Home/MyTask/GivenTask';
+import HandoutTaskScreen from '../scenes/Home/MyTask/HandoutTask';
+import CreateTaskScreen from '../scenes/Home/MyTask/CreateTask';
+import ApproveTaskScreen from '../scenes/Home/MyTask/ApproveTask';
+import UsersInGroupScreen from '../scenes/Home/MyGroup/UsersInGroup';
+import ViewUserScreen from '../scenes/Home/SystemManagement/ViewUser';
+import CreateUserScreen from '../scenes/Home/SystemManagement/CreateUser';
+import ViewGroupScreen from '../scenes/Home/SystemManagement/ViewGroup';
+import CreateGroupScreen from '../scenes/Home/SystemManagement/CreateGroup';
 
 
 const Drawer = createDrawerNavigator();
@@ -129,7 +128,7 @@ const DrawerContent = ({ navigation, state }) => {
   );
 };
 
-const DrawerNavigator = () => (
+export const DrawerNavigator = () => (
   <Drawer.Navigator drawerContent={props => <DrawerContent {...props}/>}>
     <Drawer.Screen name='GivenTask' component={GivenTaskScreen}/>
     <Drawer.Screen name='HandoutTask' component={HandoutTaskScreen}/>
@@ -142,14 +141,3 @@ const DrawerNavigator = () => (
     <Drawer.Screen name='CreateGroup' component={CreateGroupScreen}/>
   </Drawer.Navigator>
 );
-
-export default class AppNavigator extends Component {
-
-  render () {
-    return (
-      <NavigationContainer>
-        <DrawerNavigator/>
-      </NavigationContainer>
-    )
-  }
-};

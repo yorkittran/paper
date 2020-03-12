@@ -70,7 +70,6 @@ export default class LoginScreen extends Component {
         this.toggleModal();
       }
       if (responseData.hasOwnProperty('api_token')) {
-        console.log('ok');
         Actions.home();
       }
     }).catch((error) => {
