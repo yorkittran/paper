@@ -2,14 +2,14 @@ import React, { Component } from 'react';
 import { SafeAreaView } from 'react-navigation';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { Drawer as UIKittenDrawer, DrawerHeaderFooter, Icon } from '@ui-kitten/components';
-import GivenTaskScreen from '../scenes/Home/MyTask/GivenTask';
-import HandoutTaskScreen from '../scenes/Home/MyTask/HandoutTask';
+import GivenTaskNavigator from '../navigations/given-task.navigator';
+import HandoutTaskNavigator from '../navigations/handout-task.navigator';
 import CreateTaskScreen from '../scenes/Home/MyTask/CreateTask';
 import ApproveTaskScreen from '../scenes/Home/MyTask/ApproveTask';
 import UsersInGroupNavigator from '../navigations/users-in-group.navigator';
-import ViewUserScreen from '../scenes/Home/SystemManagement/ViewUser';
+import ViewUserNavigator from '../navigations/view-user.navigator';
 import CreateUserScreen from '../scenes/Home/SystemManagement/CreateUser';
-import ViewGroupScreen from '../scenes/Home/SystemManagement/ViewGroup';
+import ViewGroupNavigator from '../navigations/view-group.navigator';
 import CreateGroupScreen from '../scenes/Home/SystemManagement/CreateGroup';
 
 
@@ -130,14 +130,14 @@ const DrawerContent = ({ navigation, state }) => {
 
 export const DrawerNavigator = () => (
   <Drawer.Navigator drawerContent={props => <DrawerContent {...props}/>} initialRouteName="UsersInGroup">
-    <Drawer.Screen name='GivenTask' component={GivenTaskScreen}/>
-    <Drawer.Screen name='HandoutTask' component={HandoutTaskScreen}/>
+    <Drawer.Screen name='GivenTask' component={GivenTaskNavigator}/>
+    <Drawer.Screen name='HandoutTask' component={HandoutTaskNavigator}/>
     <Drawer.Screen name='CreateTask' component={CreateTaskScreen}/>
     <Drawer.Screen name='ApproveTask' component={ApproveTaskScreen}/>
     <Drawer.Screen name='UsersInGroup' component={UsersInGroupNavigator}/>
-    <Drawer.Screen name='ViewUser' component={ViewUserScreen}/>
+    <Drawer.Screen name='ViewUser' component={ViewUserNavigator}/>
     <Drawer.Screen name='CreateUser' component={CreateUserScreen}/>
-    <Drawer.Screen name='ViewGroup' component={ViewGroupScreen}/>
+    <Drawer.Screen name='ViewGroup' component={ViewGroupNavigator}/>
     <Drawer.Screen name='CreateGroup' component={CreateGroupScreen}/>
   </Drawer.Navigator>
 );
