@@ -12,8 +12,8 @@ const App = () => (
     <ApplicationProvider mapping={mapping} theme={theme}>
       <Router>
         <Scene key="root">
-          <Scene key="login" hideNavBar={true} component={LoginScreen} initial />
-          <Scene key="home" hideNavBar={true} component={HomeScreen} panHandlers={null} />
+          <Scene key="home" hideNavBar={true} component={HomeScreen} panHandlers={null} initial />
+          <Scene key="login" hideNavBar={true} component={LoginScreen} />
         </Scene>
       </Router>
     </ApplicationProvider>

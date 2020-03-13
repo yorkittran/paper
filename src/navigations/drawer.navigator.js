@@ -6,7 +6,7 @@ import GivenTaskScreen from '../scenes/Home/MyTask/GivenTask';
 import HandoutTaskScreen from '../scenes/Home/MyTask/HandoutTask';
 import CreateTaskScreen from '../scenes/Home/MyTask/CreateTask';
 import ApproveTaskScreen from '../scenes/Home/MyTask/ApproveTask';
-import UsersInGroupScreen from '../scenes/Home/MyGroup/UsersInGroup';
+import UsersInGroupNavigator from '../navigations/users-in-group.navigator';
 import ViewUserScreen from '../scenes/Home/SystemManagement/ViewUser';
 import CreateUserScreen from '../scenes/Home/SystemManagement/CreateUser';
 import ViewGroupScreen from '../scenes/Home/SystemManagement/ViewGroup';
@@ -129,12 +129,12 @@ const DrawerContent = ({ navigation, state }) => {
 };
 
 export const DrawerNavigator = () => (
-  <Drawer.Navigator drawerContent={props => <DrawerContent {...props}/>}>
+  <Drawer.Navigator drawerContent={props => <DrawerContent {...props}/>} initialRouteName="UsersInGroup">
     <Drawer.Screen name='GivenTask' component={GivenTaskScreen}/>
     <Drawer.Screen name='HandoutTask' component={HandoutTaskScreen}/>
     <Drawer.Screen name='CreateTask' component={CreateTaskScreen}/>
     <Drawer.Screen name='ApproveTask' component={ApproveTaskScreen}/>
-    <Drawer.Screen name='UsersInGroup' component={UsersInGroupScreen}/>
+    <Drawer.Screen name='UsersInGroup' component={UsersInGroupNavigator}/>
     <Drawer.Screen name='ViewUser' component={ViewUserScreen}/>
     <Drawer.Screen name='CreateUser' component={CreateUserScreen}/>
     <Drawer.Screen name='ViewGroup' component={ViewGroupScreen}/>
