@@ -14,7 +14,7 @@ export default class ListScreen extends Component {
   }
 
   componentDidMount() {
-    fetch("http://34.239.119.82:231/api/group/1", {
+    fetch("http://34.239.119.82:231/api/group/2", {
       method: 'GET',
       headers: {
         'Accept': 'application/json',

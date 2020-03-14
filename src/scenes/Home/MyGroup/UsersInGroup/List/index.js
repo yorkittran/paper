@@ -1,90 +1,116 @@
 import React, { Component } from 'react';
+import { USER_USERS_IN_GROUP } from '../../../../../config/constants';
 import { SafeAreaView } from 'react-navigation';
 import { StyleSheet } from 'react-native';
-import { Layout, Text, Modal, Icon, Input, Button, List, ListItem } from '@ui-kitten/components';
+import { Layout, Text, Modal, Icon, Input, Button, List, ListItem, Spinner } from '@ui-kitten/components';
 
 export default class ListScreen extends Component {  
 
   constructor(props) {
     super(props);
     this.state = {
-      data: [],
-      search: '',
+      loading: true,
+      dataFiltered: [],
+      terms: '',
     };
+    this.dataSource = [];
   }
 
   componentDidMount() {
-    fetch("http://34.239.119.82:231/api/group/1", {
-      method: 'GET',
+    fetch(USER_USERS_IN_GROUP, {
+      method: 'POST',
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json'
       },
+      body: JSON.stringify({
+        manager_id: '2',
+      }),
     })
     .then((response) => response.json())
     .then((responseData) => {
-      this.setState({data: responseData.data});
+      this.setState(
+        {
+          dataFiltered: responseData.data,
+          loading: false,
+        },
+        function() {
+          this.dataSource = responseData.data;
+        }
+      );
     }).catch((error) => {
       console.error(error);
     });
   }
 
-  detailUser = () => (
-    <Button onPress={() => this.props.navigation.navigate('Detail')}>Detail</Button>
+  ForwardIcon = () => (
+    // <Icon name='arrow-ios-forward' fill='#8F9BB3'/>
+    <Icon name='arrow-ios-forward' width={20} height={20} fill='#8F9BB3'/>
   );
 
   renderItem = ({ item }) => (
     <ListItem
       title={item.name}
       description={item.email}
-      accessory={this.detailUser}
+      onPress={() => this.props.navigation.navigate('Detail', {userId: item.id})}
+      accessory={this.ForwardIcon}
     />
   );
 
-  renderSearchIcon = () => (
+  SearchIcon = () => (
     <Icon name='search-outline'/>
   )
 
-  onChangeTextSearch = (search) => {
-    this.setState({search: search});
-    fetch("http://34.239.119.82:231/api/group/1?search=" + this.state.search, {
-      method: 'GET',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
-    })
-    .then((response) => response.json())
-    .then((responseData) => {
-      this.setState({data: responseData.data});
-    }).catch((error) => {
-      console.error(error);
+  search = (terms) => {
+    const dataFiltered = this.dataSource.filter(function(item) {
+      const itemData = item.name ? item.name.toUpperCase() : '' . toUpperCase();
+      const textData = terms.toUpperCase();
+      return itemData.indexOf(textData) > -1;
+    });
+
+    this.setState({
+      terms: terms,
+      dataFiltered: dataFiltered,
     });
   };
 
   render() {
+    if (this.state.loading) {
+      return (
+        <SafeAreaView style={styles.loadingContainer}>
+          <Spinner size='giant'/>
+        </SafeAreaView>
+      );
+    }
     return (
       <SafeAreaView style={styles.mainContainer}>
         <Input
-          value={this.state.search}
+          value={this.state.terms}
           placeholder='Search...'
-          icon={this.renderSearchIcon}
-          onChangeText={(search) => this.onChangeTextSearch(search)}
+          icon={this.SearchIcon}
+          size='large'
+          onChangeText={terms => this.search(terms)}
           style={styles.inputSearch}
         />
-        <List data={this.state.data} renderItem={this.renderItem} />
+        <List data={this.state.dataFiltered} renderItem={this.renderItem} />
       </SafeAreaView>
     );
   }
 };
 
 const styles = StyleSheet.create({
+  loadingContainer: {
+    flex: 1,
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   mainContainer: {
     flex: 1,
     flexDirection: 'column',
+    backgroundColor: 'white',
   },
   inputSearch: {
-    margin: 10,
-    paddingLeft: 10,
+    margin: 15,
   },
 });
