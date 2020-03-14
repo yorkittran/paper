@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { USER_API } from '../../../../../config/constants';
+import { AsyncStorage } from 'react-native';
+import { URL_USER } from '../../../../../config/constants';
 import { SafeAreaView } from 'react-navigation';
 import { StyleSheet } from 'react-native';
 import QRCode from 'react-native-qrcode-svg';
@@ -13,19 +14,20 @@ export default class DetailScreen extends Component {
       loading: true,
       data: {},
     };
-    this.userId = this.props.route.params.userId;
   }
 
-  componentDidMount() {
-    fetch(USER_API + '/' + this.userId, {
+  componentDidMount = () => AsyncStorage.getItem('token').then((token) => {
+    fetch(URL_USER + '/' + this.props.route.params.userId, {
       method: 'GET',
       headers: {
         'Accept': 'application/json',
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
       },
     })
     .then((response) => response.json())
     .then((responseData) => {
+      console.log(URL_USER + '/' + this.props.route.params.userId);
       this.setState({
         loading: false,
         data: responseData.data,
@@ -33,13 +35,21 @@ export default class DetailScreen extends Component {
     }).catch((error) => {
       console.error(error);
     });
-  }
+  });
 
   Header = () => (
     <Layout style={styles.cardHeader}>
-      <QRCode value={USER_API + '/' + this.userId}/>
+      <QRCode value={URL_USER + '/' + this.props.route.params.userId}/>
     </Layout>
   );
+
+  GroupName = () => {
+    if (this.state.data.in_group_name) {
+      return <Text category='label' style={styles.label}>MEMBER IN   <Text style={styles.text}>{this.state.data.in_group_name}</Text></Text>;
+    } else if (this.state.data.manage_group_name) {
+      return <Text category='label' style={styles.label}>MANAGE         <Text style={styles.text}>{this.state.data.manage_group_name}</Text></Text>;
+    }
+  }
   render() {
     if (this.state.loading) {
       return (
@@ -51,10 +61,10 @@ export default class DetailScreen extends Component {
     return (
       <SafeAreaView style={styles.mainContainer}>
         <Card header={this.Header}>
-          <Text category='label' style={styles.label}>NAME     <Text style={styles.text}>{this.state.data.name}</Text></Text>
-          <Text category='label' style={styles.label}>EMAIL    <Text style={styles.text}>{this.state.data.email}</Text></Text>
-          <Text category='label' style={styles.label}>ROLE      <Text style={styles.text}>{this.state.data.role}</Text></Text>
-          <Text category='label' style={styles.label}>GROUP  <Text style={styles.text}>{this.state.data.in_group_name}</Text></Text>
+          <Text category='label' style={styles.label}>NAME                <Text style={styles.text}>{this.state.data.name}</Text></Text>
+          <Text category='label' style={styles.label}>EMAIL               <Text style={styles.text}>{this.state.data.email}</Text></Text>
+          <Text category='label' style={styles.label}>ROLE                 <Text style={styles.text}>{this.state.data.role}</Text></Text>
+          {this.GroupName()}
         </Card>
       </SafeAreaView>
     )

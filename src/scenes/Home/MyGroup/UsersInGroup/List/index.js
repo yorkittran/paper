@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-import { USER_USERS_IN_GROUP } from '../../../../../config/constants';
+import { AsyncStorage } from 'react-native';
+import { URL_USER } from '../../../../../config/constants';
 import { SafeAreaView } from 'react-navigation';
 import { StyleSheet } from 'react-native';
-import { Layout, Text, Modal, Icon, Input, Button, List, ListItem, Spinner } from '@ui-kitten/components';
+import { Icon, Input, List, ListItem, Spinner } from '@ui-kitten/components';
 
 export default class ListScreen extends Component {  
 
@@ -10,22 +11,21 @@ export default class ListScreen extends Component {
     super(props);
     this.state = {
       loading: true,
+      token: '',
       dataFiltered: [],
       terms: '',
     };
     this.dataSource = [];
   }
 
-  componentDidMount() {
-    fetch(USER_USERS_IN_GROUP, {
-      method: 'POST',
+  componentDidMount = () => AsyncStorage.getItem('token').then((token) => {
+    fetch(URL_USER, {
+      method: 'GET',
       headers: {
         'Accept': 'application/json',
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
       },
-      body: JSON.stringify({
-        manager_id: '2',
-      }),
     })
     .then((response) => response.json())
     .then((responseData) => {
@@ -33,18 +33,16 @@ export default class ListScreen extends Component {
         {
           dataFiltered: responseData.data,
           loading: false,
-        },
-        function() {
+        },() => {
           this.dataSource = responseData.data;
         }
       );
     }).catch((error) => {
       console.error(error);
     });
-  }
+  });
 
   ForwardIcon = () => (
-    // <Icon name='arrow-ios-forward' fill='#8F9BB3'/>
     <Icon name='arrow-ios-forward' width={20} height={20} fill='#8F9BB3'/>
   );
 

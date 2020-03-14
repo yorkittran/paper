@@ -1,19 +1,29 @@
-import React, { Component } from 'react';
+import React from 'react';
+import { AsyncStorage } from 'react-native';
+import { Actions } from 'react-native-router-flux';
 import { SafeAreaView } from 'react-navigation';
 import { createDrawerNavigator } from '@react-navigation/drawer';
-import { Drawer as UIKittenDrawer, DrawerHeaderFooter, Icon } from '@ui-kitten/components';
+import { Drawer as UIKittenDrawer, DrawerHeaderFooter, Icon, Button } from '@ui-kitten/components';
 import GivenTaskNavigator from '../navigations/given-task.navigator';
 import HandoutTaskNavigator from '../navigations/handout-task.navigator';
 import CreateTaskScreen from '../scenes/Home/MyTask/CreateTask';
 import ApproveTaskScreen from '../scenes/Home/MyTask/ApproveTask';
 import UsersInGroupNavigator from '../navigations/users-in-group.navigator';
-import ViewUserNavigator from '../navigations/view-user.navigator';
-import CreateUserScreen from '../scenes/Home/SystemManagement/CreateUser';
-import ViewGroupNavigator from '../navigations/view-group.navigator';
-import CreateGroupScreen from '../scenes/Home/SystemManagement/CreateGroup';
+import UserNavigator from '../navigations/user.navigator';
+import GroupNavigator from '../navigations/group.navigator';
 
 
 const Drawer = createDrawerNavigator();
+
+
+const deleteToken = async () => {
+  try {
+    await AsyncStorage.removeItem('token');
+    Actions.login();
+  } catch (error) {
+    console.log(error);
+  }
+};
 
 const DrawerContent = ({ navigation, state }) => {
 
@@ -39,18 +49,14 @@ const DrawerContent = ({ navigation, state }) => {
 
   const PersonIcon = () => (
     <Icon name='person-outline'/>
-    );
-
-  const PersonAddIcon = () => (
-    <Icon name='person-add-outline'/>
   );
 
   const FolderIcon = () => (
     <Icon name='folder-outline'/>
   );
 
-  const FolderAddIcon = () => (
-    <Icon name='folder-add-outline'/>
+  const LogoutIcon = () => (
+    <Icon name='log-out-outline' fill='#FFFFFF'/>
   );
 
   const HeaderMyTask = () => (
@@ -86,10 +92,8 @@ const DrawerContent = ({ navigation, state }) => {
   ];
 
   const drawerSystemManagement = [
-    { title: 'View User', icon: PersonIcon },
-    { title: 'Create User', icon: PersonAddIcon },
-    { title: 'View Group', icon: FolderIcon },
-    { title: 'Create Group', icon: FolderAddIcon },
+    { title: 'User', icon: PersonIcon },
+    { title: 'Group', icon: FolderIcon },
   ];
 
   const onSelectMyTask = (index) => {
@@ -124,6 +128,13 @@ const DrawerContent = ({ navigation, state }) => {
         onSelect={onSelectSystemManagement}
         appearance='noDivider'
       />
+      <Button 
+        style={{flexDirection: 'row-reverse', margin: 20}} 
+        size='large'
+        status='danger' 
+        icon={LogoutIcon} 
+        onPress={deleteToken}
+      >LOGOUT</Button>
     </SafeAreaView>
   );
 };
@@ -135,9 +146,7 @@ export const DrawerNavigator = () => (
     <Drawer.Screen name='CreateTask' component={CreateTaskScreen}/>
     <Drawer.Screen name='ApproveTask' component={ApproveTaskScreen}/>
     <Drawer.Screen name='UsersInGroup' component={UsersInGroupNavigator}/>
-    <Drawer.Screen name='ViewUser' component={ViewUserNavigator}/>
-    <Drawer.Screen name='CreateUser' component={CreateUserScreen}/>
-    <Drawer.Screen name='ViewGroup' component={ViewGroupNavigator}/>
-    <Drawer.Screen name='CreateGroup' component={CreateGroupScreen}/>
+    <Drawer.Screen name='User' component={UserNavigator}/>
+    <Drawer.Screen name='Group' component={GroupNavigator}/>
   </Drawer.Navigator>
 );

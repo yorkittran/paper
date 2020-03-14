@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
-import ListScreen from '../scenes/Home/SystemManagement/ViewGroup/List';
-import DetailScreen from '../scenes/Home/SystemManagement/ViewGroup/Detail';
+import ListScreen from '../scenes/Home/SystemManagement/User/List';
+import DetailScreen from '../scenes/Home/SystemManagement/User/Detail';
 
 const Stack = createStackNavigator();
 
