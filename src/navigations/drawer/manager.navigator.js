@@ -4,24 +4,21 @@ import { Actions } from 'react-native-router-flux';
 import { SafeAreaView } from 'react-navigation';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { Drawer as UIKittenDrawer, DrawerHeaderFooter, Icon, Button } from '@ui-kitten/components';
-import GivenTaskNavigator from '../navigations/given-task.navigator';
-import HandoutTaskNavigator from '../navigations/handout-task.navigator';
-import CreateTaskScreen from '../scenes/Home/MyTask/CreateTask';
-import ApproveTaskScreen from '../scenes/Home/MyTask/ApproveTask';
-import UsersInGroupNavigator from '../navigations/users-in-group.navigator';
-import UserNavigator from '../navigations/user.navigator';
-import GroupNavigator from '../navigations/group.navigator';
-
+import GivenTaskNavigator from '../given-task.navigator';
+import HandoutTaskNavigator from '../handout-task.navigator';
+import CreateTaskScreen from '../../scenes/Home/MyTask/CreateTask';
+import ApproveTaskScreen from '../../scenes/Home/MyTask/ApproveTask';
+import UsersInGroupNavigator from '../users-in-group.navigator';
 
 const Drawer = createDrawerNavigator();
-
 
 const deleteToken = async () => {
   try {
     await AsyncStorage.removeItem('token');
+    await AsyncStorage.removeItem('role');
     Actions.login();
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 };
 
@@ -47,14 +44,6 @@ const DrawerContent = ({ navigation, state }) => {
     <Icon name='people-outline'/>
   );
 
-  const PersonIcon = () => (
-    <Icon name='person-outline'/>
-  );
-
-  const FolderIcon = () => (
-    <Icon name='folder-outline'/>
-  );
-
   const LogoutIcon = () => (
     <Icon name='log-out-outline' fill='#FFFFFF'/>
   );
@@ -62,7 +51,7 @@ const DrawerContent = ({ navigation, state }) => {
   const HeaderMyTask = () => (
     <DrawerHeaderFooter
       title='MY TASKS'
-      titleStyle={{fontWeight: '800', fontSize: 18}}
+      titleStyle={{fontWeight: '800', fontSize: 18, marginTop: 20}}
     />
   );
 
@@ -73,13 +62,6 @@ const DrawerContent = ({ navigation, state }) => {
     />
   );
 
-  const HeaderSystemManagement = () => (
-    <DrawerHeaderFooter
-      title='SYSTEM MANAGEMENT'
-      titleStyle={{fontWeight: '800', fontSize: 18, marginTop: 20}}
-    />
-  );
-  
   const drawerMyTask = [
     { title: 'Given Task', icon: FileTextIcon },
     { title: 'Handout Task', icon: PaperPlaneIcon },
@@ -91,21 +73,12 @@ const DrawerContent = ({ navigation, state }) => {
     { title: 'Users In Group', icon: PeopleIcon },
   ];
 
-  const drawerSystemManagement = [
-    { title: 'User', icon: PersonIcon },
-    { title: 'Group', icon: FolderIcon },
-  ];
-
   const onSelectMyTask = (index) => {
     navigation.navigate(state.routeNames[index]);
   };
 
   const onSelectMyGroup = (index) => {
     navigation.navigate(state.routeNames[index + drawerMyTask.length]);
-  };
-
-  const onSelectSystemManagement = (index) => {
-    navigation.navigate(state.routeNames[index + drawerMyTask.length + drawerMyGroup.length]);
   };
 
   return (
@@ -122,12 +95,6 @@ const DrawerContent = ({ navigation, state }) => {
         onSelect={onSelectMyGroup}
         appearance='noDivider'
       />
-      <UIKittenDrawer
-        data={drawerSystemManagement}
-        header={HeaderSystemManagement}
-        onSelect={onSelectSystemManagement}
-        appearance='noDivider'
-      />
       <Button 
         style={{flexDirection: 'row-reverse', margin: 20}} 
         size='large'
@@ -139,14 +106,12 @@ const DrawerContent = ({ navigation, state }) => {
   );
 };
 
-export const DrawerNavigator = () => (
+export const ManagerDrawerNavigator = () => (
   <Drawer.Navigator drawerContent={props => <DrawerContent {...props}/>} initialRouteName="UsersInGroup">
     <Drawer.Screen name='GivenTask' component={GivenTaskNavigator}/>
     <Drawer.Screen name='HandoutTask' component={HandoutTaskNavigator}/>
     <Drawer.Screen name='CreateTask' component={CreateTaskScreen}/>
     <Drawer.Screen name='ApproveTask' component={ApproveTaskScreen}/>
     <Drawer.Screen name='UsersInGroup' component={UsersInGroupNavigator}/>
-    <Drawer.Screen name='User' component={UserNavigator}/>
-    <Drawer.Screen name='Group' component={GroupNavigator}/>
   </Drawer.Navigator>
 );

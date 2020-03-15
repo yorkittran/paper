@@ -36,9 +36,17 @@ export default class LoginScreen extends Component {
 
   storeToken = async (token) => {
     try {
-      await AsyncStorage.setItem('token', token)
+      await AsyncStorage.setItem('token', token);
     } catch (error) {
-      console.log(error);
+      console.error(error);
+    }
+  }
+
+  storeRole = async (role) => {
+    try {
+      await AsyncStorage.setItem('role', role);
+    } catch (error) {
+      console.error(error);
     }
   }
 
@@ -82,7 +90,8 @@ export default class LoginScreen extends Component {
         });
       }
       if (responseData.hasOwnProperty('token')) {
-        this.storeToken(responseData.token);
+        this.storeToken(responseData.token)
+        this.storeRole(responseData.role);
         Actions.home();
       }
     }).catch((error) => {

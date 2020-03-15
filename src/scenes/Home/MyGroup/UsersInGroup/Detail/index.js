@@ -27,7 +27,6 @@ export default class DetailScreen extends Component {
     })
     .then((response) => response.json())
     .then((responseData) => {
-      console.log(URL_USER + '/' + this.props.route.params.userId);
       this.setState({
         loading: false,
         data: responseData.data,
