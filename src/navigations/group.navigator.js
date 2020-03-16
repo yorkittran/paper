@@ -14,7 +14,7 @@ const Navigator = () => {
   );
 }
 
-export default class UsersInGroupNavigator extends Component {
+export default class GroupNavigator extends Component {
 
   render() {
     return (

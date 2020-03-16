@@ -5,8 +5,9 @@ import { SafeAreaView } from 'react-navigation';
 import { StyleSheet } from 'react-native';
 import QRCode from 'react-native-qrcode-svg';
 import { Card, Text, Spinner, Layout } from '@ui-kitten/components';
+import { EditingTopNavigation } from './top.navigator';
 
-export default class DetailScreen extends Component {  
+export default class EditingScreen extends Component {  
 
   constructor(props) {
     super(props);
@@ -59,13 +60,16 @@ export default class DetailScreen extends Component {
       );
     }
     return (
-      <SafeAreaView style={styles.mainContainer}>
-        <Card header={this.Header}>
-          <Text category='label' style={styles.label}>NAME                <Text style={styles.text}>{this.state.data.name}</Text></Text>
-          <Text category='label' style={styles.label}>EMAIL               <Text style={styles.text}>{this.state.data.email}</Text></Text>
-          <Text category='label' style={styles.label}>ROLE                 <Text style={styles.text}>{this.state.data.role}</Text></Text>
-          {this.GroupName()}
-        </Card>
+      <SafeAreaView style={{flex: 1, backgroundColor: '#FFFFFF'}}>
+        <EditingTopNavigation {...this.props}/>
+        <Layout style={styles.mainContainer}>
+          <Card header={this.Header} status='success'>
+            <Text category='label' style={styles.label}>NAME                <Text style={styles.text}>{this.state.data.name}</Text></Text>
+            <Text category='label' style={styles.label}>EMAIL               <Text style={styles.text}>{this.state.data.email}</Text></Text>
+            <Text category='label' style={styles.label}>ROLE                 <Text style={styles.text}>{this.state.data.role}</Text></Text>
+            {this.GroupName()}
+          </Card>
+        </Layout>
       </SafeAreaView>
     )
   }

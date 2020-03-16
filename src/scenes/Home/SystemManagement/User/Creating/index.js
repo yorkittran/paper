@@ -11,6 +11,7 @@ export default class ListScreen extends Component {
     super(props);
     this.state = {
       loading: true,
+      token: '',
       dataFiltered: [],
       terms: '',
     };
