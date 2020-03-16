@@ -5,8 +5,8 @@ import { SafeAreaView } from 'react-navigation';
 import { StyleSheet } from 'react-native';
 import { Spinner, Layout, Button, Icon } from '@ui-kitten/components';
 import { EditingTopNavigation } from './top.navigator';
-import { InputWithCaption } from './input.component';
-import { ModalWithIcon } from './modal.component';
+import { InputWithCaption } from '../../../../../components/input.component';
+import { ModalWithIcon } from '../../../../../components/modal.component';
 
 export default class EditingScreen extends Component {  
 

@@ -3,11 +3,11 @@ import { AsyncStorage } from 'react-native';
 import { URL_USER, ADMIN, MANAGER, MEMBER, ADMIN_VALUE, MANAGER_VALUE, MEMBER_VALUE } from '../../../../../config/constants';
 import { SafeAreaView } from 'react-navigation';
 import { StyleSheet } from 'react-native';
-import { Spinner, Layout, Button, Icon, Select } from '@ui-kitten/components';
+import { Spinner, Layout, Button, Icon } from '@ui-kitten/components';
 import { CreatingTopNavigation } from './top.navigator';
-import { InputWithCaption } from './input.component';
-import { ModalWithIcon } from './modal.component';
-import { SelectRole } from './select.component';
+import { InputWithCaption } from '../../../../../components/input.component';
+import { ModalWithIcon } from '../../../../../components/modal.component';
+import { SelectRole } from '../../../../../components/select.component';
 
 export default class EditingScreen extends Component {  
 

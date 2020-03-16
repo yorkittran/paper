@@ -7,7 +7,6 @@ export const ModalWithIcon = ({ visible, onPress, message, validation, navigatio
 
   const BackToList = () => {
     navigation.navigate('List');
-    // console.log(navigation);
   }
 
   return (

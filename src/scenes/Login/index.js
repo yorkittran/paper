@@ -2,12 +2,11 @@ import React, { Component } from 'react';
 import { AsyncStorage } from 'react-native';
 import { URL_LOGIN } from '../../config/constants';
 import { SafeAreaView } from 'react-navigation';
-import { StyleSheet, Dimensions } from 'react-native';
-import { Layout, Text, Modal, Icon, Input, Button } from '@ui-kitten/components';
+import { StyleSheet } from 'react-native';
+import { Layout, Text, Icon, Button } from '@ui-kitten/components';
 import { Actions } from 'react-native-router-flux';
-
-var width = Dimensions.get('window').width;
-var height = Dimensions.get('window').height;
+import { InputWithCaption } from '../../components/input.component';
+import { ModalWithIcon } from '../../components/modal.component';
 
 export default class LoginScreen extends Component {
 
@@ -65,29 +64,22 @@ export default class LoginScreen extends Component {
     })
     .then((response) => response.json())
     .then((responseData) => {
+    console.log(responseData);
+
       if (responseData.hasOwnProperty('message')) {
-        if (responseData.hasOwnProperty('errors')) {
-          if (responseData.errors.hasOwnProperty('email')) {
-            this.setState({
-              propsInputEmail: {
-                status: 'danger',
-                caption: responseData.errors.email
-              }
-            });
-          }
-          if (responseData.errors.hasOwnProperty('password')) {
-            this.setState({
-              propsInputPassword: {
-                status: 'danger',
-                caption: responseData.errors.password
-              }
-            });
-          }
-        }
         this.setState({
           message: responseData.message,
           visible: !this.state.visible,
         });
+        if (responseData.hasOwnProperty('errors')) {
+          this.setState({});
+          responseData.errors.hasOwnProperty('email')
+            ? this.setState({messageEmail: responseData.errors.email})
+            : this.setState({messageEmail: ''})
+          responseData.errors.hasOwnProperty('password')
+            ? this.setState({messagePassword: responseData.errors.password})
+            : this.setState({messagePassword: ''})
+        }
       }
       if (responseData.hasOwnProperty('token')) {
         this.storeToken(responseData.token)
@@ -116,41 +108,34 @@ export default class LoginScreen extends Component {
   render () {
     return (
     <SafeAreaView style={styles.mainContainer}>
-      <Modal
-        onBackdropPress={() => this.setState({visible: !this.state.visible})}
-        visible={this.state.visible}>
-        <Layout style={styles.modalContainer}>
-          <Icon name={'heart'}></Icon>
-          <Text category='s1' style={{color: '#FFFFFF'}}>{this.state.message}</Text>
-        </Layout>
-      </Modal>
+      <ModalWithIcon 
+        onPress={() => this.setState({visible: !this.state.visible})} 
+        visible={this.state.visible}
+        message={this.state.message}
+        validation={this.state.validation}
+      />
       <Layout style={styles.container}>
-        <Text category='h1' style={{marginBottom: 30}}>Log in to Paper</Text>
-        <Input
-          label='Email'
-          placeholder='Email'
-          value={this.state.email}
-          onChangeText={(email) => this.onChangeTextEmail(email)}
-          style={styles.input}
-          autoCapitalize='none'
-          {...this.state.propsInputEmail}/>
-        <Input
-          label='Password'
-          placeholder='Password'
-          value={this.state.password}
-          onChangeText={(password) => this.onChangeTextPassword(password)}
-          style={styles.input}
-          icon={this.EyeIcon}
-          secureTextEntry={this.state.secureTextEntry}
-          onIconPress={() => this.setState({secureTextEntry: !this.state.secureTextEntry})}
-          {...this.state.propsInputPassword}/>
+        <Icon name='paper-plane-outline' width={100} height={100} fill='#151A30' style={{marginBottom: 10}}/>
+        <Text category='h1' style={{marginBottom: 30, color: '#151A30'}}>Log in to Paper</Text>
+        <InputWithCaption 
+          lable='Email' 
+          placeholder='Email' 
+          message={this.state.messageEmail} 
+          value={this.state.email} 
+          onChangeText={(text) => this.setState({email: text})}/>
+        <InputWithCaption 
+          lable='Password' 
+          placeholder='Password' 
+          message={this.state.messagePassword}
+          value={this.state.password} 
+          parentSecureTextEntry={true} 
+          onChangeText={(text) => this.setState({password: text})}/>
         <Button 
           style={styles.button} 
           size='large'
-          status='primary' 
+          status='primary'
           icon={this.LoginIcon} 
-          onPress={this.onLogin}
-        >LOGIN</Button>
+          onPress={this.onLogin}>LOGIN</Button>
       </Layout>
     </SafeAreaView>
     )
@@ -162,27 +147,16 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'column',
     justifyContent: 'center',
+    margin: 40
   },
   container: {
     alignItems: 'center',
     marginBottom: 30
   },
-  input: {
-    paddingHorizontal: 40,
-    marginBottom: 10,
-    width: width,
-  },
   button: {
-    paddingHorizontal: 40,
-    paddingVertical: 10,
-    marginTop: 20,
-    flexDirection: 'row-reverse', 
-  },
-  modalContainer: {
-    position: 'relative',
-    width: width,
-    padding: 20,
-    top: -height/2+55,
-    backgroundColor: '#DB282C',
+    paddingHorizontal: 40, 
+    paddingVertical: 10, 
+    marginTop: 20, 
+    flexDirection: 'row-reverse'
   },
 });

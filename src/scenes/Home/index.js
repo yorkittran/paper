@@ -7,7 +7,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { SafeAreaView } from 'react-navigation';
 import { Spinner } from '@ui-kitten/components';
 import { StyleSheet } from 'react-native';
-import { ADMIN, MANAGER, MEMBER } from '../../config/constants'
+import { ADMIN, MANAGER } from '../../config/constants'
 
 export default class HomeScreen extends Component {
 
