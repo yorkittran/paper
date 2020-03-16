@@ -7,6 +7,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { SafeAreaView } from 'react-navigation';
 import { Spinner } from '@ui-kitten/components';
 import { StyleSheet } from 'react-native';
+import { ADMIN, MANAGER, MEMBER } from '../../config/constants'
 
 export default class HomeScreen extends Component {
 
@@ -33,13 +34,13 @@ export default class HomeScreen extends Component {
         </SafeAreaView>
       );
     }
-    if (this.state.role == 'Admin') {
+    if (this.state.role == ADMIN) {
       return (
         <NavigationContainer>
           <AdminDrawerNavigator navigation={this.props.navigation} />
         </NavigationContainer>
       );
-    } else if (this.state.role == 'Manager') {
+    } else if (this.state.role == MANAGER) {
       return (
         <NavigationContainer>
           <ManagerDrawerNavigator navigation={this.props.navigation} />

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Icon, TopNavigation, TopNavigationAction, } from '@ui-kitten/components';
 
-export const EditingTopNavigation = ({ navigation }) => {
+export const CreatingTopNavigation = ({ navigation }) => {
   
   const BackIcon = (style) => (
     <Icon {...style} name='arrow-back'/>
@@ -17,7 +17,7 @@ export const EditingTopNavigation = ({ navigation }) => {
 
   return (
     <TopNavigation
-      title='Editing User'
+      title='Creating User'
       alignment='center'
       leftControl={renderBackAction()}
     />

@@ -3,7 +3,8 @@ import { AsyncStorage } from 'react-native';
 import { URL_USER } from '../../../../../config/constants';
 import { SafeAreaView } from 'react-navigation';
 import { StyleSheet } from 'react-native';
-import { Icon, Input, List, ListItem, Spinner } from '@ui-kitten/components';
+import { ListTopNavigation } from './top.navigator';
+import { Icon, Input, List, ListItem, Spinner, Layout } from '@ui-kitten/components';
 
 export default class ListScreen extends Component {  
 
@@ -11,13 +12,17 @@ export default class ListScreen extends Component {
     super(props);
     this.state = {
       loading: true,
-      dataFiltered: [],
       terms: '',
     };
     this.dataSource = [];
   }
 
-  componentDidMount = () => AsyncStorage.getItem('token').then((token) => {
+  componentDidMount = () => {
+    this.FetchData();
+  };
+
+  FetchData = async () => {
+    const token = await AsyncStorage.getItem('token');
     fetch(URL_USER, {
       method: 'GET',
       headers: {
@@ -39,7 +44,7 @@ export default class ListScreen extends Component {
     }).catch((error) => {
       console.error(error);
     });
-  });
+  }
 
   ForwardIcon = () => (
     <Icon name='arrow-ios-forward' width={20} height={20} fill='#8F9BB3'/>
@@ -80,16 +85,19 @@ export default class ListScreen extends Component {
       );
     }
     return (
-      <SafeAreaView style={styles.mainContainer}>
-        <Input
-          value={this.state.terms}
-          placeholder='Search...'
-          icon={this.SearchIcon}
-          size='large'
-          onChangeText={terms => this.search(terms)}
-          style={styles.inputSearch}
-        />
-        <List data={this.state.dataFiltered} renderItem={this.renderItem} />
+      <SafeAreaView style={{flex: 1, backgroundColor: '#FFFFFF'}}>
+        <ListTopNavigation {...this.props}/>
+        <Layout style={styles.mainContainer}>
+          <Input
+            value={this.state.terms}
+            placeholder='Search...'
+            icon={this.SearchIcon}
+            size='large'
+            onChangeText={terms => this.search(terms)}
+            style={styles.inputSearch}
+          />
+          <List data={this.state.dataFiltered} renderItem={this.renderItem} />
+        </Layout>
       </SafeAreaView>
     );
   }

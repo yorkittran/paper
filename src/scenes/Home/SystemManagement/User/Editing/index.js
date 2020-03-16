@@ -3,9 +3,10 @@ import { AsyncStorage } from 'react-native';
 import { URL_USER } from '../../../../../config/constants';
 import { SafeAreaView } from 'react-navigation';
 import { StyleSheet } from 'react-native';
-import QRCode from 'react-native-qrcode-svg';
-import { Card, Text, Spinner, Layout } from '@ui-kitten/components';
+import { Spinner, Layout, Button, Icon } from '@ui-kitten/components';
 import { EditingTopNavigation } from './top.navigator';
+import { InputWithCaption } from './input.component';
+import { ModalWithIcon } from './modal.component';
 
 export default class EditingScreen extends Component {  
 
@@ -13,7 +14,7 @@ export default class EditingScreen extends Component {
     super(props);
     this.state = {
       loading: true,
-      data: {},
+      visible: false,
     };
   }
 
@@ -30,27 +31,68 @@ export default class EditingScreen extends Component {
     .then((responseData) => {
       this.setState({
         loading: false,
-        data: responseData.data,
+        name: responseData.data.name,
+        email: responseData.data.email,
       });
     }).catch((error) => {
       console.error(error);
     });
   });
 
-  Header = () => (
-    <Layout style={styles.cardHeader}>
-      <QRCode value={URL_USER + '/' + this.props.route.params.userId}/>
-    </Layout>
+  submitEditing = () => AsyncStorage.getItem('token').then((token) => {
+    var data = {};
+    data.name = this.state.name;
+    data.email = this.state.email;
+    data.password = this.state.password;
+    data.password_confirmation = this.state.password_confirmation;
+    fetch(URL_USER + '/' + this.props.route.params.userId, {
+      method: 'PUT',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
+      },
+      body: JSON.stringify(data)
+    })
+    .then((response) => response.json())
+    .then((responseData) => {
+      if (responseData.hasOwnProperty('message')) {
+        this.setState({
+          message: responseData.message,
+          visible: !this.state.visible,
+          messageName: '',
+          messageEmail: '',
+          messagePassword: '', 
+          messageConfirmPassword: ''
+        });
+        if (responseData.hasOwnProperty('errors')) {
+          this.setState({validation: false});
+          responseData.errors.hasOwnProperty('name')
+            ? this.setState({messageName: responseData.errors.name})
+            : this.setState({messageName: ''})
+          responseData.errors.hasOwnProperty('email')
+            ? this.setState({messageEmail: responseData.errors.email})
+            : this.setState({messageEmail: ''})
+          responseData.errors.hasOwnProperty('password')
+            ? responseData.errors.password.forEach((item) => {
+              item.indexOf('confirm') > -1
+                ? this.setState({messageConfirmPassword: item})
+                : this.setState({messagePassword: item});
+            })
+            : this.setState({messagePassword: '', messageConfirmPassword: ''})
+        } else {
+          this.setState({validation: true})
+        }
+      }
+    }).catch((error) => {
+      console.error(error);
+    });
+  });
+
+  EditIcon = (style) => (
+    <Icon {...style} name='edit-2'/>
   );
 
-  GroupName = () => {
-    if (this.state.data.in_group_name) {
-      return <Text category='label' style={styles.label}>MEMBER IN   <Text style={styles.text}>{this.state.data.in_group_name}</Text></Text>;
-    } else if (this.state.data.manage_group_name) {
-      return <Text category='label' style={styles.label}>MANAGE         <Text style={styles.text}>{this.state.data.manage_group_name}</Text></Text>;
-    }
-  }
-  
   render() {
     if (this.state.loading) {
       return (
@@ -62,13 +104,45 @@ export default class EditingScreen extends Component {
     return (
       <SafeAreaView style={{flex: 1, backgroundColor: '#FFFFFF'}}>
         <EditingTopNavigation {...this.props}/>
+        <ModalWithIcon 
+          onPress={() => this.setState({visible: !this.state.visible})} 
+          visible={this.state.visible}
+          message={this.state.message}
+          validation={this.state.validation}
+          navigation={this.props.navigation}
+        />
         <Layout style={styles.mainContainer}>
-          <Card header={this.Header} status='success'>
-            <Text category='label' style={styles.label}>NAME                <Text style={styles.text}>{this.state.data.name}</Text></Text>
-            <Text category='label' style={styles.label}>EMAIL               <Text style={styles.text}>{this.state.data.email}</Text></Text>
-            <Text category='label' style={styles.label}>ROLE                 <Text style={styles.text}>{this.state.data.role}</Text></Text>
-            {this.GroupName()}
-          </Card>
+          <InputWithCaption 
+            lable='Name' 
+            placeholder='Name' 
+            message={this.state.messageName} 
+            value={this.state.name} 
+            onChangeText={(text) => this.setState({name: text})}/>
+          <InputWithCaption 
+            lable='Email' 
+            placeholder='Email' 
+            message={this.state.messageEmail} 
+            value={this.state.email} 
+            onChangeText={(text) => this.setState({email: text})}/>
+          <InputWithCaption 
+            lable='Password' 
+            placeholder='Password' 
+            message={this.state.messagePassword} 
+            parentSecureTextEntry={true} 
+            onChangeText={(text) => this.setState({password: text})}/>
+          <InputWithCaption 
+            lable='Confirm Password' 
+            placeholder='Confirm Password' 
+            message={this.state.messageConfirmPassword} 
+            parentSecureTextEntry={true} 
+            onChangeText={(text) => this.setState({password_confirmation: text})}/>
+          <Button 
+            style={styles.btnEdit} 
+            size='large'
+            status='info' 
+            icon={this.EditIcon} 
+            onPress={this.submitEditing}
+          >EDIT</Button>
         </Layout>
       </SafeAreaView>
     )
@@ -85,18 +159,12 @@ const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
     flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'center',
+    margin: 40,
   },
-  cardHeader: {
-    marginVertical: 30,
-    alignItems: 'center',
-  },
-  label: {
-    fontSize: 16,
-    padding: 5,
-  },
-  text: {
-    fontSize: 16,
+  btnEdit: {
+    paddingHorizontal: 40, 
+    paddingVertical: 10, 
+    marginTop: 20, 
+    flexDirection: 'row-reverse'
   }
 });

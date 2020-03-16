@@ -1,76 +1,82 @@
 import React, { Component } from 'react';
 import { AsyncStorage } from 'react-native';
-import { URL_USER } from '../../../../../config/constants';
+import { URL_USER, ADMIN, MANAGER, MEMBER, ADMIN_VALUE, MANAGER_VALUE, MEMBER_VALUE } from '../../../../../config/constants';
 import { SafeAreaView } from 'react-navigation';
 import { StyleSheet } from 'react-native';
-import { Icon, Input, List, ListItem, Spinner } from '@ui-kitten/components';
+import { Spinner, Layout, Button, Icon, Select } from '@ui-kitten/components';
+import { CreatingTopNavigation } from './top.navigator';
+import { InputWithCaption } from './input.component';
+import { ModalWithIcon } from './modal.component';
+import { SelectRole } from './select.component';
 
-export default class ListScreen extends Component {  
+export default class EditingScreen extends Component {  
 
   constructor(props) {
     super(props);
     this.state = {
       loading: true,
-      token: '',
-      dataFiltered: [],
-      terms: '',
+      visible: false,
     };
-    this.dataSource = [];
   }
 
-  componentDidMount = () => AsyncStorage.getItem('token').then((token) => {
+  componentDidMount = () => {
+    this.setState({loading: false})
+  }
+
+  submitCreating = () => AsyncStorage.getItem('token').then((token) => {
+    var data = {};
+    data.role = this.state.role.value;
+    data.name = this.state.name;
+    data.email = this.state.email;
+    data.password = this.state.password;
+    data.password_confirmation = this.state.password_confirmation;
     fetch(URL_USER, {
-      method: 'GET',
+      method: 'POST',
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ' + token
       },
+      body: JSON.stringify(data)
     })
     .then((response) => response.json())
     .then((responseData) => {
-      this.setState(
-        {
-          dataFiltered: responseData.data,
-          loading: false,
-        },() => {
-          this.dataSource = responseData.data;
+      if (responseData.hasOwnProperty('message')) {
+        this.setState({
+          message: responseData.message,
+          visible: !this.state.visible,
+          messageName: '',
+          messageEmail: '',
+          messagePassword: '', 
+          messageConfirmPassword: ''
+        });
+        if (responseData.hasOwnProperty('errors')) {
+          this.setState({validation: false});
+          responseData.errors.hasOwnProperty('name')
+            ? this.setState({messageName: responseData.errors.name})
+            : this.setState({messageName: ''})
+          responseData.errors.hasOwnProperty('email')
+            ? this.setState({messageEmail: responseData.errors.email})
+            : this.setState({messageEmail: ''})
+          responseData.errors.hasOwnProperty('password')
+            ? responseData.errors.password.forEach((item) => {
+              item.indexOf('confirm') > -1
+                ? this.setState({messageConfirmPassword: item})
+                : this.setState({messagePassword: item});
+            })
+            : this.setState({messagePassword: '', messageConfirmPassword: ''})
+        } else {
+          this.setState({validation: true})
         }
-      );
+      }
     }).catch((error) => {
       console.error(error);
     });
   });
 
-  ForwardIcon = () => (
-    <Icon name='arrow-ios-forward' width={20} height={20} fill='#8F9BB3'/>
+  PlusIcon = (style) => (
+    <Icon {...style} name='plus'/>
   );
-
-  renderItem = ({ item }) => (
-    <ListItem
-      title={item.name}
-      description={item.email}
-      onPress={() => this.props.navigation.navigate('Detail', { userId: item.id, userName: item.name })}
-      accessory={this.ForwardIcon}
-    />
-  );
-
-  SearchIcon = () => (
-    <Icon name='search-outline'/>
-  )
-
-  search = (terms) => {
-    const dataFiltered = this.dataSource.filter(function(item) {
-      const itemData = item.name ? item.name.toUpperCase() : '' . toUpperCase();
-      const textData = terms.toUpperCase();
-      return itemData.indexOf(textData) > -1;
-    });
-
-    this.setState({
-      terms: terms,
-      dataFiltered: dataFiltered,
-    });
-  };
 
   render() {
     if (this.state.loading) {
@@ -81,20 +87,58 @@ export default class ListScreen extends Component {
       );
     }
     return (
-      <SafeAreaView style={styles.mainContainer}>
-        <Input
-          value={this.state.terms}
-          placeholder='Search...'
-          icon={this.SearchIcon}
-          size='large'
-          onChangeText={terms => this.search(terms)}
-          style={styles.inputSearch}
+      <SafeAreaView style={{flex: 1, backgroundColor: '#FFFFFF'}}>
+        <CreatingTopNavigation {...this.props}/>
+        <ModalWithIcon 
+          onPress={() => this.setState({visible: !this.state.visible})} 
+          visible={this.state.visible}
+          message={this.state.message}
+          validation={this.state.validation}
+          navigation={this.props.navigation}
         />
-        <List data={this.state.dataFiltered} renderItem={this.renderItem} />
+        <Layout style={styles.mainContainer}>
+          <SelectRole 
+            label='Role'
+            placeholder='Select Role'
+            data={[{ text: ADMIN, value: ADMIN_VALUE },{ text: MANAGER, value: MANAGER_VALUE },{ text: MEMBER, value: MEMBER_VALUE }]} 
+            selectedOption={this.state.role} 
+            onSelect={(role) => this.setState({role: role})}/>
+          <InputWithCaption 
+            lable='Name' 
+            placeholder='Name' 
+            message={this.state.messageName} 
+            value={this.state.name} 
+            onChangeText={(text) => this.setState({name: text})}/>
+          <InputWithCaption 
+            lable='Email' 
+            placeholder='Email' 
+            message={this.state.messageEmail} 
+            value={this.state.email} 
+            onChangeText={(text) => this.setState({email: text})}/>
+          <InputWithCaption 
+            lable='Password' 
+            placeholder='Password' 
+            message={this.state.messagePassword} 
+            parentSecureTextEntry={true} 
+            onChangeText={(text) => this.setState({password: text})}/>
+          <InputWithCaption 
+            lable='Confirm Password' 
+            placeholder='Confirm Password' 
+            message={this.state.messageConfirmPassword} 
+            parentSecureTextEntry={true} 
+            onChangeText={(text) => this.setState({password_confirmation: text})}/>
+          <Button 
+            style={styles.btnCreate} 
+            size='large'
+            status='success' 
+            icon={this.PlusIcon} 
+            onPress={this.submitCreating}
+          >CREATE</Button>
+        </Layout>
       </SafeAreaView>
-    );
+    )
   }
-};
+}
 
 const styles = StyleSheet.create({
   loadingContainer: {
@@ -106,9 +150,12 @@ const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
     flexDirection: 'column',
-    backgroundColor: 'white',
+    margin: 40,
   },
-  inputSearch: {
-    margin: 15,
-  },
+  btnCreate: {
+    paddingHorizontal: 40, 
+    paddingVertical: 10, 
+    marginTop: 20, 
+    flexDirection: 'row-reverse'
+  }
 });
