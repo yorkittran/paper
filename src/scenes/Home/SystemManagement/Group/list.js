@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { AsyncStorage } from 'react-native';
-import { URL_USER } from '../../../../../config/constants';
+import { URL_GROUP } from '../../../../config/constants';
 import { SafeAreaView } from 'react-navigation';
 import { StyleSheet } from 'react-native';
-import { ListTopNavigation } from './top.navigator';
+import { PaperTopNavigation } from '../../../../navigations/top.navigator';
 import { Icon, Input, List, ListItem, Spinner, Layout } from '@ui-kitten/components';
 
 export default class ListScreen extends Component {  
@@ -23,7 +23,7 @@ export default class ListScreen extends Component {
 
   FetchData = async () => {
     const token = await AsyncStorage.getItem('token');
-    fetch(URL_USER, {
+    fetch(URL_GROUP, {
       method: 'GET',
       headers: {
         'Accept': 'application/json',
@@ -53,8 +53,8 @@ export default class ListScreen extends Component {
   renderItem = ({ item }) => (
     <ListItem
       title={item.name}
-      description={item.email}
-      onPress={() => this.props.navigation.navigate('Detail', { userId: item.id, userName: item.name })}
+      description={'Managed by ' + item.manager_name}
+      onPress={() => this.props.navigation.navigate('ListUser', { groupId: item.id })}
       accessory={this.ForwardIcon}
     />
   );
@@ -85,8 +85,14 @@ export default class ListScreen extends Component {
       );
     }
     return (
-      <SafeAreaView style={{flex: 1, backgroundColor: '#FFFFFF'}}>
-        <ListTopNavigation {...this.props}/>
+      <SafeAreaView style={styles.safeAreaView}>
+        <PaperTopNavigation
+          title='List Group'
+          leftIcon='list'
+          leftScreen='Drawer'
+          rightIcon='plus'
+          rightScreen='Creating'
+          {...this.props}/>
         <Layout style={styles.mainContainer}>
           <Input
             value={this.state.terms}
@@ -94,8 +100,7 @@ export default class ListScreen extends Component {
             icon={this.SearchIcon}
             size='large'
             onChangeText={terms => this.search(terms)}
-            style={styles.inputSearch}
-          />
+            style={styles.inputSearch}/>
           <List data={this.state.dataFiltered} renderItem={this.renderItem} />
         </Layout>
       </SafeAreaView>
@@ -104,6 +109,10 @@ export default class ListScreen extends Component {
 };
 
 const styles = StyleSheet.create({
+  safeAreaView: {
+    flex: 1, 
+    backgroundColor: '#FFFFFF'
+  },
   loadingContainer: {
     flex: 1,
     flexDirection: 'column',

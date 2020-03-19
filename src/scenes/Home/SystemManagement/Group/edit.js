@@ -1,15 +1,15 @@
 import React, { Component } from 'react';
 import { AsyncStorage } from 'react-native';
-import { URL_GROUP, URL_USER_LIST_OF_MANAGERS_AVAILABLED, URL_USER_LIST_OF_MEMBERS_AVAILABLED } from '../../../../../config/constants';
+import { URL_GROUP, URL_USER_LIST_OF_MANAGERS_AVAILABLED, URL_USER_LIST_OF_MEMBERS_AVAILABLED } from '../../../../config/constants';
 import { SafeAreaView } from 'react-navigation';
 import { StyleSheet } from 'react-native';
 import { Spinner, Layout, Button, Icon } from '@ui-kitten/components';
-import { CreatingTopNavigation } from './top.navigator';
-import { PaperInput } from '../../../../../components/input.component';
-import { PaperSelect } from '../../../../../components/select.component';
-import { ModalWithIcon } from '../../../../../components/modal.component';
+import { PaperTopNavigation } from '../../../../navigations/top.navigator';
+import { PaperInput } from '../../../../components/input.component';
+import { PaperSelect } from '../../../../components/select.component';
+import { ModalWithIcon } from '../../../../components/modal.component';
 
-export default class CreatingScreen extends Component {  
+export default class EditingScreen extends Component {  
 
   constructor(props) {
     super(props);
@@ -27,6 +27,43 @@ export default class CreatingScreen extends Component {
     const token = await AsyncStorage.getItem('token');
     var list_managers = [];
     var list_members  = [];
+
+    // Get info of Group
+    fetch(URL_GROUP + '/' + this.props.route.params.groupId, {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
+      },
+    })
+    .then((response) => response.json())
+    .then((responseData) => {
+      // Push manager to select
+      list_managers.push({
+        value: responseData.data.manager_id,
+        text : responseData.data.manager_name,
+      });
+      // Push members to select
+      if (responseData.data.users_in_group.length > 0) {
+        responseData.data.users_in_group.forEach((member) => {
+          list_members.push({
+            value: member.id,
+            text : member.name,
+          })
+        });
+      }
+      var selected_members = list_members;
+      this.setState({
+        name            : responseData.data.name,
+        list_managers   : list_managers,
+        list_members    : list_members,
+        selected_manager: list_managers[0],
+        selected_members: selected_members,
+      });
+    }).catch((error) => {
+      console.error(error);
+    });
 
     // Get list of manager not manage any group
     fetch(URL_USER_LIST_OF_MANAGERS_AVAILABLED, {
@@ -83,7 +120,7 @@ export default class CreatingScreen extends Component {
     });
   }
 
-  submitCreating = () => AsyncStorage.getItem('token').then((token) => {
+  submitEditing = () => AsyncStorage.getItem('token').then((token) => {
     var data = {};
     data.name = this.state.name;
     data.manager_id = this.state.selected_manager.value;
@@ -92,8 +129,8 @@ export default class CreatingScreen extends Component {
       data.selected_members.push(member.value);
     });
     
-    fetch(URL_GROUP, {
-      method: 'POST',
+    fetch(URL_GROUP + '/' + this.props.route.params.groupId, {
+      method: 'PUT',
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
@@ -123,8 +160,8 @@ export default class CreatingScreen extends Component {
     });
   });
 
-  PlusIcon = (style) => (
-    <Icon {...style} name='plus'/>
+  EditIcon = (style) => (
+    <Icon {...style} name='edit-2'/>
   );
 
   render() {
@@ -137,7 +174,11 @@ export default class CreatingScreen extends Component {
     }
     return (
       <SafeAreaView style={{flex: 1, backgroundColor: '#FFFFFF'}}>
-        <CreatingTopNavigation {...this.props}/>
+        <PaperTopNavigation
+          title='Editing Group'
+          leftIcon='arrow-back'
+          leftScreen='Back'
+          {...this.props}/>
         <ModalWithIcon 
           onPress={() => this.setState({visible: !this.state.visible})} 
           visible={this.state.visible}
@@ -168,10 +209,10 @@ export default class CreatingScreen extends Component {
           <Button 
             style={styles.button} 
             size='large'
-            status='success' 
-            icon={this.PlusIcon} 
-            onPress={this.submitCreating}
-          >CREATE</Button>
+            status='info' 
+            icon={this.EditIcon} 
+            onPress={this.submitEditing}
+          >EDIT</Button>
         </Layout>
       </SafeAreaView>
     )

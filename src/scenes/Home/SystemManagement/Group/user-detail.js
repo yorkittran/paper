@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import { AsyncStorage } from 'react-native';
-import { URL_USER } from '../../../../../config/constants';
+import { URL_USER } from '../../../../config/constants';
 import { SafeAreaView } from 'react-navigation';
 import { StyleSheet } from 'react-native';
 import QRCode from 'react-native-qrcode-svg';
 import { Card, Text, Spinner, Layout } from '@ui-kitten/components';
-import { DetailTopNavigation } from './top.navigator';
+import { PaperTopNavigation } from '../../../../navigations/top.navigator';
 
 export default class DetailScreen extends Component {  
 
@@ -61,7 +61,11 @@ export default class DetailScreen extends Component {
     }
     return (
       <SafeAreaView style={{flex: 1, backgroundColor: '#FFFFFF'}}>
-        <DetailTopNavigation {...this.props}/>
+        <PaperTopNavigation
+          title='User Detail'
+          leftIcon='arrow-back'
+          leftScreen='Back'
+          {...this.props}/>
         <Layout style={styles.mainContainer}>
           <Card header={this.Header} status='success'>
             <Text category='label' style={styles.label}>NAME                <Text style={styles.text}>{this.state.data.name}</Text></Text>

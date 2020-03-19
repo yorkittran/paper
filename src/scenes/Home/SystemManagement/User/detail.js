@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import { AsyncStorage } from 'react-native';
-import { URL_USER } from '../../../../../config/constants';
+import { URL_USER } from '../../../../config/constants';
 import { SafeAreaView } from 'react-navigation';
 import { StyleSheet } from 'react-native';
 import QRCode from 'react-native-qrcode-svg';
 import { Card, Text, Spinner, Layout } from '@ui-kitten/components';
-import { DetailTopNavigation } from './top.navigator';
+import { PaperTopNavigation } from '../../../../navigations/top.navigator';
 
 export default class DetailScreen extends Component {  
 
@@ -39,7 +39,7 @@ export default class DetailScreen extends Component {
 
   Header = () => (
     <Layout style={styles.cardHeader}>
-      <QRCode value={URL_USER + '/' + this.props.route.params.userId}/>
+      <QRCode value={URL_USER + '/' + this.props.route.params.userId} size={150}/>
     </Layout>
   );
 
@@ -50,7 +50,7 @@ export default class DetailScreen extends Component {
       return <Text category='label' style={styles.label}>MANAGE         <Text style={styles.text}>{this.state.data.manage_group_name}</Text></Text>;
     }
   }
-  
+
   render() {
     if (this.state.loading) {
       return (
@@ -61,7 +61,14 @@ export default class DetailScreen extends Component {
     }
     return (
       <SafeAreaView style={{flex: 1, backgroundColor: '#FFFFFF'}}>
-        <DetailTopNavigation {...this.props}/>
+        <PaperTopNavigation
+          title='User Detail'
+          leftIcon='arrow-back'
+          leftScreen='Back'
+          rightIcon='more-vertical'
+          params={{ userId: this.props.route.params.userId }}
+          menu={true}
+          {...this.props}/>
         <Layout style={styles.mainContainer}>
           <Card header={this.Header} status='success'>
             <Text category='label' style={styles.label}>NAME                <Text style={styles.text}>{this.state.data.name}</Text></Text>

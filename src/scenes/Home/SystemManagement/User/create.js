@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import { AsyncStorage } from 'react-native';
-import { URL_USER } from '../../../../../config/constants';
+import { URL_USER, ADMIN, MANAGER, MEMBER, ADMIN_VALUE, MANAGER_VALUE, MEMBER_VALUE } from '../../../../config/constants';
 import { SafeAreaView } from 'react-navigation';
 import { StyleSheet } from 'react-native';
 import { Spinner, Layout, Button, Icon } from '@ui-kitten/components';
-import { EditingTopNavigation } from './top.navigator';
-import { PaperInput } from '../../../../../components/input.component';
-import { ModalWithIcon } from '../../../../../components/modal.component';
+import { PaperTopNavigation } from '../../../../navigations/top.navigator';
+import { PaperInput } from '../../../../components/input.component';
+import { ModalWithIcon } from '../../../../components/modal.component';
+import { PaperSelect } from '../../../../components/select.component';
 
 export default class EditingScreen extends Component {  
 
@@ -15,38 +16,26 @@ export default class EditingScreen extends Component {
     this.state = {
       loading: true,
       visible: false,
+      role: {
+        text: MEMBER,
+        value: MEMBER_VALUE,
+      }
     };
   }
 
-  componentDidMount = () => AsyncStorage.getItem('token').then((token) => {
-    fetch(URL_USER + '/' + this.props.route.params.userId, {
-      method: 'GET',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + token
-      },
-    })
-    .then((response) => response.json())
-    .then((responseData) => {
-      this.setState({
-        loading: false,
-        name: responseData.data.name,
-        email: responseData.data.email,
-      });
-    }).catch((error) => {
-      console.error(error);
-    });
-  });
+  componentDidMount = () => {
+    this.setState({loading: false})
+  }
 
-  submitEditing = () => AsyncStorage.getItem('token').then((token) => {
+  submitCreating = () => AsyncStorage.getItem('token').then((token) => {
     var data = {};
+    data.role = this.state.role.value;
     data.name = this.state.name;
     data.email = this.state.email;
     data.password = this.state.password;
     data.password_confirmation = this.state.password_confirmation;
-    fetch(URL_USER + '/' + this.props.route.params.userId, {
-      method: 'PUT',
+    fetch(URL_USER, {
+      method: 'POST',
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
@@ -60,13 +49,14 @@ export default class EditingScreen extends Component {
         this.setState({
           message: responseData.message,
           visible: !this.state.visible,
-          messageName: '',
-          messageEmail: '',
           messagePassword: '', 
           messageConfirmPassword: ''
         });
         if (responseData.hasOwnProperty('errors')) {
           this.setState({validation: false});
+          responseData.errors.hasOwnProperty('role')
+            ? this.setState({messageRole: responseData.errors.role})
+            : this.setState({messageRole: ''})
           responseData.errors.hasOwnProperty('name')
             ? this.setState({messageName: responseData.errors.name})
             : this.setState({messageName: ''})
@@ -89,8 +79,8 @@ export default class EditingScreen extends Component {
     });
   });
 
-  EditIcon = (style) => (
-    <Icon {...style} name='edit-2'/>
+  PlusIcon = (style) => (
+    <Icon {...style} name='plus'/>
   );
 
   render() {
@@ -103,7 +93,11 @@ export default class EditingScreen extends Component {
     }
     return (
       <SafeAreaView style={{flex: 1, backgroundColor: '#FFFFFF'}}>
-        <EditingTopNavigation {...this.props}/>
+        <PaperTopNavigation
+          title='Creating User'
+          leftIcon='arrow-back'
+          leftScreen='Back'
+          {...this.props}/>
         <ModalWithIcon 
           onPress={() => this.setState({visible: !this.state.visible})} 
           visible={this.state.visible}
@@ -112,6 +106,13 @@ export default class EditingScreen extends Component {
           navigation={this.props.navigation}
         />
         <Layout style={styles.mainContainer}>
+          <PaperSelect 
+            label='Role'
+            placeholder='Select Role'
+            message={this.state.messageRole}
+            data={[{ text: ADMIN, value: ADMIN_VALUE },{ text: MANAGER, value: MANAGER_VALUE },{ text: MEMBER, value: MEMBER_VALUE }]} 
+            selectedOption={this.state.role}
+            onSelect={(role) => this.setState({role: role})}/>
           <PaperInput 
             lable='Name' 
             placeholder='Name' 
@@ -137,12 +138,12 @@ export default class EditingScreen extends Component {
             parentSecureTextEntry={true} 
             onChangeText={(text) => this.setState({password_confirmation: text})}/>
           <Button 
-            style={styles.btnEdit} 
+            style={styles.btnCreate} 
             size='large'
-            status='info' 
-            icon={this.EditIcon} 
-            onPress={this.submitEditing}
-          >EDIT</Button>
+            status='success' 
+            icon={this.PlusIcon} 
+            onPress={this.submitCreating}
+          >CREATE</Button>
         </Layout>
       </SafeAreaView>
     )
@@ -161,7 +162,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     margin: 40,
   },
-  btnEdit: {
+  btnCreate: {
     paddingHorizontal: 40, 
     paddingVertical: 10, 
     marginTop: 20, 

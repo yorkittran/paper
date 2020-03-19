@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
-import ListScreen from '../scenes/Home/SystemManagement/User/List';
-import DetailScreen from '../scenes/Home/SystemManagement/User/Detail';
-import EditingScreen from '../scenes/Home/SystemManagement/User/Editing';
-import CreatingScreen from '../scenes/Home/SystemManagement/User/Creating';
+import ListScreen from '../scenes/Home/SystemManagement/User/list';
+import DetailScreen from '../scenes/Home/SystemManagement/User/detail';
+import EditingScreen from '../scenes/Home/SystemManagement/User/edit';
+import CreatingScreen from '../scenes/Home/SystemManagement/User/create';
 
 const Stack = createStackNavigator();
 

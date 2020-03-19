@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { AsyncStorage } from 'react-native';
-import { URL_GROUP } from '../../../../../config/constants';
+import { URL_GROUP } from '../../../../config/constants';
 import { SafeAreaView } from 'react-navigation';
 import { StyleSheet } from 'react-native';
-import { ListUserTopNavigation } from './top.navigator';
+import { PaperTopNavigation } from '../../../../navigations/top.navigator';
 import { Icon, Input, List, ListItem, Spinner, Layout } from '@ui-kitten/components';
 
 export default class ListScreen extends Component {  
@@ -86,7 +86,14 @@ export default class ListScreen extends Component {
     }
     return (
       <SafeAreaView style={{flex: 1, backgroundColor: '#FFFFFF'}}>
-        <ListUserTopNavigation {...this.props}/>
+        <PaperTopNavigation
+          title='List User'
+          leftIcon='arrow-back'
+          leftScreen='Back'
+          rightIcon='edit-2'
+          rightScreen='Editing'
+          params={{ groupId: this.props.route.params.groupId }}
+          {...this.props}/>
         <Layout style={styles.mainContainer}>
           <Input
             value={this.state.terms}

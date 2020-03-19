@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
-import ListScreen from '../scenes/Home/SystemManagement/Group/List';
-import ListUserScreen from '../scenes/Home/SystemManagement/Group/ListUser';
-import DetailScreen from '../scenes/Home/SystemManagement/Group/Detail';
-import EditingScreen from '../scenes/Home/SystemManagement/Group/Editing';
-import CreatingScreen from '../scenes/Home/SystemManagement/Group/Creating';
+import ListScreen from '../scenes/Home/SystemManagement/Group/list';
+import ListUserScreen from '../scenes/Home/SystemManagement/Group/user-list';
+import DetailScreen from '../scenes/Home/SystemManagement/Group/user-detail';
+import EditingScreen from '../scenes/Home/SystemManagement/Group/edit';
+import CreatingScreen from '../scenes/Home/SystemManagement/Group/create';
 
 const Stack = createStackNavigator();
 
