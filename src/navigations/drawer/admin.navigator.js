@@ -107,7 +107,7 @@ const DrawerContent = ({ navigation, state }) => {
 };
 
 export const AdminDrawerNavigator = () => (
-  <Drawer.Navigator drawerContent={props => <DrawerContent {...props}/>} initialRouteName="User">
+  <Drawer.Navigator drawerContent={props => <DrawerContent {...props}/>} initialRouteName="Group">
     <Drawer.Screen name='HandoutTask' component={HandoutTaskNavigator}/>
     <Drawer.Screen name='CreateTask' component={CreateTaskScreen}/>
     <Drawer.Screen name='ApproveTask' component={ApproveTaskScreen}/>

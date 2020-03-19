@@ -3,7 +3,7 @@ import { AsyncStorage } from 'react-native';
 import { URL_GROUP } from '../../../../../config/constants';
 import { SafeAreaView } from 'react-navigation';
 import { StyleSheet } from 'react-native';
-import { ListTopNavigation } from './top.navigator';
+import { ListUserTopNavigation } from './top.navigator';
 import { Icon, Input, List, ListItem, Spinner, Layout } from '@ui-kitten/components';
 
 export default class ListScreen extends Component {  
@@ -23,7 +23,7 @@ export default class ListScreen extends Component {
 
   FetchData = async () => {
     const token = await AsyncStorage.getItem('token');
-    fetch(URL_GROUP, {
+    fetch(URL_GROUP + '/' + this.props.route.params.groupId, {
       method: 'GET',
       headers: {
         'Accept': 'application/json',
@@ -35,10 +35,10 @@ export default class ListScreen extends Component {
     .then((responseData) => {
       this.setState(
         {
-          dataFiltered: responseData.data,
+          dataFiltered: responseData.data.users_in_group,
           loading: false,
         },() => {
-          this.dataSource = responseData.data;
+          this.dataSource = responseData.data.users_in_group;
         }
       );
     }).catch((error) => {
@@ -53,8 +53,8 @@ export default class ListScreen extends Component {
   renderItem = ({ item }) => (
     <ListItem
       title={item.name}
-      description={'Managed by ' + item.manager_name}
-      onPress={() => this.props.navigation.navigate('ListUser', { groupId: item.id })}
+      description={item.email}
+      onPress={() => this.props.navigation.navigate('Detail', { userId: item.id})}
       accessory={this.ForwardIcon}
     />
   );
@@ -85,8 +85,8 @@ export default class ListScreen extends Component {
       );
     }
     return (
-      <SafeAreaView style={styles.safeAreaView}>
-        <ListTopNavigation {...this.props}/>
+      <SafeAreaView style={{flex: 1, backgroundColor: '#FFFFFF'}}>
+        <ListUserTopNavigation {...this.props}/>
         <Layout style={styles.mainContainer}>
           <Input
             value={this.state.terms}
@@ -104,10 +104,6 @@ export default class ListScreen extends Component {
 };
 
 const styles = StyleSheet.create({
-  safeAreaView: {
-    flex: 1, 
-    backgroundColor: '#FFFFFF'
-  },
   loadingContainer: {
     flex: 1,
     flexDirection: 'column',

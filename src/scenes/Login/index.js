@@ -5,7 +5,7 @@ import { SafeAreaView } from 'react-navigation';
 import { StyleSheet } from 'react-native';
 import { Layout, Text, Icon, Button } from '@ui-kitten/components';
 import { Actions } from 'react-native-router-flux';
-import { InputWithCaption } from '../../components/input.component';
+import { PaperInput } from '../../components/input.component';
 import { ModalWithIcon } from '../../components/modal.component';
 
 export default class LoginScreen extends Component {
@@ -64,7 +64,6 @@ export default class LoginScreen extends Component {
     })
     .then((response) => response.json())
     .then((responseData) => {
-    console.log(responseData);
 
       if (responseData.hasOwnProperty('message')) {
         this.setState({
@@ -117,13 +116,13 @@ export default class LoginScreen extends Component {
       <Layout style={styles.container}>
         <Icon name='paper-plane-outline' width={100} height={100} fill='#151A30' style={{marginBottom: 10}}/>
         <Text category='h1' style={{marginBottom: 30, color: '#151A30'}}>Log in to Paper</Text>
-        <InputWithCaption 
+        <PaperInput 
           lable='Email' 
           placeholder='Email' 
           message={this.state.messageEmail} 
           value={this.state.email} 
           onChangeText={(text) => this.setState({email: text})}/>
-        <InputWithCaption 
+        <PaperInput 
           lable='Password' 
           placeholder='Password' 
           message={this.state.messagePassword}

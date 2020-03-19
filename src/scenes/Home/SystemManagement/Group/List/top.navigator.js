@@ -3,7 +3,7 @@ import { Icon, TopNavigation, TopNavigationAction, } from '@ui-kitten/components
 
 export const ListTopNavigation = ({ navigation }) => {
 
-  const createUser = () => {
+  const onCreate = () => {
     navigation.navigate('Creating');
   }
 
@@ -12,12 +12,12 @@ export const ListTopNavigation = ({ navigation }) => {
   );
 
   const renderCreateAction = () => (
-    <TopNavigationAction icon={PlusIcon} onPress={createUser}/>
+    <TopNavigationAction icon={PlusIcon} onPress={onCreate}/>
   );
 
   return (
     <TopNavigation
-      title='List User'
+      title='List Group'
       alignment='center'
       rightControls={renderCreateAction()}
     />

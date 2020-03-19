@@ -5,7 +5,7 @@ import { SafeAreaView } from 'react-navigation';
 import { StyleSheet } from 'react-native';
 import { Spinner, Layout, Button, Icon } from '@ui-kitten/components';
 import { EditingTopNavigation } from './top.navigator';
-import { InputWithCaption } from '../../../../../components/input.component';
+import { PaperInput } from '../../../../../components/input.component';
 import { ModalWithIcon } from '../../../../../components/modal.component';
 
 export default class EditingScreen extends Component {  
@@ -112,25 +112,25 @@ export default class EditingScreen extends Component {
           navigation={this.props.navigation}
         />
         <Layout style={styles.mainContainer}>
-          <InputWithCaption 
+          <PaperInput 
             lable='Name' 
             placeholder='Name' 
             message={this.state.messageName} 
             value={this.state.name} 
             onChangeText={(text) => this.setState({name: text})}/>
-          <InputWithCaption 
+          <PaperInput 
             lable='Email' 
             placeholder='Email' 
             message={this.state.messageEmail} 
             value={this.state.email} 
             onChangeText={(text) => this.setState({email: text})}/>
-          <InputWithCaption 
+          <PaperInput 
             lable='Password' 
             placeholder='Password' 
             message={this.state.messagePassword} 
             parentSecureTextEntry={true} 
             onChangeText={(text) => this.setState({password: text})}/>
-          <InputWithCaption 
+          <PaperInput 
             lable='Confirm Password' 
             placeholder='Confirm Password' 
             message={this.state.messageConfirmPassword} 

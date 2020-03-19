@@ -1,15 +1,15 @@
 import React, { Component } from 'react';
 import { AsyncStorage } from 'react-native';
-import { URL_USER, ADMIN, MANAGER, MEMBER, ADMIN_VALUE, MANAGER_VALUE, MEMBER_VALUE } from '../../../../../config/constants';
+import { URL_GROUP, URL_USER_LIST_OF_MANAGERS_AVAILABLED, URL_USER_LIST_OF_MEMBERS_AVAILABLED } from '../../../../../config/constants';
 import { SafeAreaView } from 'react-navigation';
 import { StyleSheet } from 'react-native';
 import { Spinner, Layout, Button, Icon } from '@ui-kitten/components';
 import { CreatingTopNavigation } from './top.navigator';
 import { PaperInput } from '../../../../../components/input.component';
-import { ModalWithIcon } from '../../../../../components/modal.component';
 import { PaperSelect } from '../../../../../components/select.component';
+import { ModalWithIcon } from '../../../../../components/modal.component';
 
-export default class EditingScreen extends Component {  
+export default class CreatingScreen extends Component {  
 
   constructor(props) {
     super(props);
@@ -20,17 +20,79 @@ export default class EditingScreen extends Component {
   }
 
   componentDidMount = () => {
-    this.setState({loading: false})
+    this.FetchData();
+  };
+
+  FetchData = async () => {
+    const token = await AsyncStorage.getItem('token');
+    var list_managers = [];
+    var list_members  = [];
+
+    // Get list of manager not manage any group
+    fetch(URL_USER_LIST_OF_MANAGERS_AVAILABLED, {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
+      },
+    })
+    .then((response) => response.json())
+    .then((responseData) => {
+      // Push manager not manage any group to select
+      if (responseData.data.length > 0) {
+        responseData.data.forEach((manager) => {
+          list_managers.push({
+            value: manager.id,
+            text : manager.name,
+          });
+        });
+      }
+      this.setState({list_managers: list_managers});
+    }).catch((error) => {
+      console.error(error);
+    });
+
+    // Get list of member not belong to any group
+    fetch(URL_USER_LIST_OF_MEMBERS_AVAILABLED, {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
+      },
+    })
+    .then((response) => response.json())
+    .then((responseData) => {
+      // Push member not belong to any group to select
+      var members_availabled = [];
+      if (responseData.data.length > 0) {
+        responseData.data.forEach((member) => {
+          members_availabled.push({
+            value: member.id,
+            text : member.name,
+          });
+        });
+      }
+      this.setState({
+        list_members: list_members.concat(members_availabled),
+        loading: false,
+      });
+    }).catch((error) => {
+      console.error(error);
+    });
   }
 
   submitCreating = () => AsyncStorage.getItem('token').then((token) => {
     var data = {};
-    data.role = this.state.role.value;
     data.name = this.state.name;
-    data.email = this.state.email;
-    data.password = this.state.password;
-    data.password_confirmation = this.state.password_confirmation;
-    fetch(URL_USER, {
+    data.manager_id = this.state.selected_manager.value;
+    data.selected_members = [];
+    this.state.selected_members.forEach((member) => {
+      data.selected_members.push(member.value);
+    });
+    
+    fetch(URL_GROUP, {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
@@ -46,25 +108,12 @@ export default class EditingScreen extends Component {
           message: responseData.message,
           visible: !this.state.visible,
           messageName: '',
-          messageEmail: '',
-          messagePassword: '', 
-          messageConfirmPassword: ''
         });
         if (responseData.hasOwnProperty('errors')) {
           this.setState({validation: false});
           responseData.errors.hasOwnProperty('name')
             ? this.setState({messageName: responseData.errors.name})
             : this.setState({messageName: ''})
-          responseData.errors.hasOwnProperty('email')
-            ? this.setState({messageEmail: responseData.errors.email})
-            : this.setState({messageEmail: ''})
-          responseData.errors.hasOwnProperty('password')
-            ? responseData.errors.password.forEach((item) => {
-              item.indexOf('confirm') > -1
-                ? this.setState({messageConfirmPassword: item})
-                : this.setState({messagePassword: item});
-            })
-            : this.setState({messagePassword: '', messageConfirmPassword: ''})
         } else {
           this.setState({validation: true})
         }
@@ -97,38 +146,27 @@ export default class EditingScreen extends Component {
           navigation={this.props.navigation}
         />
         <Layout style={styles.mainContainer}>
-          <PaperSelect 
-            label='Role'
-            placeholder='Select Role'
-            data={[{ text: ADMIN, value: ADMIN_VALUE },{ text: MANAGER, value: MANAGER_VALUE },{ text: MEMBER, value: MEMBER_VALUE }]} 
-            selectedOption={this.state.role} 
-            onSelect={(role) => this.setState({role: role})}/>
           <PaperInput 
             lable='Name' 
             placeholder='Name' 
             message={this.state.messageName} 
             value={this.state.name} 
             onChangeText={(text) => this.setState({name: text})}/>
-          <PaperInput 
-            lable='Email' 
-            placeholder='Email' 
-            message={this.state.messageEmail} 
-            value={this.state.email} 
-            onChangeText={(text) => this.setState({email: text})}/>
-          <PaperInput 
-            lable='Password' 
-            placeholder='Password' 
-            message={this.state.messagePassword} 
-            parentSecureTextEntry={true} 
-            onChangeText={(text) => this.setState({password: text})}/>
-          <PaperInput 
-            lable='Confirm Password' 
-            placeholder='Confirm Password' 
-            message={this.state.messageConfirmPassword} 
-            parentSecureTextEntry={true} 
-            onChangeText={(text) => this.setState({password_confirmation: text})}/>
+          <PaperSelect 
+            label='Managed by'
+            placeholder='Select Manager'
+            data={this.state.list_managers} 
+            selectedOption={this.state.selected_manager} 
+            onSelect={(selected_manager) => this.setState({selected_manager: selected_manager})}/>
+          <PaperSelect 
+            label='Member in group'
+            placeholder='Select Member'
+            data={this.state.list_members} 
+            multiSelect={true}
+            selectedOption={this.state.selected_members} 
+            onSelect={(selected_members) => this.setState({selected_members: selected_members})}/>
           <Button 
-            style={styles.btnCreate} 
+            style={styles.button} 
             size='large'
             status='success' 
             icon={this.PlusIcon} 
@@ -152,10 +190,10 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     margin: 40,
   },
-  btnCreate: {
+  button: {
     paddingHorizontal: 40, 
     paddingVertical: 10, 
     marginTop: 20, 
     flexDirection: 'row-reverse'
-  }
+  },
 });

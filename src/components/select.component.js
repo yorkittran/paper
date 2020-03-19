@@ -1,16 +1,17 @@
 import React from 'react';
-import { StyleSheet } from 'react-native';
 import { Layout, Select } from '@ui-kitten/components';
 
-export const SelectRole = ({ label, placeholder, selectedOption, onSelect, data}) => {
+export const PaperSelect = ({ label, placeholder, data, multiSelect, selectedOption, onSelect, message }) => {
 
-  console.log(data)
   return (
-    <Layout style={styles.container}>
+    <Layout>
       <Select
         label={label}
         placeholder={placeholder}
+        multiSelect={multiSelect}
         data={data}
+        status={message ? 'danger' : ''}
+        caption={message ?? ''}
         selectedOption={selectedOption}
         onSelect={onSelect}
         style={{marginBottom: 10}}
@@ -18,9 +19,3 @@ export const SelectRole = ({ label, placeholder, selectedOption, onSelect, data}
     </Layout>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    // minHeight: 228,
-  },
-});

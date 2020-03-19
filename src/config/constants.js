@@ -1,4 +1,4 @@
-export const API = 'http://192.168.1.90:231/api'
+export const API = 'http://192.168.1.41:231/api'
 
 export const URL_LOGIN  = API + '/login'
 export const URL_LOGOUT = API + '/logout'
@@ -6,6 +6,9 @@ export const URL_LOGOUT = API + '/logout'
 export const URL_USER  = API + '/user'
 export const URL_GROUP = API + '/group'
 export const URL_TASK  = API + '/task'
+
+export const URL_USER_LIST_OF_MANAGERS_AVAILABLED = URL_USER + '/managerAvailabled'
+export const URL_USER_LIST_OF_MEMBERS_AVAILABLED  = URL_USER + '/memberAvailabled'
 
 export const ADMIN         = 'Admin'
 export const MANAGER       = 'Manager'

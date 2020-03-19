@@ -1,7 +1,7 @@
 import React, { useState} from 'react';
 import { Input, Icon } from '@ui-kitten/components';
 
-export const InputWithCaption = ({ placeholder, lable, value, onChangeText, message, parentSecureTextEntry }) => {
+export const PaperInput = ({ placeholder, lable, value, onChangeText, message, parentSecureTextEntry }) => {
 
   const [secureTextEntry, setSecureTextEntry] = useState(parentSecureTextEntry);
 
