@@ -1,7 +1,7 @@
 import React from 'react';
 import { Layout, Select } from '@ui-kitten/components';
 
-export const PaperSelect = ({ label, placeholder, data, multiSelect, selectedOption, onSelect, message }) => {
+export const PaperSelect = ({ label, placeholder, data, multiSelect, selectedOption, onSelect }) => {
 
   return (
     <Layout>
@@ -10,8 +10,6 @@ export const PaperSelect = ({ label, placeholder, data, multiSelect, selectedOpt
         placeholder={placeholder}
         multiSelect={multiSelect}
         data={data}
-        status={message ? 'danger' : ''}
-        caption={message ?? 'adad'}
         selectedOption={selectedOption}
         onSelect={onSelect}
         style={{marginBottom: 10}}

@@ -8,7 +8,7 @@ import { PaperTopNavigation } from '../../../../navigations/top.navigator';
 import { PaperInput } from '../../../../components/input.component';
 import { ModalWithIcon } from '../../../../components/modal.component';
 
-export default class EditingScreen extends Component {  
+export default class UserEditScreen extends Component {  
 
   constructor(props) {
     super(props);

@@ -88,7 +88,7 @@ export default class ListScreen extends Component {
       <SafeAreaView style={styles.safeAreaView}>
         <PaperTopNavigation
           title='List Group'
-          leftIcon='list'
+          leftIcon='menu'
           leftScreen='Drawer'
           rightIcon='plus'
           rightScreen='Creating'

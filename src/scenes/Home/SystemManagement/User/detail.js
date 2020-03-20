@@ -7,7 +7,7 @@ import QRCode from 'react-native-qrcode-svg';
 import { Card, Text, Spinner, Layout } from '@ui-kitten/components';
 import { PaperTopNavigation } from '../../../../navigations/top.navigator';
 
-export default class DetailScreen extends Component {  
+export default class UserDetailScreen extends Component {  
 
   constructor(props) {
     super(props);

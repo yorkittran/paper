@@ -6,7 +6,7 @@ import { StyleSheet } from 'react-native';
 import { PaperTopNavigation } from '../../../../navigations/top.navigator';
 import { Icon, Input, List, ListItem, Spinner, Layout } from '@ui-kitten/components';
 
-export default class ListScreen extends Component {  
+export default class UserListScreen extends Component {  
 
   constructor(props) {
     super(props);
@@ -88,7 +88,7 @@ export default class ListScreen extends Component {
       <SafeAreaView style={{flex: 1, backgroundColor: '#FFFFFF'}}>
         <PaperTopNavigation
           title='List User'
-          leftIcon='list'
+          leftIcon='menu'
           leftScreen='Drawer'
           rightIcon='plus'
           rightScreen='Creating'
@@ -100,8 +100,7 @@ export default class ListScreen extends Component {
             icon={this.SearchIcon}
             size='large'
             onChangeText={terms => this.search(terms)}
-            style={styles.inputSearch}
-          />
+            style={styles.inputSearch}/>
           <List data={this.state.dataFiltered} renderItem={this.renderItem} />
         </Layout>
       </SafeAreaView>

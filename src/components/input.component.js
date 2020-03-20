@@ -1,7 +1,7 @@
 import React, { useState} from 'react';
 import { Input, Icon } from '@ui-kitten/components';
 
-export const PaperInput = ({ placeholder, lable, value, onChangeText, message, parentSecureTextEntry }) => {
+export const PaperInput = ({ placeholder, lable, value, onChangeText, message, parentSecureTextEntry, multiline, disabled, onPress }) => {
 
   const [secureTextEntry, setSecureTextEntry] = useState(parentSecureTextEntry);
 
@@ -36,6 +36,9 @@ export const PaperInput = ({ placeholder, lable, value, onChangeText, message, p
       status={message ? 'danger' : ''}
       caption={message ?? ''}
       value={value}
+      multiline={multiline}
+      disabled={disabled}
+      onTouchStart={onPress}
       onChangeText={onChangeText}
       style={{marginBottom: 10}}
     />

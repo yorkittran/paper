@@ -9,7 +9,7 @@ import { PaperInput } from '../../../../components/input.component';
 import { ModalWithIcon } from '../../../../components/modal.component';
 import { PaperSelect } from '../../../../components/select.component';
 
-export default class EditingScreen extends Component {  
+export default class UserCreateScreen extends Component {  
 
   constructor(props) {
     super(props);
