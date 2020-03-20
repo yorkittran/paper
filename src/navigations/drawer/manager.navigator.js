@@ -6,7 +6,7 @@ import { createDrawerNavigator } from '@react-navigation/drawer';
 import { Drawer as UIKittenDrawer, DrawerHeaderFooter, Icon, Button } from '@ui-kitten/components';
 import GivenTaskNavigator from '../given-task.navigator';
 import HandoutTaskNavigator from '../handout-task.navigator';
-import CreateTaskScreen from '../../scenes/Home/MyTask/CreateTask';
+import CreateTaskNavigator from '../create-task.navigator';
 import ApproveTaskScreen from '../../scenes/Home/MyTask/ApproveTask';
 import UsersInGroupNavigator from '../users-in-group.navigator';
 
@@ -110,7 +110,7 @@ export const ManagerDrawerNavigator = () => (
   <Drawer.Navigator drawerContent={props => <DrawerContent {...props}/>} initialRouteName="UsersInGroup">
     <Drawer.Screen name='GivenTask' component={GivenTaskNavigator}/>
     <Drawer.Screen name='HandoutTask' component={HandoutTaskNavigator}/>
-    <Drawer.Screen name='CreateTask' component={CreateTaskScreen}/>
+    <Drawer.Screen name='CreateTask' component={CreateTaskNavigator}/>
     <Drawer.Screen name='ApproveTask' component={ApproveTaskScreen}/>
     <Drawer.Screen name='UsersInGroup' component={UsersInGroupNavigator}/>
   </Drawer.Navigator>

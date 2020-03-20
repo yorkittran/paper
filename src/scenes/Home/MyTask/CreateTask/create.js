@@ -1,28 +1,33 @@
 import React, { Component } from 'react';
 import { AsyncStorage } from 'react-native';
-import { URL_USER_GET_ALL_USERS_EXCEPT_SELF } from '../../../../config/constants';
+import { URL_TASK, URL_USER_GET_ALL_USERS_EXCEPT_SELF } from '../../../../config/constants';
 import { } from '../../../../config/constants';
 import { SafeAreaView } from 'react-navigation';
 import { StyleSheet, ScrollView } from 'react-native';
 import { Spinner, Layout, Button, Icon, Select } from '@ui-kitten/components';
 import { PaperTopNavigation } from '../../../../navigations/top.navigator';
 import { PaperInput } from '../../../../components/input.component';
-import { ModalWithIcon } from '../../../../components/modal.component';
+import { PaperModal } from '../../../../components/modal.component';
 import { PaperTimePicker } from '../../../../components/timepicker.component';
 
 export default class CreatTaskScreen extends Component {  
 
   constructor(props) {
     let current_datetime = new Date();
-    let formatted_date = current_datetime.getDate() + "-" + (current_datetime.getMonth() + 1) + "-" + current_datetime.getFullYear() + " " + current_datetime.getHours() + ":" + current_datetime.getMinutes();
+    let formatted_date =
+      current_datetime.getFullYear() + "-" +
+      ("0" + (current_datetime.getMonth()+1)).slice(-2) + "-" +
+      ("0" + current_datetime.getDate()).slice(-2) + " " +
+      ("0" + current_datetime.getHours()).slice(-2) + ":" +
+      ("0" + current_datetime.getMinutes()).slice(-2) + ":00";
 
     super(props);
     this.state = {
       loading: true,
       visible: false,
-      start_at: formatted_date,
-      end_at: formatted_date,
-      current_datetime: current_datetime,
+      start_at: current_datetime,
+      end_at: current_datetime,
+      formatted_date: formatted_date,
     };
   }
 
@@ -58,48 +63,78 @@ export default class CreatTaskScreen extends Component {
     });
   });
 
-  submitCreating = () => AsyncStorage.getItem('token').then((token) => {
-    console.warn("hi", (this.state.start_at.getDate() + "-" + (this.state.start_at.getMonth() + 1) + "-" + this.state.start_at.getFullYear() + " " + this.state.start_at.getHours() + ":" + this.state.start_at.getMinutes()))
-    // var data = {};
-    // data.name = this.state.name;
-    // data.manager_id = this.state.selected_manager.value;
-    // data.selected_members = [];
-    
-    
-    // fetch(URL_GROUP, {
-    //   method: 'POST',
-    //   headers: {
-    //     'Accept': 'application/json',
-    //     'Content-Type': 'application/json',
-    //     'Authorization': 'Bearer ' + token
-    //   },
-    //   body: JSON.stringify(data)
-    // })
-    // .then((response) => response.json())
-    // .then((responseData) => {
-    //   if (responseData.hasOwnProperty('message')) {
-    //     this.setState({
-    //       message: responseData.message,
-    //       visible: !this.state.visible,
-    //       messageName: '',
-    //     });
-    //     if (responseData.hasOwnProperty('errors')) {
-    //       this.setState({validation: false});
-    //       responseData.errors.hasOwnProperty('name')
-    //         ? this.setState({messageName: responseData.errors.name})
-    //         : this.setState({messageName: ''})
-    //     } else {
-    //       this.setState({validation: true})
-    //     }
-    //   }
-    // }).catch((error) => {
-    //   console.error(error);
-    // });
-  });
+  setSelectedAssignee = (id) => {
+    this.state.assignees.forEach((assignee, index) => {
+      if (assignee.value == id) {
+        this.setState({selected_assignee: this.state.assignees[index]});
+      }
+    })
+  }
 
   scanQR = () => {
-    console.log('scan')
+    this.props.navigation.navigate('ScanQR', { callback: this.setSelectedAssignee.bind(this) });
   }
+  
+  submitCreating = () => AsyncStorage.getItem('token').then((token) => {
+    var data = {};
+    data.name = this.state.name;
+    data.description_assigned = this.state.description;
+    data.assignee_id = this.state.selected_assignee.value;
+    
+    var start = this.state.start_at;
+    var end   = this.state.start_at;
+    data.start_at =
+      start.getFullYear() + "-" +
+      ("0" + (start.getMonth()+1)).slice(-2) + "-" +
+      ("0" + start.getDate()).slice(-2) + " " +
+      ("0" + start.getHours()).slice(-2) + ":" +
+      ("0" + start.getMinutes()).slice(-2) + ":00";
+    data.end_at = 
+      end.getFullYear() + "-" +
+      ("0" + (end.getMonth()+1)).slice(-2) + "-" +
+      ("0" + end.getDate()).slice(-2) + " " +
+      ("0" + end.getHours()).slice(-2) + ":" +
+      ("0" + end.getMinutes()).slice(-2) + ":00";
+
+    fetch(URL_TASK, {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
+      },
+      body: JSON.stringify(data)
+    })
+    .then((response) => response.json())
+    .then((responseData) => {
+      if (responseData.hasOwnProperty('message')) {
+        this.setState({
+          message: responseData.message,
+          visible: !this.state.visible,
+        });
+        console.log(responseData);
+        if (responseData.hasOwnProperty('errors')) {
+          this.setState({validation: false});
+          responseData.errors.hasOwnProperty('name')
+            ? this.setState({messageName: responseData.errors.name})
+            : this.setState({messageName: ''})
+          responseData.errors.hasOwnProperty('description_assigned')
+            ? this.setState({messageDescription: responseData.errors.description_assigned})
+            : this.setState({messageDescription: ''})
+        } else {
+          this.setState({
+            validation : true,
+            name       : '',
+            description: '',
+            start_at   : new Date(),
+            end_at     : new Date(),
+          })
+        }
+      }
+    }).catch((error) => {
+      console.error(error);
+    });
+  });
 
   PlusIcon = (style) => (
     <Icon {...style} name='plus'/>
@@ -126,12 +161,14 @@ export default class CreatTaskScreen extends Component {
             leftScreen='Drawer'
             {...this.props}
           />
-          <ModalWithIcon 
+          <PaperModal 
             onPress={() => this.setState({visible: !this.state.visible})} 
             visible={this.state.visible}
             message={this.state.message}
             validation={this.state.validation}
             navigation={this.props.navigation}
+            title='Dismiss'
+            dismiss={true}
           />
           <Layout style={styles.mainContainer}>
             <PaperInput 
@@ -144,23 +181,23 @@ export default class CreatTaskScreen extends Component {
             <PaperInput 
               lable='Description' 
               placeholder='Description' 
-              caption={this.state.messageDescription ?? ''} 
+              message={this.state.messageDescription} 
               multiline={true}
               value={this.state.description} 
               onChangeText={(text) => this.setState({description: text})}
             />
             <PaperTimePicker
               label='Start At'
-              date={this.state.current_datetime}
+              date={this.state.start_at}
               message={this.state.messageStartAt}
-              value={this.state.start_at}
+              value={this.state.formatted_date}
               onChange={(datetime) => this.setState({start_at: datetime})}
             />
             <PaperTimePicker
               label='End At'
-              date={this.state.current_datetime}
+              date={this.state.end_at}
               message={this.state.messageEndAt}
-              value={this.state.end_at}
+              value={this.state.formatted_date}
               onChange={(datetime) => this.setState({end_at: datetime})}
             />
             <Layout style={{flexDirection: 'row', alignItems: 'baseline'}}>
@@ -172,7 +209,7 @@ export default class CreatTaskScreen extends Component {
                 onSelect={(user) => this.setState({selected_assignee: user})}
                 style={{marginRight: 20, flexDirection: 'column', flex: 1}}
               />
-              <Icon name='grid' width={50} height={50} fill='#5670A1' style={{flexDirection: 'column'}} onPress={this.scanQR()}/>
+              <Icon name='grid-outline' width={50} height={50} fill='#5670A1' style={{flexDirection: 'column'}} onPress={this.scanQR}/>
             </Layout>
             <Button 
               style={styles.button} 

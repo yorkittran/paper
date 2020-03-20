@@ -39,7 +39,7 @@ export default class UserDetailScreen extends Component {
 
   Header = () => (
     <Layout style={styles.cardHeader}>
-      <QRCode value={URL_USER + '/' + this.props.route.params.userId} size={150}/>
+      <QRCode value={"" + this.props.route.params.userId} size={150}/>
     </Layout>
   );
 

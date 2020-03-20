@@ -6,7 +6,7 @@ import { StyleSheet } from 'react-native';
 import { Layout, Text, Icon, Button } from '@ui-kitten/components';
 import { Actions } from 'react-native-router-flux';
 import { PaperInput } from '../../components/input.component';
-import { ModalWithIcon } from '../../components/modal.component';
+import { PaperModal } from '../../components/modal.component';
 
 export default class LoginScreen extends Component {
 
@@ -107,11 +107,12 @@ export default class LoginScreen extends Component {
   render () {
     return (
     <SafeAreaView style={styles.mainContainer}>
-      <ModalWithIcon 
+      <PaperModal 
         onPress={() => this.setState({visible: !this.state.visible})} 
         visible={this.state.visible}
         message={this.state.message}
         validation={this.state.validation}
+        title='Back to List'
       />
       <Layout style={styles.container}>
         <Icon name='paper-plane-outline' width={100} height={100} fill='#151A30' style={{marginBottom: 10}}/>

@@ -5,10 +5,10 @@ import { SafeAreaView } from 'react-navigation';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { Drawer as UIKittenDrawer, DrawerHeaderFooter, Icon, Button } from '@ui-kitten/components';
 import HandoutTaskNavigator from '../handout-task.navigator';
-import CreateTaskScreen from '../../scenes/Home/MyTask/CreateTask';
 import ApproveTaskScreen from '../../scenes/Home/MyTask/ApproveTask';
 import UserNavigator from '../user.navigator';
 import GroupNavigator from '../group.navigator';
+import CreateTaskNavigator from '../create-task.navigator';
 
 const Drawer = createDrawerNavigator();
 
@@ -109,7 +109,7 @@ const DrawerContent = ({ navigation, state }) => {
 export const AdminDrawerNavigator = () => (
   <Drawer.Navigator drawerContent={props => <DrawerContent {...props}/>} initialRouteName="CreateTask">
     <Drawer.Screen name='HandoutTask' component={HandoutTaskNavigator}/>
-    <Drawer.Screen name='CreateTask' component={CreateTaskScreen}/>
+    <Drawer.Screen name='CreateTask' component={CreateTaskNavigator}/>
     <Drawer.Screen name='ApproveTask' component={ApproveTaskScreen}/>
     <Drawer.Screen name='User' component={UserNavigator}/>
     <Drawer.Screen name='Group' component={GroupNavigator}/>

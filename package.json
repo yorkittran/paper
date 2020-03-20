@@ -19,6 +19,8 @@
     "@ui-kitten/components": "^4.4.1",
     "@ui-kitten/eva-icons": "^4.4.1",
     "expo": "~36.0.0",
+    "expo-barcode-scanner": "~8.0.0",
+    "expo-permissions": "~8.0.0",
     "react": "~16.9.0",
     "react-dom": "~16.9.0",
     "react-native": "https://github.com/expo/react-native/archive/sdk-36.0.0.tar.gz",

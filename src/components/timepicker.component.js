@@ -7,7 +7,6 @@ export const PaperTimePicker = ({ label, date, value, onChange, message }) => {
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const [time, setTime] = useState(value);
 
-
   const showDatePicker = () => {
     setDatePickerVisibility(true);
   };
@@ -17,7 +16,14 @@ export const PaperTimePicker = ({ label, date, value, onChange, message }) => {
   };
 
   const handleConfirm = (date) => {
-    setTime(date.getDate() + "-" + (date.getMonth() + 1) + "-" + date.getFullYear() + " " + date.getHours() + ":" + date.getMinutes());
+    let formatted_date =
+      date.getFullYear() + "-" +
+      ("0" + (date.getMonth()+1)).slice(-2) + "-" +
+      ("0" + date.getDate()).slice(-2) + " " +
+      ("0" + date.getHours()).slice(-2) + ":" +
+      ("0" + date.getMinutes()).slice(-2) + ":00";
+
+    setTime(formatted_date);
     hideDatePicker();
   };
 

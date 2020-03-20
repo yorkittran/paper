@@ -7,7 +7,7 @@ import { Spinner, Layout, Button, Icon } from '@ui-kitten/components';
 import { PaperTopNavigation } from '../../../../navigations/top.navigator';
 import { PaperInput } from '../../../../components/input.component';
 import { PaperSelect } from '../../../../components/select.component';
-import { ModalWithIcon } from '../../../../components/modal.component';
+import { PaperModal } from '../../../../components/modal.component';
 
 export default class CreatingScreen extends Component {  
 
@@ -142,12 +142,14 @@ export default class CreatingScreen extends Component {
           leftIcon='arrow-back'
           leftScreen='Back'
           {...this.props}/>
-        <ModalWithIcon 
+        <PaperModal 
           onPress={() => this.setState({visible: !this.state.visible})} 
           visible={this.state.visible}
           message={this.state.message}
           validation={this.state.validation}
-          navigation={this.props.navigation}/>
+          navigation={this.props.navigation}
+          title='Back to List'
+        />
         <Layout style={styles.mainContainer}>
           <PaperInput 
             lable='Name' 

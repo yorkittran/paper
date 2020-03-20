@@ -3,7 +3,7 @@ import { StyleSheet } from 'react-native';
 import { Button, Icon, Modal, Text } from '@ui-kitten/components';
 
 
-export const ModalWithIcon = ({ visible, onPress, message, validation, navigation }) => {
+export const PaperModal = ({ visible, onPress, message, validation, navigation, title, dismiss }) => {
 
   const BackToList = () => {
     navigation.navigate('List');
@@ -23,8 +23,8 @@ export const ModalWithIcon = ({ visible, onPress, message, validation, navigatio
             size='medium'
             status='success' 
             appearance='outline'
-            onPress={BackToList}
-          >Back to List</Button>
+            onPress={dismiss ? onPress : BackToList}
+          >{title}</Button>
       </Modal>
       :
       <Modal

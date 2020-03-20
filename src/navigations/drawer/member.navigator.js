@@ -5,7 +5,7 @@ import { SafeAreaView } from 'react-navigation';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { Drawer as UIKittenDrawer, DrawerHeaderFooter, Icon, Button } from '@ui-kitten/components';
 import GivenTaskNavigator from '../given-task.navigator';
-import CreateTaskScreen from '../../scenes/Home/MyTask/CreateTask';
+import CreateTaskNavigator from '../create-task.navigator';
 
 const Drawer = createDrawerNavigator();
 
@@ -71,6 +71,6 @@ const DrawerContent = ({ navigation, state }) => {
 export const MemberDrawerNavigator = () => (
   <Drawer.Navigator drawerContent={props => <DrawerContent {...props}/>} initialRouteName="GivenTask">
     <Drawer.Screen name='GivenTask' component={GivenTaskNavigator}/>
-    <Drawer.Screen name='CreateTask' component={CreateTaskScreen}/>
+    <Drawer.Screen name='CreateTask' component={CreateTaskNavigator}/>
   </Drawer.Navigator>
 );
