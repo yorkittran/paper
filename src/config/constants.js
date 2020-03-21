@@ -12,6 +12,7 @@ export const URL_USER_LIST_OF_MEMBERS_AVAILABLED  = URL_USER + '/memberAvailable
 export const URL_USER_GET_ALL_USERS_EXCEPT_SELF   = URL_USER + '/exceptSelf'
 
 export const URL_TASK_PENDING   = URL_TASK + '/pending'
+export const URL_TASK_HANDOUT   = URL_TASK + '/handout'
 
 export const ADMIN         = 'Admin'
 export const MANAGER       = 'Manager'

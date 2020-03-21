@@ -9,7 +9,7 @@ import { PaperInput } from '../../../../components/input.component';
 import { PaperSelect } from '../../../../components/select.component';
 import { PaperModal } from '../../../../components/modal.component';
 
-export default class EditingScreen extends Component {  
+export default class EditScreen extends Component {  
 
   constructor(props) {
     super(props);
@@ -175,7 +175,7 @@ export default class EditingScreen extends Component {
     return (
       <SafeAreaView style={{flex: 1, backgroundColor: '#FFFFFF'}}>
         <PaperTopNavigation
-          title='Editing Group'
+          title='Edit Group'
           leftIcon='arrow-back'
           leftScreen='Back'
           {...this.props}/>

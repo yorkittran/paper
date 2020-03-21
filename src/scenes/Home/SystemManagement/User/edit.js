@@ -104,7 +104,7 @@ export default class UserEditScreen extends Component {
     return (
       <SafeAreaView style={{flex: 1, backgroundColor: '#FFFFFF'}}>
         <PaperTopNavigation
-          title='Editing User'
+          title='Edit User'
           leftIcon='arrow-back'
           leftScreen='Back'
           {...this.props}/>

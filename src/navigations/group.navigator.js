@@ -3,8 +3,8 @@ import { createStackNavigator } from '@react-navigation/stack';
 import ListScreen from '../scenes/Home/SystemManagement/Group/list';
 import ListUserScreen from '../scenes/Home/SystemManagement/Group/user-list';
 import DetailScreen from '../scenes/Home/SystemManagement/Group/user-detail';
-import EditingScreen from '../scenes/Home/SystemManagement/Group/edit';
-import CreatingScreen from '../scenes/Home/SystemManagement/Group/create';
+import EditScreen from '../scenes/Home/SystemManagement/Group/edit';
+import CreateScreen from '../scenes/Home/SystemManagement/Group/create';
 
 const Stack = createStackNavigator();
 
@@ -14,8 +14,8 @@ const Navigator = () => {
       <Stack.Screen name="List" component={ListScreen} />
       <Stack.Screen name="ListUser" component={ListUserScreen} />
       <Stack.Screen name="Detail" component={DetailScreen} />
-      <Stack.Screen name="Editing" component={EditingScreen} />
-      <Stack.Screen name="Creating" component={CreatingScreen} />
+      <Stack.Screen name="Edit" component={EditScreen} />
+      <Stack.Screen name="Create" component={CreateScreen} />
     </Stack.Navigator>
   );
 }

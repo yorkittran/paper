@@ -94,7 +94,7 @@ export default class UserCreateScreen extends Component {
     return (
       <SafeAreaView style={{flex: 1, backgroundColor: '#FFFFFF'}}>
         <PaperTopNavigation
-          title='Creating User'
+          title='Create User'
           leftIcon='arrow-back'
           leftScreen='Back'
           {...this.props}/>

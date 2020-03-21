@@ -1,20 +1,20 @@
 import React, { Component } from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
-import CreateTaskScreen from '../scenes/Home/MyTask/CreateTask/create';
-import ScanQRScreen from '../scenes/Home/MyTask/CreateTask/scan';
+import DetailScreen from '../scenes/Home/Home/Profile/detail';
+import EditScreen from '../scenes/Home/Home/Profile/edit';
 
 const Stack = createStackNavigator();
 
 const Navigator = () => {
   return (
     <Stack.Navigator screenOptions={{headerShown: false}}>
-      <Stack.Screen name="Create" component={CreateTaskScreen} />
-      <Stack.Screen name="Scan" component={ScanQRScreen} />
+      <Stack.Screen name="Detail" component={DetailScreen} />
+      <Stack.Screen name="Edit" component={EditScreen} />
     </Stack.Navigator>
   );
 }
 
-export default class CreateTaskNavigator extends Component {
+export default class ProfileNavigator extends Component {
 
   render() {
     return (

@@ -1,19 +1,35 @@
 import React, { Component } from 'react';
 import { AsyncStorage } from 'react-native';
-import { URL_TASK_PENDING } from '../../../../config/constants';
+import { URL_TASK } from '../../../../config/constants';
 import { SafeAreaView } from 'react-navigation';
 import { StyleSheet } from 'react-native';
 import { PaperTopNavigation } from '../../../../navigations/top.navigator';
-import { Icon, Input, List, ListItem, Spinner, Layout } from '@ui-kitten/components';
+import { Icon, Input, Spinner, Layout, Select } from '@ui-kitten/components';
+import { PaperListStatus } from '../../../../components/list-task.component';
 
 export default class ListScreen extends Component {  
-
+  
   constructor(props) {
+
+    let statusSource = [
+      { text: 'Pending Approval' },
+      { text: 'Approved' },
+      { text: 'Rejected' },
+      { text: 'Not Started' },
+      { text: 'Ongoing' },
+      { text: 'Committed' },
+      { text: 'Completed' },
+      { text: 'Incompleted' },
+      { text: 'Overdue' }
+    ];
+
     super(props);
     this.state = {
       loading: true,
       terms: '',
+      status: statusSource
     };
+    this.statusSource = statusSource;
     this.dataSource = [];
   }
 
@@ -23,7 +39,7 @@ export default class ListScreen extends Component {
 
   FetchData = async () => {
     const token = await AsyncStorage.getItem('token');
-    fetch(URL_TASK_PENDING, {
+    fetch(URL_TASK, {
       method: 'GET',
       headers: {
         'Accept': 'application/json',
@@ -46,33 +62,20 @@ export default class ListScreen extends Component {
     });
   }
 
-  ForwardIcon = () => (
-    <Icon name='arrow-ios-forward' width={20} height={20} fill='#8F9BB3'/>
-  );
-
-  renderItem = ({ item }) => (
-    <ListItem
-      title={item.name}
-      description={'• ' + item.status}
-      descriptionStyle={{color: '#1939B7'}}
-      onPress={() => this.props.navigation.navigate('Detail', { taskId: item.id })}
-      accessory={this.ForwardIcon}
-    />
-  );
-
   SearchIcon = () => (
     <Icon name='search-outline'/>
   )
 
-  search = (terms) => {
+  filtered = (terms, status) => {
     const dataFiltered = this.dataSource.filter(function(item) {
       const itemData = item.name ? item.name.toUpperCase() : '' . toUpperCase();
       const textData = terms.toUpperCase();
-      return itemData.indexOf(textData) > -1;
+      return itemData.indexOf(textData) > -1 && status.findIndex(i => i.text === item.status) > -1;
     });
 
     this.setState({
       terms: terms,
+      status: status,
       dataFiltered: dataFiltered,
     });
   };
@@ -87,21 +90,32 @@ export default class ListScreen extends Component {
     }
     return (
       <SafeAreaView style={{flex: 1, backgroundColor: '#FFFFFF'}}>
-        <PaperTopNavigation
-          title='List Approve Task'
-          leftIcon='menu'
-          leftScreen='Drawer'
-          {...this.props}/>
-        <Layout style={styles.mainContainer}>
-          <Input
-            value={this.state.terms}
-            placeholder='Search...'
-            icon={this.SearchIcon}
-            size='large'
-            onChangeText={terms => this.search(terms)}
-            style={styles.inputSearch}/>
-          <List data={this.state.dataFiltered} renderItem={this.renderItem} />
-        </Layout>
+          <PaperTopNavigation
+            title='List Task'
+            leftIcon='menu'
+            leftScreen='Drawer'
+            rightIcon='plus'
+            rightScreen='Create'
+            {...this.props}/>
+          <Layout style={styles.mainContainer}>
+            <Select 
+              placeholder='Select Status'
+              data={this.statusSource} 
+              multiSelect={true}
+              size='small'
+              selectedOption={this.state.status} 
+              onSelect={status => this.filtered(this.state.terms, status)}
+              style={styles.inputFiltered}/>
+            <Input
+              value={this.state.terms}
+              placeholder='Search...'
+              icon={this.SearchIcon}
+              size='large'
+              autoCapitalize='none'
+              onChangeText={terms => this.filtered(terms, this.state.status)}
+              style={styles.inputFiltered}/>
+            <PaperListStatus data={this.state.dataFiltered} navigation={this.props.navigation}/>
+          </Layout>
       </SafeAreaView>
     );
   }
@@ -119,7 +133,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     backgroundColor: 'white',
   },
-  inputSearch: {
+  inputFiltered: {
     marginHorizontal: '5%',
     marginTop: '2%',
   },

@@ -23,8 +23,8 @@ export const PaperModal = ({ visible, onPress, message, validation, navigation, 
             size='medium'
             status='success' 
             appearance='outline'
-            onPress={dismiss ? onPress : BackToList}
-          >{title}</Button>
+            onPress={BackToList}
+          >Back to List</Button>
       </Modal>
       :
       <Modal

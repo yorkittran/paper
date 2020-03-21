@@ -4,11 +4,11 @@ import { Actions } from 'react-native-router-flux';
 import { SafeAreaView } from 'react-navigation';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { Drawer as UIKittenDrawer, DrawerHeaderFooter, Icon, Button } from '@ui-kitten/components';
-import HandoutTaskNavigator from '../handout-task.navigator';
-import ApproveTaskNavigator from '../approve-task.navigator';
+import NotificationScreen from '../../scenes/Home/Home/Notification/list';
+import ProfileNavigator from '../profile.navigator';
+import TaskNavigator from '../task.navigator';
 import UserNavigator from '../user.navigator';
 import GroupNavigator from '../group.navigator';
-import CreateTaskNavigator from '../create-task.navigator';
 
 const Drawer = createDrawerNavigator();
 
@@ -24,16 +24,16 @@ const deleteToken = async () => {
 
 const DrawerContent = ({ navigation, state }) => {
 
-  const PaperPlaneIcon = () => (
-    <Icon name='paper-plane'/>
+  const HomeIcon = () => (
+    <Icon name='home-outline'/>
   );
 
-  const FileAddIcon = () => (
-    <Icon name='file-add-outline'/>
+  const BellIcon = () => (
+    <Icon name='bell-outline'/>
   );
-  
-  const CheckmarkCircleIcon = () => (
-    <Icon name='checkmark-circle'/>
+
+  const BookmarkIcon = () => (
+    <Icon name='bookmark-outline'/>
   );
 
   const PersonIcon = () => (
@@ -48,12 +48,21 @@ const DrawerContent = ({ navigation, state }) => {
     <Icon name='log-out-outline' fill='#FFFFFF'/>
   );
 
-  const HeaderMyTask = () => (
+  const HeaderHome = () => (
     <DrawerHeaderFooter
-      title='MY TASKS'
+      title='HOME'
       titleStyle={{fontWeight: '800', fontSize: 18, marginTop: 20}}
     />
   );
+
+  const drawerHome = [
+    { title: 'Profile', icon: HomeIcon },
+    { title: 'Notification', icon: BellIcon },
+  ];
+
+  const onSelectHome = (index) => {
+    navigation.navigate(state.routeNames[index]);
+  };
 
   const HeaderSystemManagement = () => (
     <DrawerHeaderFooter
@@ -61,38 +70,30 @@ const DrawerContent = ({ navigation, state }) => {
       titleStyle={{fontWeight: '800', fontSize: 18, marginTop: 20}}
     />
   );
-  
-  const drawerMyTask = [
-    { title: 'Handout Task', icon: PaperPlaneIcon },
-    { title: 'Create Task', icon: FileAddIcon },
-    { title: 'Approve Task', icon: CheckmarkCircleIcon  },
-  ];
 
   const drawerSystemManagement = [
+    { title: 'Task', icon: BookmarkIcon },
     { title: 'User', icon: PersonIcon },
     { title: 'Group', icon: FolderIcon },
   ];
 
-  const onSelectMyTask = (index) => {
-    navigation.navigate(state.routeNames[index]);
-  };
-
   const onSelectSystemManagement = (index) => {
-    navigation.navigate(state.routeNames[index + drawerMyTask.length]);
+    navigation.navigate(state.routeNames[index + drawerHome.length]);
   };
 
   return (
     <SafeAreaView>
       <UIKittenDrawer
-        data={drawerMyTask}
-        header={HeaderMyTask}
-        onSelect={onSelectMyTask}
+        data={drawerHome}
+        header={HeaderHome}
+        onSelect={onSelectHome}
         appearance='noDivider'
       />
       <UIKittenDrawer
         data={drawerSystemManagement}
         header={HeaderSystemManagement}
-        onSelect={onSelectSystemManagement}ApproveTaskNavigator
+        onSelect={onSelectSystemManagement}
+        appearance='noDivider'
       />
       <Button 
         style={{flexDirection: 'row-reverse', margin: 20}} 
@@ -106,10 +107,10 @@ const DrawerContent = ({ navigation, state }) => {
 };
 
 export const AdminDrawerNavigator = () => (
-  <Drawer.Navigator drawerContent={props => <DrawerContent {...props}/>} initialRouteName="ApproveTask">
-    <Drawer.Screen name='HandoutTask' component={HandoutTaskNavigator}/>
-    <Drawer.Screen name='CreateTask' component={CreateTaskNavigator}/>
-    <Drawer.Screen name='ApproveTask' component={ApproveTaskNavigator}/>
+  <Drawer.Navigator drawerContent={props => <DrawerContent {...props}/>} initialRouteName="Task">
+    <Drawer.Screen name='Profile' component={ProfileNavigator}/>
+    <Drawer.Screen name='Notification' component={NotificationScreen}/>
+    <Drawer.Screen name='Task' component={TaskNavigator}/>
     <Drawer.Screen name='User' component={UserNavigator}/>
     <Drawer.Screen name='Group' component={GroupNavigator}/>
   </Drawer.Navigator>

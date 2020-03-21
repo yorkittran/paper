@@ -91,7 +91,7 @@ export default class ListScreen extends Component {
           leftIcon='arrow-back'
           leftScreen='Back'
           rightIcon='edit-2'
-          rightScreen='Editing'
+          rightScreen='Edit'
           params={{ groupId: this.props.route.params.groupId }}
           {...this.props}/>
         <Layout style={styles.mainContainer}>
@@ -123,6 +123,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   inputSearch: {
-    margin: 15,
+    marginHorizontal: '5%',
+    marginTop: '2%',
   },
 });

@@ -82,7 +82,7 @@ export default class CreateScreen extends Component {
     data.assignee_id = this.state.selected_assignee.value;
     
     var start = this.state.start_at;
-    var end   = this.state.start_at;
+    var end   = this.state.end_at;
     data.start_at =
       start.getFullYear() + "-" +
       ("0" + (start.getMonth()+1)).slice(-2) + "-" +
@@ -157,8 +157,8 @@ export default class CreateScreen extends Component {
         <ScrollView showsVerticalScrollIndicator={false}>
           <PaperTopNavigation
             title='Create Task'
-            leftIcon='menu'
-            leftScreen='Drawer'
+            leftIcon='arrow-back'
+            leftScreen='Back'
             {...this.props}
           />
           <PaperModal 
@@ -167,8 +167,6 @@ export default class CreateScreen extends Component {
             message={this.state.message}
             validation={this.state.validation}
             navigation={this.props.navigation}
-            title='Dismiss'
-            dismiss={true}
           />
           <Layout style={styles.mainContainer}>
             <PaperInput 

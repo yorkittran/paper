@@ -91,7 +91,7 @@ export default class UserListScreen extends Component {
           leftIcon='menu'
           leftScreen='Drawer'
           rightIcon='plus'
-          rightScreen='Creating'
+          rightScreen='Create'
           {...this.props}/>
         <Layout style={styles.mainContainer}>
           <Input
@@ -121,6 +121,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   inputSearch: {
-    margin: 15,
+    marginHorizontal: '5%',
+    marginTop: '2%',
   },
 });

@@ -6,7 +6,7 @@ import { StyleSheet } from 'react-native';
 import { PaperTopNavigation } from '../../../../navigations/top.navigator';
 import { Icon, Input, List, ListItem, Spinner, Layout } from '@ui-kitten/components';
 
-export default class UserListScreen extends Component {  
+export default class ListScreen extends Component {  
 
   constructor(props) {
     super(props);
@@ -119,6 +119,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   inputSearch: {
-    margin: 15,
+    marginHorizontal: '5%',
+    marginTop: '2%',
   },
 });

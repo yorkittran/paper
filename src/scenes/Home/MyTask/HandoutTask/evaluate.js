@@ -6,7 +6,7 @@ import { StyleSheet } from 'react-native';
 import { Card, Text, Spinner, Layout, Button } from '@ui-kitten/components';
 import { PaperTopNavigation } from '../../../../navigations/top.navigator';
 
-export default class DetailScreen extends Component {  
+export default class EvaluateScreen extends Component {  
 
   constructor(props) {
     super(props);

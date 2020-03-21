@@ -12,7 +12,7 @@ export const PaperTopNavigation = ({ navigation, menu, params, leftIcon, leftScr
   const onMenuItemSelect = (index) => {
     if (index == 0) {
       // Edit
-      navigation.navigate('Editing', params);
+      navigation.navigate('Edit', params);
     } else {
       // Delete
     }

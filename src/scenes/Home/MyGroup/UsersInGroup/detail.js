@@ -6,7 +6,7 @@ import { StyleSheet } from 'react-native';
 import QRCode from 'react-native-qrcode-svg';
 import { Card, Text, Spinner, Layout } from '@ui-kitten/components';
 
-export default class UserDetailScreen extends Component {  
+export default class DetailScreen extends Component {  
 
   constructor(props) {
     super(props);

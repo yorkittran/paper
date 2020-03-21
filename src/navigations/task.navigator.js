@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
-import ListScreen from '../scenes/Home/MyTask/HandoutTask/list';
-import DetailScreen from '../scenes/Home/MyTask/HandoutTask/detail';
-import EditScreen from '../scenes/Home/MyTask/HandoutTask/edit';
-import EvaluateScreen from '../scenes/Home/MyTask/HandoutTask/evaluate';
+import ListScreen from '../scenes/Home/SystemManagement/Task/list';
+import DetailScreen from '../scenes/Home/SystemManagement/Task/detail';
+import EditScreen from '../scenes/Home/SystemManagement/Task/edit';
+import CreateScreen from '../scenes/Home/SystemManagement/Task/create';
+import ScanScreen from '../scenes/Home/SystemManagement/Task/scan';
+import EvaluateScreen from '../scenes/Home/SystemManagement/Task/evaluate';
 
 const Stack = createStackNavigator();
 
@@ -13,12 +15,14 @@ const Navigator = () => {
       <Stack.Screen name="List" component={ListScreen} />
       <Stack.Screen name="Detail" component={DetailScreen} />
       <Stack.Screen name="Edit" component={EditScreen} />
+      <Stack.Screen name="Create" component={CreateScreen} />
+      <Stack.Screen name="Scan" component={ScanScreen} />
       <Stack.Screen name="Evaluate" component={EvaluateScreen} />
     </Stack.Navigator>
   );
 }
 
-export default class HandoutTaskNavigator extends Component {
+export default class TaskNavigator extends Component {
 
   render() {
     return (
