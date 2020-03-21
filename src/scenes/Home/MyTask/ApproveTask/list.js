@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { AsyncStorage } from 'react-native';
-import { URL_USER } from '../../../../config/constants';
+import { URL_TASK_PENDING } from '../../../../config/constants';
 import { SafeAreaView } from 'react-navigation';
 import { StyleSheet } from 'react-native';
 import { PaperTopNavigation } from '../../../../navigations/top.navigator';
@@ -23,7 +23,7 @@ export default class UserListScreen extends Component {
 
   FetchData = async () => {
     const token = await AsyncStorage.getItem('token');
-    fetch(URL_USER, {
+    fetch(URL_TASK_PENDING, {
       method: 'GET',
       headers: {
         'Accept': 'application/json',
@@ -53,8 +53,8 @@ export default class UserListScreen extends Component {
   renderItem = ({ item }) => (
     <ListItem
       title={item.name}
-      description={item.email}
-      onPress={() => this.props.navigation.navigate('Detail', { userId: item.id, userName: item.name })}
+      description={'Assign to ' + item.assignee}
+      onPress={() => this.props.navigation.navigate('Detail', { taskId: item.id })}
       accessory={this.ForwardIcon}
     />
   );
@@ -87,7 +87,7 @@ export default class UserListScreen extends Component {
     return (
       <SafeAreaView style={{flex: 1, backgroundColor: '#FFFFFF'}}>
         <PaperTopNavigation
-          title='List User'
+          title='List Approve Task'
           leftIcon='menu'
           leftScreen='Drawer'
           {...this.props}/>

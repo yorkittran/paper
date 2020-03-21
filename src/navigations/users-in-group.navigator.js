@@ -7,7 +7,7 @@ const Stack = createStackNavigator();
 
 const Navigator = () => {
   return (
-    <Stack.Navigator>
+    <Stack.Navigator screenOptions={{headerShown: false}}>
       <Stack.Screen name="List" component={ListScreen} />
       <Stack.Screen name="Detail" component={DetailScreen} options={({ route }) => ({title: route.params.userName })}/>
     </Stack.Navigator>

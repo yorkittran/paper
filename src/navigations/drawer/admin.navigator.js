@@ -5,7 +5,7 @@ import { SafeAreaView } from 'react-navigation';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { Drawer as UIKittenDrawer, DrawerHeaderFooter, Icon, Button } from '@ui-kitten/components';
 import HandoutTaskNavigator from '../handout-task.navigator';
-import ApproveTaskScreen from '../../scenes/Home/MyTask/ApproveTask';
+import ApproveTaskNavigator from '../approve-task.navigator';
 import UserNavigator from '../user.navigator';
 import GroupNavigator from '../group.navigator';
 import CreateTaskNavigator from '../create-task.navigator';
@@ -92,8 +92,7 @@ const DrawerContent = ({ navigation, state }) => {
       <UIKittenDrawer
         data={drawerSystemManagement}
         header={HeaderSystemManagement}
-        onSelect={onSelectSystemManagement}
-        appearance='noDivider'
+        onSelect={onSelectSystemManagement}ApproveTaskNavigator
       />
       <Button 
         style={{flexDirection: 'row-reverse', margin: 20}} 
@@ -107,10 +106,10 @@ const DrawerContent = ({ navigation, state }) => {
 };
 
 export const AdminDrawerNavigator = () => (
-  <Drawer.Navigator drawerContent={props => <DrawerContent {...props}/>} initialRouteName="CreateTask">
+  <Drawer.Navigator drawerContent={props => <DrawerContent {...props}/>} initialRouteName="ApproveTask">
     <Drawer.Screen name='HandoutTask' component={HandoutTaskNavigator}/>
     <Drawer.Screen name='CreateTask' component={CreateTaskNavigator}/>
-    <Drawer.Screen name='ApproveTask' component={ApproveTaskScreen}/>
+    <Drawer.Screen name='ApproveTask' component={ApproveTaskNavigator}/>
     <Drawer.Screen name='User' component={UserNavigator}/>
     <Drawer.Screen name='Group' component={GroupNavigator}/>
   </Drawer.Navigator>

@@ -5,7 +5,7 @@ const Stack = createStackNavigator();
 
 const Navigator = () => {
   return (
-    <Stack.Navigator>
+    <Stack.Navigator screenOptions={{headerShown: false}}>
     </Stack.Navigator>
   );
 }
