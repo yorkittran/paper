@@ -172,20 +172,20 @@ export default class EditScreen extends Component {
     }
     return (
       <SafeAreaView style={{flex: 1, backgroundColor: '#FFFFFF'}}>
+        <PaperTopNavigation
+          title='Edit Task'
+          leftIcon='arrow-back'
+          leftScreen='Back'
+          {...this.props}
+        />
+        <PaperModal 
+          onPress={() => this.setState({visible: !this.state.visible})} 
+          visible={this.state.visible}
+          message={this.state.message}
+          validation={this.state.validation}
+          navigation={this.props.navigation}
+        />
         <ScrollView showsVerticalScrollIndicator={false}>
-          <PaperTopNavigation
-            title='Edit Task'
-            leftIcon='arrow-back'
-            leftScreen='Back'
-            {...this.props}
-          />
-          <PaperModal 
-            onPress={() => this.setState({visible: !this.state.visible})} 
-            visible={this.state.visible}
-            message={this.state.message}
-            validation={this.state.validation}
-            navigation={this.props.navigation}
-          />
           <Layout style={styles.mainContainer}>
             <PaperInput 
               lable='Name' 

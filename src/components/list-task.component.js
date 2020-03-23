@@ -74,7 +74,7 @@ export const PaperListStatus = ({ data, navigation }) => {
           <ListItem
             title={item.name}
             description={'• ' + item.status}
-            descriptionStyle={{color: '#1939B7'}}
+            descriptionStyle={{color: '#7DC914'}}
             onPress={() => navigation.navigate('Detail', { taskId: item.id })}
             accessory={ForwardIcon}
           />
@@ -84,7 +84,7 @@ export const PaperListStatus = ({ data, navigation }) => {
           <ListItem
             title={item.name}
             description={'• ' + item.status}
-            descriptionStyle={{color: '#218CB1'}}
+            descriptionStyle={{color: '#FFAB88'}}
             onPress={() => navigation.navigate('Detail', { taskId: item.id })}
             accessory={ForwardIcon}
           />

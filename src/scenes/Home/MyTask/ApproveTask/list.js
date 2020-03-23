@@ -54,7 +54,7 @@ export default class ListScreen extends Component {
     <ListItem
       title={item.name}
       description={'• ' + item.status}
-      descriptionStyle={{color: '#1939B7'}}
+      descriptionStyle={{color: '#7DC914'}}
       onPress={() => this.props.navigation.navigate('Detail', { taskId: item.id })}
       accessory={this.ForwardIcon}
     />

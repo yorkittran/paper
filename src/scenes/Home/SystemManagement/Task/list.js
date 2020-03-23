@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { AsyncStorage } from 'react-native';
 import { URL_TASK, URL_USER } from '../../../../config/constants';
-import { SafeAreaView } from 'react-navigation';
+import { SafeAreaView, ScrollView } from 'react-navigation';
 import { StyleSheet } from 'react-native';
 import { PaperTopNavigation } from '../../../../navigations/top.navigator';
 import { Icon, Input, Spinner, Layout, Select, Datepicker, Autocomplete } from '@ui-kitten/components';
@@ -164,33 +164,34 @@ export default class ListScreen extends Component {
     }
     return (
       <SafeAreaView style={{flex: 1, backgroundColor: '#FFFFFF'}}>
-          <PaperTopNavigation
-            title='List Task'
-            leftIcon='menu'
-            leftScreen='Drawer'
-            rightIcon='plus'
-            rightScreen='Create'
-            {...this.props}/>
+        <PaperTopNavigation
+          title='List Task'
+          leftIcon='menu'
+          leftScreen='Drawer'
+          rightIcon='plus'
+          rightScreen='Create'
+          {...this.props}/>
+        <ScrollView showsVerticalScrollIndicator={false}>
           <Layout style={styles.mainContainer}>
             <Select 
               placeholder='Select Status'
               data={this.statusSource} 
               multiSelect={true}
-              size='small'
+              size='medium'
               selectedOption={this.state.status} 
               onSelect={status => this.filtered(this.state.assignee, this.state.terms, status, this.state.start_date, this.state.end_date)}
               style={styles.inputFiltered}/>
             <Layout style={{flexDirection: 'row', marginTop: '1%', justifyContent: 'space-between'}}>
               <Datepicker
                 placeholder='From Date'
-                size='small'
+                size='medium'
                 style={[styles.inputFiltered, {width: '45%' ,marginRight: '0%', paddingRight: '1%'}]}
                 date={this.state.start_date}
                 onSelect={start_date => this.filtered(this.state.assignee, this.state.terms, this.state.status, start_date, this.state.end_date)}
                 icon={this.CalendarIcon}/>
               <Datepicker
                 placeholder='To Date'
-                size='small'
+                size='medium'
                 style={[styles.inputFiltered, {width: '45%', marginLeft: '0%', paddingLeft: '1%'}]}
                 date={this.state.end_date}
                 onSelect={end_date => this.filtered(this.state.assignee, this.state.terms, this.state.status, this.state.start_date, end_date)}
@@ -199,14 +200,14 @@ export default class ListScreen extends Component {
             <Autocomplete
               placeholder='Assignee'
               value={this.state.terms_assignee}
-                size='small'
+                size='medium'
                 style={styles.inputFiltered}
               data={this.state.assigneesFiltered}
               onSelect={assignee => this.filtered(assignee, this.state.terms, this.state.status, this.state.start_date, this.state.end_date)}
               onChangeText={terms_assignee => this.filteredAssignee(terms_assignee)}/>
             <Input
               value={this.state.terms}
-              size='small'
+              size='medium'
               placeholder='Search...'
               icon={this.SearchIcon}
               autoCapitalize='none'
@@ -214,6 +215,7 @@ export default class ListScreen extends Component {
               style={styles.inputFiltered}/>
             <PaperListStatus data={this.state.dataFiltered} navigation={this.props.navigation}/>
           </Layout>
+        </ScrollView>
       </SafeAreaView>
     );
   }

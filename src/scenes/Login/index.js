@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { AsyncStorage } from 'react-native';
 import { URL_LOGIN } from '../../config/constants';
 import { SafeAreaView } from 'react-navigation';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, KeyboardAvoidingView } from 'react-native';
 import { Layout, Text, Icon, Button } from '@ui-kitten/components';
 import { Actions } from 'react-native-router-flux';
 import { PaperInput } from '../../components/input.component';
@@ -107,36 +107,37 @@ export default class LoginScreen extends Component {
   render () {
     return (
     <SafeAreaView style={styles.mainContainer}>
-      <PaperModal 
-        onPress={() => this.setState({visible: !this.state.visible})} 
-        visible={this.state.visible}
-        message={this.state.message}
-        validation={this.state.validation}
-        title='Back to List'
-      />
-      <Layout style={styles.container}>
-        <Icon name='paper-plane-outline' width={100} height={100} fill='#151A30' style={{marginBottom: 10}}/>
-        <Text category='h1' style={{marginBottom: 30, color: '#151A30'}}>Log in to Paper</Text>
-        <PaperInput 
-          lable='Email' 
-          placeholder='Email' 
-          message={this.state.messageEmail} 
-          value={this.state.email} 
-          onChangeText={(text) => this.setState({email: text})}/>
-        <PaperInput 
-          lable='Password' 
-          placeholder='Password' 
-          message={this.state.messagePassword}
-          value={this.state.password} 
-          parentSecureTextEntry={true} 
-          onChangeText={(text) => this.setState({password: text})}/>
-        <Button 
-          style={styles.button} 
-          size='large'
-          status='primary'
-          icon={this.LoginIcon} 
-          onPress={this.onLogin}>LOGIN</Button>
-      </Layout>
+      <KeyboardAvoidingView behavior='padding' keyboardVerticalOffset={100} enabled>
+        <PaperModal 
+          onPress={() => this.setState({visible: !this.state.visible})} 
+          visible={this.state.visible}
+          message={this.state.message}
+          validation={this.state.validation}
+        />
+        <Layout style={styles.container}>
+          <Icon name='paper-plane-outline' width={100} height={100} fill='#151A30' style={{marginBottom: 10}}/>
+          <Text category='h1' style={{marginBottom: 30, color: '#151A30'}}>Log in to Paper</Text>
+          <PaperInput 
+            lable='Email' 
+            placeholder='Email' 
+            message={this.state.messageEmail} 
+            value={this.state.email} 
+            onChangeText={(text) => this.setState({email: text})}/>
+          <PaperInput 
+            lable='Password' 
+            placeholder='Password' 
+            message={this.state.messagePassword}
+            value={this.state.password} 
+            parentSecureTextEntry={true} 
+            onChangeText={(text) => this.setState({password: text})}/>
+          <Button 
+            style={styles.button} 
+            size='large'
+            status='primary'
+            icon={this.LoginIcon} 
+            onPress={this.onLogin}>LOGIN</Button>
+        </Layout>
+      </KeyboardAvoidingView>
     </SafeAreaView>
     )
   }

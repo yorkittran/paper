@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { AsyncStorage } from 'react-native';
 import { URL_TASK, URL_TASK_REJECT, URL_TASK_APPROVE } from '../../../../config/constants';
-import { SafeAreaView } from 'react-navigation';
+import { SafeAreaView, ScrollView } from 'react-navigation';
 import { StyleSheet } from 'react-native';
 import { Card, Text, Spinner, Layout, Button } from '@ui-kitten/components';
 import { PaperTopNavigation } from '../../../../navigations/top.navigator';
@@ -35,11 +35,11 @@ const StatusText = ({ item }) => {
       );
     case 'Completed':
       return (
-        <Text category='p1' style={{color: '#1939B7'}}>{'• ' + item.status}</Text>
+        <Text category='p1' style={{color: '#7DC914'}}>{'• ' + item.status}</Text>
       );
     case 'Incompleted':
       return (
-        <Text category='p1' style={{color: '#218CB1'}}>{'• ' + item.status}</Text>
+        <Text category='p1' style={{color: '#FFAB88'}}>{'• ' + item.status}</Text>
       );
     case 'Overdue':
       return (
@@ -117,16 +117,16 @@ const StatusFooter = ({ item, onReject, onApprove, onDelete, onEdit, onEvaluate 
       return (
         <>
           <Layout style={[styles.textRow, {marginHorizontal: 20, marginTop: 20}]}>
-            <Text style={[styles.label, {color: '#1939B7'}]}>COMMENT</Text>
-            <Text style={[styles.text, {color: '#1939B7'}]}>{item.comment}</Text>
+            <Text style={[styles.label, {color: '#7DC914'}]}>COMMENT</Text>
+            <Text style={[styles.text, {color: '#7DC914'}]}>{item.comment}</Text>
           </Layout>
           <Layout style={[styles.textRow, {marginHorizontal: 20}]}>
-            <Text style={[styles.label, {color: '#1939B7'}]}>COMMENTER</Text>
-            <Text style={[styles.text, {color: '#1939B7'}]}>{item.commenter}</Text>
+            <Text style={[styles.label, {color: '#7DC914'}]}>COMMENTER</Text>
+            <Text style={[styles.text, {color: '#7DC914'}]}>{item.commenter}</Text>
           </Layout>
           <Layout style={[styles.textRow, {marginHorizontal: 20, marginBottom: 20}]}>
-            <Text style={[styles.label, {color: '#1939B7'}]}>FINISH AT</Text>
-            <Text style={[styles.text, {color: '#1939B7'}]}>{completed_at}</Text>
+            <Text style={[styles.label, {color: '#7DC914'}]}>FINISH AT</Text>
+            <Text style={[styles.text, {color: '#7DC914'}]}>{completed_at}</Text>
           </Layout>
         </>
       );
@@ -141,16 +141,16 @@ const StatusFooter = ({ item, onReject, onApprove, onDelete, onEdit, onEvaluate 
       return (
         <>
           <Layout style={[styles.textRow, {marginHorizontal: 20, marginTop: 20}]}>
-            <Text style={[styles.label, {color: '#1939B7'}]}>COMMENT</Text>
-            <Text style={[styles.text, {color: '#1939B7'}]}>{item.comment}</Text>
+            <Text style={[styles.label, {color: '#FFAB88'}]}>COMMENT</Text>
+            <Text style={[styles.text, {color: '#FFAB88'}]}>{item.comment}</Text>
           </Layout>
           <Layout style={[styles.textRow, {marginHorizontal: 20}]}>
-            <Text style={[styles.label, {color: '#1939B7'}]}>COMMENTER</Text>
-            <Text style={[styles.text, {color: '#1939B7'}]}>{item.commenter}</Text>
+            <Text style={[styles.label, {color: '#FFAB88'}]}>COMMENTER</Text>
+            <Text style={[styles.text, {color: '#FFAB88'}]}>{item.commenter}</Text>
           </Layout>
           <Layout style={[styles.textRow, {marginHorizontal: 20, marginBottom: 20}]}>
-            <Text style={[styles.label, {color: '#FF4830'}]}>FINISH AT</Text>
-            <Text style={[styles.text, {color: '#FF4830'}]}>{incompleted_at}</Text>
+            <Text style={[styles.label, {color: '#FFAB88'}]}>FINISH AT</Text>
+            <Text style={[styles.text, {color: '#FFAB88'}]}>{incompleted_at}</Text>
           </Layout>
         </>
       );
@@ -332,40 +332,42 @@ export default class DetailScreen extends Component {
           validation={this.state.validation}
           navigation={this.props.navigation}
         />
-        <Layout style={styles.mainContainer}>
-          <Card header={this.Header} footer={this.Footer}>
-            <Layout style={styles.cardBody}>
-              <Layout style={styles.textRow}>
-                <Text style={styles.label}>NAME</Text>
-                <Text style={styles.text}>{this.state.data.name}</Text>
+        <ScrollView showsVerticalScrollIndicator={false}>
+          <Layout style={styles.mainContainer}>
+            <Card header={this.Header} footer={this.Footer}>
+              <Layout style={styles.cardBody}>
+                <Layout style={styles.textRow}>
+                  <Text style={styles.label}>NAME</Text>
+                  <Text style={styles.text}>{this.state.data.name}</Text>
+                </Layout>
+                <Layout style={styles.textRow}>
+                  <Text style={styles.label}>DESCRIPTION</Text>
+                  <Text style={styles.text}>{this.state.data.description_assigned}</Text>
+                </Layout>
+                <Layout style={styles.textRow}>
+                  <Text style={styles.label}>ASSIGNEE</Text>
+                  <Text style={styles.text}>{this.state.data.assignee}</Text>
+                </Layout>
+                <Layout style={styles.textRow}>
+                  <Text style={styles.label}>ASSIGNER</Text>
+                  <Text style={styles.text}>{this.state.data.assigner}</Text>
+                </Layout>
+                <Layout style={styles.textRow}>
+                  <Text style={styles.label}>START AT</Text>
+                  <Text style={styles.text}>{this.state.data.start_at}</Text>
+                </Layout>
+                <Layout style={styles.textRow}>
+                  <Text style={styles.label}>END AT</Text>
+                  <Text style={styles.text}>{this.state.data.end_at}</Text>
+                </Layout>
+                <Layout style={styles.textRow}>
+                  <Text style={styles.label}>UPDATED AT</Text>
+                  <Text style={styles.text}>{this.state.updated_at}</Text>
+                </Layout>
               </Layout>
-              <Layout style={styles.textRow}>
-                <Text style={styles.label}>DESCRIPTION</Text>
-                <Text style={styles.text}>{this.state.data.description_assigned}</Text>
-              </Layout>
-              <Layout style={styles.textRow}>
-                <Text style={styles.label}>ASSIGNEE</Text>
-                <Text style={styles.text}>{this.state.data.assignee}</Text>
-              </Layout>
-              <Layout style={styles.textRow}>
-                <Text style={styles.label}>ASSIGNER</Text>
-                <Text style={styles.text}>{this.state.data.assigner}</Text>
-              </Layout>
-              <Layout style={styles.textRow}>
-                <Text style={styles.label}>START AT</Text>
-                <Text style={styles.text}>{this.state.data.start_at}</Text>
-              </Layout>
-              <Layout style={styles.textRow}>
-                <Text style={styles.label}>END AT</Text>
-                <Text style={styles.text}>{this.state.data.end_at}</Text>
-              </Layout>
-              <Layout style={styles.textRow}>
-                <Text style={styles.label}>UPDATED AT</Text>
-                <Text style={styles.text}>{this.state.updated_at}</Text>
-              </Layout>
-            </Layout>
-          </Card>
-        </Layout>
+            </Card>
+          </Layout>
+        </ScrollView>
       </SafeAreaView>
     )
   }

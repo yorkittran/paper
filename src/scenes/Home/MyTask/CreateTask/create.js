@@ -153,22 +153,22 @@ export default class CreateScreen extends Component {
     }
     return (
       <SafeAreaView style={{flex: 1, backgroundColor: '#FFFFFF'}}>
+        <PaperTopNavigation
+          title='Create Task'
+          leftIcon='menu'
+          leftScreen='Drawer'
+          {...this.props}
+        />
+        <PaperModal 
+          onPress={() => this.setState({visible: !this.state.visible})} 
+          visible={this.state.visible}
+          message={this.state.message}
+          validation={this.state.validation}
+          navigation={this.props.navigation}
+          title='Dismiss'
+          dismiss={true}
+        />
         <ScrollView showsVerticalScrollIndicator={false}>
-          <PaperTopNavigation
-            title='Create Task'
-            leftIcon='menu'
-            leftScreen='Drawer'
-            {...this.props}
-          />
-          <PaperModal 
-            onPress={() => this.setState({visible: !this.state.visible})} 
-            visible={this.state.visible}
-            message={this.state.message}
-            validation={this.state.validation}
-            navigation={this.props.navigation}
-            title='Dismiss'
-            dismiss={true}
-          />
           <Layout style={styles.mainContainer}>
             <PaperInput 
               lable='Name' 
