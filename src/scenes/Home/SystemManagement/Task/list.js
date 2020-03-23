@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import { AsyncStorage } from 'react-native';
-import { URL_TASK } from '../../../../config/constants';
+import { URL_TASK, URL_USER } from '../../../../config/constants';
 import { SafeAreaView } from 'react-navigation';
 import { StyleSheet } from 'react-native';
 import { PaperTopNavigation } from '../../../../navigations/top.navigator';
-import { Icon, Input, Spinner, Layout, Select, Datepicker } from '@ui-kitten/components';
+import { Icon, Input, Spinner, Layout, Select, Datepicker, Autocomplete } from '@ui-kitten/components';
 import { PaperListStatus } from '../../../../components/list-task.component';
 
 export default class ListScreen extends Component {  
@@ -25,11 +25,13 @@ export default class ListScreen extends Component {
 
     super(props);
     this.state = {
-      loading: true,
-      terms: '',
-      status: statusSource,
-      start_date: null,
-      end_date: null,
+      loading      : true,
+      terms        : '',
+      term_assignee: '',
+      assignee     : {},
+      status       : statusSource,
+      start_date   : null,
+      end_date     : null,
     };
     this.statusSource = statusSource;
     this.dataSource = [];
@@ -62,6 +64,31 @@ export default class ListScreen extends Component {
     }).catch((error) => {
       console.error(error);
     });
+
+    // Get users for autocomplete
+    fetch(URL_USER, {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
+      },
+    })
+    .then((response) => response.json())
+    .then((responseData) => {
+      var users = [];
+      if (responseData.data.length > 0) {
+        responseData.data.forEach((user) => {
+          users.push({
+            value: user.id,
+            title: user.name,
+          });
+        });
+      }
+      this.setState({assignees: users});
+    }).catch((error) => {
+      console.error(error);
+    });
   }
 
   SearchIcon = () => (
@@ -72,7 +99,7 @@ export default class ListScreen extends Component {
     <Icon name='calendar'/>
   );
 
-  filtered = (terms, status, start_date, end_date) => {
+  filtered = (assignee, terms, status, start_date, end_date) => {
     const dataFiltered = this.dataSource.filter(item => {
       let start_date_js = null;
       let end_date_js = null;
@@ -85,14 +112,17 @@ export default class ListScreen extends Component {
         end_date_js   = new Date(Date.parse(end_timestamp[0]));
       }
       const itemData = item.name ? item.name.toUpperCase() : '' . toUpperCase();
+      const assigneeData = item.assignee ? item.assignee.toUpperCase() : '' . toUpperCase();
+      let assignee_bool   = assigneeData.indexOf(assignee.title.toUpperCase()) > -1;
       let terms_bool      = itemData.indexOf(terms.toUpperCase()) > -1;
       let status_bool     = status.findIndex(i => i.text === item.status) > -1;
       let start_date_bool = start_date ? start_date_js.setHours(0,0,0,0) >= start_date : true;
       let end_date_bool   = end_date ? end_date_js.setHours(0,0,0,0) <= end_date : true;
-      return terms_bool && status_bool && start_date_bool && end_date_bool;
+      return assignee_bool && terms_bool && status_bool && start_date_bool && end_date_bool;
     });
 
     this.setState({
+      term_assignee: assignee.title,
       terms: terms,
       status: status,
       start_date: start_date,
@@ -125,7 +155,7 @@ export default class ListScreen extends Component {
               multiSelect={true}
               size='small'
               selectedOption={this.state.status} 
-              onSelect={status => this.filtered(this.state.terms, status, this.state.start_date, this.state.end_date)}
+              onSelect={status => this.filtered(this.state.assignee, this.state.terms, status, this.state.start_date, this.state.end_date)}
               style={styles.inputFiltered}/>
             <Layout style={{flexDirection: 'row', marginTop: '1%', justifyContent: 'space-between'}}>
               <Datepicker
@@ -133,23 +163,29 @@ export default class ListScreen extends Component {
                 size='small'
                 style={[styles.inputFiltered, {width: '40%'}]}
                 date={this.state.start_date}
-                onSelect={start_date => this.filtered(this.state.terms, this.state.status, start_date, this.state.end_date)}
+                onSelect={start_date => this.filtered(this.state.assignee, this.state.terms, this.state.status, start_date, this.state.end_date)}
                 icon={this.CalendarIcon}/>
               <Datepicker
                 placeholder='To Date'
                 size='small'
                 style={[styles.inputFiltered, {width: '40%'}]}
                 date={this.state.end_date}
-                onSelect={end_date => this.filtered(this.state.terms, this.state.status, this.state.start_date, end_date)}
+                onSelect={end_date => this.filtered(this.state.assignee, this.state.terms, this.state.status, this.state.start_date, end_date)}
                 icon={this.CalendarIcon}/>
             </Layout>
+            <Autocomplete
+              placeholder='Assignee'
+              value={this.state.term_assignee}
+              style={styles.inputFiltered}
+              data={this.state.assignees.filter(item => item.title.toLowerCase().includes(this.state.term_assignee.toLowerCase()))}
+              onSelect={assignee => this.filtered(assignee, this.state.terms, this.state.status, this.state.start_date, this.state.end_date)}
+              onChangeText={term_assignee => this.setState({term_assignee: term_assignee})}/>
             <Input
               value={this.state.terms}
               placeholder='Search...'
               icon={this.SearchIcon}
-              size='medium'
               autoCapitalize='none'
-              onChangeText={terms => this.filtered(terms, this.state.status, this.state.start_date, this.state.end_date)}
+              onChangeText={terms => this.filtered(this.state.assignee, terms, this.state.status, this.state.start_date, this.state.end_date)}
               style={styles.inputFiltered}/>
             <PaperListStatus data={this.state.dataFiltered} navigation={this.props.navigation}/>
           </Layout>
