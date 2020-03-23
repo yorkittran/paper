@@ -3,7 +3,7 @@ import { AsyncStorage } from 'react-native';
 import { URL_TASK_EVALUATE } from '../../../../config/constants';
 import { SafeAreaView } from 'react-navigation';
 import { StyleSheet, ScrollView } from 'react-native';
-import { Spinner, Layout, Button, Icon, RadioGroup, Radio, Select } from '@ui-kitten/components';
+import { Layout, Button, Icon, RadioGroup, Radio, Select } from '@ui-kitten/components';
 import { PaperTopNavigation } from '../../../../navigations/top.navigator';
 import { PaperInput } from '../../../../components/input.component';
 import { PaperModal } from '../../../../components/modal.component';
