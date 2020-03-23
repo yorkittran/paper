@@ -27,14 +27,14 @@ export default class ListScreen extends Component {
     this.state = {
       loading      : true,
       terms        : '',
-      term_assignee: '',
-      assignee     : {},
+      terms_assignee: '',
       status       : statusSource,
       start_date   : null,
       end_date     : null,
     };
-    this.statusSource = statusSource;
-    this.dataSource = [];
+    this.statusSource    = statusSource;
+    this.dataSource      = [];
+    this.assigneesSource = [];
   }
 
   componentDidMount = () => {
@@ -85,7 +85,11 @@ export default class ListScreen extends Component {
           });
         });
       }
-      this.setState({assignees: users});
+      this.setState({
+        assignees: users
+      },() => {
+        this.assigneesSource = users;
+      });
     }).catch((error) => {
       console.error(error);
     });
@@ -122,12 +126,25 @@ export default class ListScreen extends Component {
     });
 
     this.setState({
-      term_assignee: assignee.title,
+      terms_assignee: assignee.title,
+      assignee: assignee,
       terms: terms,
       status: status,
       start_date: start_date,
       end_date: end_date,
       dataFiltered: dataFiltered,
+    });
+  };
+
+  filteredAssignee = (terms) => {
+    const dataFiltered = this.assigneesSource.filter(item => {
+      const itemData = item.title ? item.title.toUpperCase() : '' . toUpperCase();
+      return itemData.indexOf(terms.toUpperCase()) > -1;
+    });
+
+    this.setState({
+      terms_assignee: terms,
+      assigneesFiltered: dataFiltered,
     });
   };
 
@@ -175,11 +192,11 @@ export default class ListScreen extends Component {
             </Layout>
             <Autocomplete
               placeholder='Assignee'
-              value={this.state.term_assignee}
+              value={this.state.terms_assignee}
               style={styles.inputFiltered}
-              data={this.state.assignees.filter(item => item.title.toLowerCase().includes(this.state.term_assignee.toLowerCase()))}
+              data={this.state.assigneesFiltered}
               onSelect={assignee => this.filtered(assignee, this.state.terms, this.state.status, this.state.start_date, this.state.end_date)}
-              onChangeText={term_assignee => this.setState({term_assignee: term_assignee})}/>
+              onChangeText={terms_assignee => this.filteredAssignee(terms_assignee)}/>
             <Input
               value={this.state.terms}
               placeholder='Search...'
