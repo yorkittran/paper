@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { AsyncStorage } from 'react-native';
-import { URL_GROUP, URL_USER_LIST_OF_MANAGERS_AVAILABLED, URL_USER_LIST_OF_MEMBERS_AVAILABLED } from '../../../../config/constants';
+import { URL_GROUP, URL_USER_MEMBERS } from '../../../../config/constants';
 import { SafeAreaView } from 'react-navigation';
 import { StyleSheet } from 'react-native';
-import { Spinner, Layout, Button, Icon } from '@ui-kitten/components';
+import { Spinner, Layout, Button, Icon, Input } from '@ui-kitten/components';
 import { PaperTopNavigation } from '../../../../navigations/top.navigator';
 import { PaperInput } from '../../../../components/input.component';
 import { PaperSelect } from '../../../../components/select.component';
@@ -25,7 +25,6 @@ export default class EditScreen extends Component {
 
   FetchData = async () => {
     const token = await AsyncStorage.getItem('token');
-    var list_managers = [];
     var list_members  = [];
 
     // Get info of Group
@@ -39,11 +38,6 @@ export default class EditScreen extends Component {
     })
     .then((response) => response.json())
     .then((responseData) => {
-      // Push manager to select
-      list_managers.push({
-        value: responseData.data.manager_id,
-        text : responseData.data.manager_name,
-      });
       // Push members to select
       if (responseData.data.users_in_group.length > 0) {
         responseData.data.users_in_group.forEach((member) => {
@@ -56,42 +50,16 @@ export default class EditScreen extends Component {
       var selected_members = list_members;
       this.setState({
         name            : responseData.data.name,
-        list_managers   : list_managers,
         list_members    : list_members,
-        selected_manager: list_managers[0],
+        manager         : responseData.data.manager_name,
         selected_members: selected_members,
       });
     }).catch((error) => {
       console.error(error);
     });
 
-    // Get list of manager not manage any group
-    fetch(URL_USER_LIST_OF_MANAGERS_AVAILABLED, {
-      method: 'GET',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + token
-      },
-    })
-    .then((response) => response.json())
-    .then((responseData) => {
-      // Push manager not manage any group to select
-      if (responseData.data.length > 0) {
-        responseData.data.forEach((manager) => {
-          list_managers.push({
-            value: manager.id,
-            text : manager.name,
-          });
-        });
-      }
-      this.setState({list_managers: list_managers});
-    }).catch((error) => {
-      console.error(error);
-    });
-
     // Get list of member not belong to any group
-    fetch(URL_USER_LIST_OF_MEMBERS_AVAILABLED, {
+    fetch(URL_USER_MEMBERS, {
       method: 'GET',
       headers: {
         'Accept': 'application/json',
@@ -194,12 +162,11 @@ export default class EditScreen extends Component {
             message={this.state.messageName} 
             value={this.state.name} 
             onChangeText={(text) => this.setState({name: text})}/>
-          <PaperSelect 
+          <Input 
             label='Managed by'
-            placeholder='Select Manager'
-            data={this.state.list_managers} 
-            selectedOption={this.state.selected_manager} 
-            onSelect={(selected_manager) => this.setState({selected_manager: selected_manager})}/>
+            value={this.state.manager} 
+            disabled={true}
+            style={{marginBottom: 10}}/>
           <PaperSelect 
             label='Member in group'
             placeholder='Select Member'

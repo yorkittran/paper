@@ -7,7 +7,7 @@ import QRCode from 'react-native-qrcode-svg';
 import { Card, Text, Spinner, Layout } from '@ui-kitten/components';
 import { PaperTopNavigation } from '../../../../navigations/top.navigator';
 
-export default class DetailScreen extends Component {  
+export default class UserDetailScreen extends Component {  
 
   constructor(props) {
     super(props);
@@ -39,18 +39,28 @@ export default class DetailScreen extends Component {
 
   Header = () => (
     <Layout style={styles.cardHeader}>
-      <QRCode value={URL_USER + '/' + this.props.route.params.userId}/>
+      <QRCode value={"" + this.state.data.id} size={200}/>
     </Layout>
   );
 
   GroupName = () => {
     if (this.state.data.in_group_name) {
-      return <Text category='label' style={styles.label}>MEMBER IN   <Text style={styles.text}>{this.state.data.in_group_name}</Text></Text>;
+      return(
+        <Layout style={styles.textRow}>
+          <Text style={styles.label}>MEMBER IN</Text>
+          <Text style={styles.text}>{this.state.data.in_group_name}</Text>
+        </Layout>
+      )
     } else if (this.state.data.manage_group_name) {
-      return <Text category='label' style={styles.label}>MANAGE         <Text style={styles.text}>{this.state.data.manage_group_name}</Text></Text>;
+      return(
+        <Layout style={styles.textRow}>
+          <Text style={styles.label}>MANAGE</Text>
+          <Text style={styles.text}>{this.state.data.manage_group_name}</Text>
+        </Layout>
+      )
     }
   }
-  
+
   render() {
     if (this.state.loading) {
       return (
@@ -65,13 +75,27 @@ export default class DetailScreen extends Component {
           title='User Detail'
           leftIcon='arrow-back'
           leftScreen='Back'
+          rightIcon='more-vertical'
+          params={{ userId: this.props.route.params.userId }}
+          menu={true}
           {...this.props}/>
         <Layout style={styles.mainContainer}>
-          <Card header={this.Header} status='success'>
-            <Text category='label' style={styles.label}>NAME                <Text style={styles.text}>{this.state.data.name}</Text></Text>
-            <Text category='label' style={styles.label}>EMAIL               <Text style={styles.text}>{this.state.data.email}</Text></Text>
-            <Text category='label' style={styles.label}>ROLE                 <Text style={styles.text}>{this.state.data.role}</Text></Text>
-            {this.GroupName()}
+          <Card header={this.Header} footer={this.Footer}>
+            <Layout style={{justifyContent: 'center'}}>
+              <Layout style={styles.textRow}>
+                <Text style={styles.label}>NAME</Text>
+                <Text style={styles.text}>{this.state.data.name}</Text>
+              </Layout>
+              <Layout style={styles.textRow}>
+                <Text style={styles.label}>EMAIL</Text>
+                <Text style={styles.text}>{this.state.data.email}</Text>
+              </Layout>
+              <Layout style={styles.textRow}>
+                <Text style={styles.label}>ROLE</Text>
+                <Text style={styles.text}>{this.state.data.role}</Text>
+              </Layout>
+              {this.GroupName()}
+            </Layout>
           </Card>
         </Layout>
       </SafeAreaView>
@@ -88,7 +112,6 @@ const styles = StyleSheet.create({
   },
   mainContainer: {
     flex: 1,
-    flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -96,11 +119,17 @@ const styles = StyleSheet.create({
     marginVertical: 30,
     alignItems: 'center',
   },
+  textRow: {
+    flexDirection: 'row', 
+    marginVertical: 5
+  },
   label: {
-    fontSize: 16,
-    padding: 5,
+    width: '40%', 
+    fontSize: 15, 
+    fontWeight: '800'
   },
   text: {
-    fontSize: 16,
-  }
+    width: '55%', 
+    fontSize: 15
+  },
 });

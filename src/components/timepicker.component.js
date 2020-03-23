@@ -13,6 +13,7 @@ export const PaperTimePicker = ({ label, date, value, onChange, message }) => {
 
   const hideDatePicker = () => {
     setDatePickerVisibility(false);
+
   };
 
   const handleConfirm = (date) => {

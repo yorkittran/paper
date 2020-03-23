@@ -17,8 +17,8 @@ export default class ScanScreen extends Component {
   };
 
   handleBarCodeScanned = ({ data }) => {
+    this.props.navigation.navigate(this.props.route.params.screen);
     this.props.route.params.callback(data);
-    this.props.navigation.navigate('Create');
   };
 
   render() {

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { AsyncStorage } from 'react-native';
-import { URL_GROUP, URL_USER_LIST_OF_MANAGERS_AVAILABLED, URL_USER_LIST_OF_MEMBERS_AVAILABLED } from '../../../../config/constants';
+import { URL_GROUP, URL_USER_MANAGERS, URL_USER_MEMBERS } from '../../../../config/constants';
 import { SafeAreaView } from 'react-navigation';
 import { StyleSheet } from 'react-native';
 import { Spinner, Layout, Button, Icon } from '@ui-kitten/components';
@@ -29,7 +29,7 @@ export default class CreateScreen extends Component {
     var list_members  = [];
 
     // Get list of manager not manage any group
-    fetch(URL_USER_LIST_OF_MANAGERS_AVAILABLED, {
+    fetch(URL_USER_MANAGERS, {
       method: 'GET',
       headers: {
         'Accept': 'application/json',
@@ -54,7 +54,7 @@ export default class CreateScreen extends Component {
     });
 
     // Get list of member not belong to any group
-    fetch(URL_USER_LIST_OF_MEMBERS_AVAILABLED, {
+    fetch(URL_USER_MEMBERS, {
       method: 'GET',
       headers: {
         'Accept': 'application/json',
@@ -88,9 +88,11 @@ export default class CreateScreen extends Component {
     data.name = this.state.name;
     data.manager_id = this.state.selected_manager.value;
     data.selected_members = [];
-    this.state.selected_members.forEach((member) => {
-      data.selected_members.push(member.value);
-    });
+    if (this.state.selected_members.length > 0) {
+      this.state.selected_members.forEach((member) => {
+        data.selected_members.push(member.value);
+      });
+    }
     
     fetch(URL_GROUP, {
       method: 'POST',

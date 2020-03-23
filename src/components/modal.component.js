@@ -3,7 +3,7 @@ import { StyleSheet } from 'react-native';
 import { Button, Icon, Modal, Text } from '@ui-kitten/components';
 
 
-export const PaperModal = ({ visible, onPress, message, validation, navigation, title, dismiss }) => {
+export const PaperModal = ({ visible, onPress, message, validation, navigation }) => {
 
   const BackToList = () => {
     navigation.navigate('List');

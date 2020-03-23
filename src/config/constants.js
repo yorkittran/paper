@@ -1,18 +1,21 @@
-export const API = 'http://192.168.100.81:231/api'
+export const API = 'http://192.168.100.115:231/api'
 
 export const URL_LOGIN  = API + '/login'
 export const URL_LOGOUT = API + '/logout'
 
-export const URL_USER  = API + '/user'
-export const URL_GROUP = API + '/group'
-export const URL_TASK  = API + '/task'
+export const URL_USER    = API + '/user'
+export const URL_PROFILE = API + '/profile'
+export const URL_GROUP   = API + '/group'
+export const URL_TASK    = API + '/task'
 
-export const URL_USER_LIST_OF_MANAGERS_AVAILABLED = URL_USER + '/managerAvailabled'
-export const URL_USER_LIST_OF_MEMBERS_AVAILABLED  = URL_USER + '/memberAvailabled'
-export const URL_USER_GET_ALL_USERS_EXCEPT_SELF   = URL_USER + '/exceptSelf'
+export const URL_USER_MEMBERS  = URL_USER + '/members'
+export const URL_USER_MANAGERS = URL_USER + '/managers'
 
-export const URL_TASK_PENDING   = URL_TASK + '/pending'
-export const URL_TASK_HANDOUT   = URL_TASK + '/handout'
+export const URL_TASK_APPROVE  = URL_TASK + '/approve'
+export const URL_TASK_REJECT   = URL_TASK + '/reject'
+export const URL_TASK_UPDATE   = URL_TASK + '/update'
+export const URL_TASK_COMMIT   = URL_TASK + '/commit'
+export const URL_TASK_EVALUATE = URL_TASK + '/evaluate'
 
 export const ADMIN         = 'Admin'
 export const MANAGER       = 'Manager'

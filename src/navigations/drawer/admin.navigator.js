@@ -5,7 +5,7 @@ import { SafeAreaView } from 'react-navigation';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { Drawer as UIKittenDrawer, DrawerHeaderFooter, Icon, Button } from '@ui-kitten/components';
 import NotificationScreen from '../../scenes/Home/Home/Notification/list';
-import ProfileNavigator from '../profile.navigator';
+import ProfileScreen from '../../scenes/Home/Home/Profile/detail';
 import TaskNavigator from '../task.navigator';
 import UserNavigator from '../user.navigator';
 import GroupNavigator from '../group.navigator';
@@ -108,7 +108,7 @@ const DrawerContent = ({ navigation, state }) => {
 
 export const AdminDrawerNavigator = () => (
   <Drawer.Navigator drawerContent={props => <DrawerContent {...props}/>} initialRouteName="Task">
-    <Drawer.Screen name='Profile' component={ProfileNavigator}/>
+    <Drawer.Screen name='Profile' component={ProfileScreen}/>
     <Drawer.Screen name='Notification' component={NotificationScreen}/>
     <Drawer.Screen name='Task' component={TaskNavigator}/>
     <Drawer.Screen name='User' component={UserNavigator}/>

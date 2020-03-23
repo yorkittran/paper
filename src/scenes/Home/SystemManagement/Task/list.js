@@ -4,7 +4,7 @@ import { URL_TASK } from '../../../../config/constants';
 import { SafeAreaView } from 'react-navigation';
 import { StyleSheet } from 'react-native';
 import { PaperTopNavigation } from '../../../../navigations/top.navigator';
-import { Icon, Input, Spinner, Layout, Select } from '@ui-kitten/components';
+import { Icon, Input, Spinner, Layout, Select, Datepicker } from '@ui-kitten/components';
 import { PaperListStatus } from '../../../../components/list-task.component';
 
 export default class ListScreen extends Component {  
@@ -27,7 +27,9 @@ export default class ListScreen extends Component {
     this.state = {
       loading: true,
       terms: '',
-      status: statusSource
+      status: statusSource,
+      start_date: null,
+      end_date: null,
     };
     this.statusSource = statusSource;
     this.dataSource = [];
@@ -66,16 +68,35 @@ export default class ListScreen extends Component {
     <Icon name='search-outline'/>
   )
 
-  filtered = (terms, status) => {
-    const dataFiltered = this.dataSource.filter(function(item) {
+  CalendarIcon = () => (
+    <Icon name='calendar'/>
+  );
+
+  filtered = (terms, status, start_date, end_date) => {
+    const dataFiltered = this.dataSource.filter(item => {
+      let start_date_js = null;
+      let end_date_js = null;
+      if (item.start_at) {
+        let start_timestamp = item.start_at.split(' ');
+        start_date_js   = new Date(Date.parse(start_timestamp[0]));
+      }
+      if (item.end_at) {
+        let end_timestamp = item.end_at.split(' ');
+        end_date_js   = new Date(Date.parse(end_timestamp[0]));
+      }
       const itemData = item.name ? item.name.toUpperCase() : '' . toUpperCase();
-      const textData = terms.toUpperCase();
-      return itemData.indexOf(textData) > -1 && status.findIndex(i => i.text === item.status) > -1;
+      let terms_bool      = itemData.indexOf(terms.toUpperCase()) > -1;
+      let status_bool     = status.findIndex(i => i.text === item.status) > -1;
+      let start_date_bool = start_date ? start_date_js.setHours(0,0,0,0) >= start_date : true;
+      let end_date_bool   = end_date ? end_date_js.setHours(0,0,0,0) <= end_date : true;
+      return terms_bool && status_bool && start_date_bool && end_date_bool;
     });
 
     this.setState({
       terms: terms,
       status: status,
+      start_date: start_date,
+      end_date: end_date,
       dataFiltered: dataFiltered,
     });
   };
@@ -104,15 +125,31 @@ export default class ListScreen extends Component {
               multiSelect={true}
               size='small'
               selectedOption={this.state.status} 
-              onSelect={status => this.filtered(this.state.terms, status)}
+              onSelect={status => this.filtered(this.state.terms, status, this.state.start_date, this.state.end_date)}
               style={styles.inputFiltered}/>
+            <Layout style={{flexDirection: 'row', marginTop: '1%', justifyContent: 'space-between'}}>
+              <Datepicker
+                placeholder='From Date'
+                size='small'
+                style={[styles.inputFiltered, {width: '40%'}]}
+                date={this.state.start_date}
+                onSelect={start_date => this.filtered(this.state.terms, this.state.status, start_date, this.state.end_date)}
+                icon={this.CalendarIcon}/>
+              <Datepicker
+                placeholder='To Date'
+                size='small'
+                style={[styles.inputFiltered, {width: '40%'}]}
+                date={this.state.end_date}
+                onSelect={end_date => this.filtered(this.state.terms, this.state.status, this.state.start_date, end_date)}
+                icon={this.CalendarIcon}/>
+            </Layout>
             <Input
               value={this.state.terms}
               placeholder='Search...'
               icon={this.SearchIcon}
-              size='large'
+              size='medium'
               autoCapitalize='none'
-              onChangeText={terms => this.filtered(terms, this.state.status)}
+              onChangeText={terms => this.filtered(terms, this.state.status, this.state.start_date, this.state.end_date)}
               style={styles.inputFiltered}/>
             <PaperListStatus data={this.state.dataFiltered} navigation={this.props.navigation}/>
           </Layout>
@@ -135,6 +172,6 @@ const styles = StyleSheet.create({
   },
   inputFiltered: {
     marginHorizontal: '5%',
-    marginTop: '2%',
+    marginVertical: '1%',
   },
 });

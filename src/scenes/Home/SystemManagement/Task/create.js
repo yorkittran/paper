@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { AsyncStorage } from 'react-native';
-import { URL_TASK, URL_USER_GET_ALL_USERS_EXCEPT_SELF } from '../../../../config/constants';
-import { } from '../../../../config/constants';
+import { URL_USER, URL_TASK } from '../../../../config/constants';
 import { SafeAreaView } from 'react-navigation';
 import { StyleSheet, ScrollView } from 'react-native';
 import { Spinner, Layout, Button, Icon, Select } from '@ui-kitten/components';
@@ -33,7 +32,7 @@ export default class CreateScreen extends Component {
 
   componentDidMount = () => AsyncStorage.getItem('token').then((token) => {
     // Get info of Groups
-    fetch(URL_USER_GET_ALL_USERS_EXCEPT_SELF, {
+    fetch(URL_USER, {
       method: 'GET',
       headers: {
         'Accept': 'application/json',
@@ -72,7 +71,7 @@ export default class CreateScreen extends Component {
   }
 
   scanQR = () => {
-    this.props.navigation.navigate('Scan', { callback: this.setSelectedAssignee.bind(this) });
+    this.props.navigation.navigate('Scan', { callback: this.setSelectedAssignee.bind(this), screen: 'Create' });
   }
   
   submitCreating = () => AsyncStorage.getItem('token').then((token) => {
@@ -112,7 +111,6 @@ export default class CreateScreen extends Component {
           message: responseData.message,
           visible: !this.state.visible,
         });
-        console.log(responseData);
         if (responseData.hasOwnProperty('errors')) {
           this.setState({validation: false});
           responseData.errors.hasOwnProperty('name')
@@ -124,10 +122,6 @@ export default class CreateScreen extends Component {
         } else {
           this.setState({
             validation : true,
-            name       : '',
-            description: '',
-            start_at   : new Date(),
-            end_at     : new Date(),
           })
         }
       }
