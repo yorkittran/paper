@@ -25,12 +25,13 @@ export default class ListScreen extends Component {
 
     super(props);
     this.state = {
-      loading      : true,
-      terms        : '',
+      loading       : true,
+      assignee      : {title: ''},
+      terms         : '',
       terms_assignee: '',
-      status       : statusSource,
-      start_date   : null,
-      end_date     : null,
+      status        : statusSource,
+      start_date    : null,
+      end_date      : null,
     };
     this.statusSource    = statusSource;
     this.dataSource      = [];
@@ -117,6 +118,7 @@ export default class ListScreen extends Component {
       }
       const itemData = item.name ? item.name.toUpperCase() : '' . toUpperCase();
       const assigneeData = item.assignee ? item.assignee.toUpperCase() : '' . toUpperCase();
+
       let assignee_bool   = assigneeData.indexOf(assignee.title.toUpperCase()) > -1;
       let terms_bool      = itemData.indexOf(terms.toUpperCase()) > -1;
       let status_bool     = status.findIndex(i => i.text === item.status) > -1;
@@ -127,12 +129,12 @@ export default class ListScreen extends Component {
 
     this.setState({
       terms_assignee: assignee.title,
-      assignee: assignee,
-      terms: terms,
-      status: status,
-      start_date: start_date,
-      end_date: end_date,
-      dataFiltered: dataFiltered,
+      assignee      : assignee,
+      terms         : terms,
+      status        : status,
+      start_date    : start_date,
+      end_date      : end_date,
+      dataFiltered  : dataFiltered,
     });
   };
 
@@ -146,6 +148,10 @@ export default class ListScreen extends Component {
       terms_assignee: terms,
       assigneesFiltered: dataFiltered,
     });
+
+    if (terms == '') {
+      this.filtered({title: ''}, this.state.terms, this.state.status, this.state.start_date, this.stateend_date)
+    }
   };
 
   render() {
@@ -178,14 +184,14 @@ export default class ListScreen extends Component {
               <Datepicker
                 placeholder='From Date'
                 size='small'
-                style={[styles.inputFiltered, {width: '40%'}]}
+                style={[styles.inputFiltered, {width: '45%' ,marginRight: '0%', paddingRight: '1%'}]}
                 date={this.state.start_date}
                 onSelect={start_date => this.filtered(this.state.assignee, this.state.terms, this.state.status, start_date, this.state.end_date)}
                 icon={this.CalendarIcon}/>
               <Datepicker
                 placeholder='To Date'
                 size='small'
-                style={[styles.inputFiltered, {width: '40%'}]}
+                style={[styles.inputFiltered, {width: '45%', marginLeft: '0%', paddingLeft: '1%'}]}
                 date={this.state.end_date}
                 onSelect={end_date => this.filtered(this.state.assignee, this.state.terms, this.state.status, this.state.start_date, end_date)}
                 icon={this.CalendarIcon}/>
@@ -193,12 +199,14 @@ export default class ListScreen extends Component {
             <Autocomplete
               placeholder='Assignee'
               value={this.state.terms_assignee}
-              style={styles.inputFiltered}
+                size='small'
+                style={styles.inputFiltered}
               data={this.state.assigneesFiltered}
               onSelect={assignee => this.filtered(assignee, this.state.terms, this.state.status, this.state.start_date, this.state.end_date)}
               onChangeText={terms_assignee => this.filteredAssignee(terms_assignee)}/>
             <Input
               value={this.state.terms}
+              size='small'
               placeholder='Search...'
               icon={this.SearchIcon}
               autoCapitalize='none'
@@ -225,6 +233,6 @@ const styles = StyleSheet.create({
   },
   inputFiltered: {
     marginHorizontal: '5%',
-    marginVertical: '1%',
+    marginVertical: '0.5%',
   },
 });
