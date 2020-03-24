@@ -80,8 +80,6 @@ const StatusFooter = ({ item, userName, onReject, onApprove, onDelete, onEdit, o
       </Layout>
     );
     case 'Ongoing':
-      console.log(item.assignee)
-      console.log(userName)
       if (item.assignee == userName) {
         return (
         <Layout style={styles.cardFooter}>
@@ -94,31 +92,29 @@ const StatusFooter = ({ item, userName, onReject, onApprove, onDelete, onEdit, o
         )
       }
     case 'Committed':
-      if (item.assignee == userName) {
-        return (
-          <>
-            <Layout style={[styles.textRow, {marginHorizontal: 20, marginTop: 20}]}>
-              <Text style={[styles.label, {color: '#FFBB35'}]}>COMMIT MESSAGE</Text>
-              <Text style={[styles.text, {color: '#FFBB35'}]}>{item.commit_message}</Text>
-            </Layout>
-            <Layout style={[styles.textRow, {marginHorizontal: 20}]}>
-              <Text style={[styles.label, {color: '#FFBB35'}]}>COMMIT AT</Text>
-              <Text style={[styles.text, {color: '#FFBB35'}]}>{item.committed_at}</Text>
-            </Layout>
-            <Layout style={[styles.textRow, {marginHorizontal: 20}]}>
-              <Text style={[styles.label, {color: '#FFBB35'}]}>EVIDENCE</Text>
-              {item.attached_file && <Image source={{ uri: item.attached_file }} style={styles.image} />}
-            </Layout>
+      return (
+        <>
+          <Layout style={[styles.textRow, {marginHorizontal: 20, marginTop: 20}]}>
+            <Text style={[styles.label, {color: '#FFBB35'}]}>COMMIT MESSAGE</Text>
+            <Text style={[styles.text, {color: '#FFBB35'}]}>{item.commit_message}</Text>
+          </Layout>
+          <Layout style={[styles.textRow, {marginHorizontal: 20}]}>
+            <Text style={[styles.label, {color: '#FFBB35'}]}>COMMIT AT</Text>
+            <Text style={[styles.text, {color: '#FFBB35'}]}>{item.committed_at}</Text>
+          </Layout>
+          <Layout style={[styles.textRow, {marginHorizontal: 20, marginBottom: 20}]}>
+            <Text style={[styles.label, {color: '#FFBB35'}]}>EVIDENCE</Text>
+            {item.attached_file && <Image source={{ uri: item.attached_file }} style={styles.image} />}
+          </Layout>
+          {item.assignee != userName
+          ?
             <Layout style={styles.cardFooter}>
               <Button size='medium' appearance='outline' status='primary' onPress={onEvaluate}>EVALUATE</Button>
             </Layout>
-          </>
-        );
-      } else {
-        return (
-          <></>
-        )
-      }
+          : <></>
+          }
+        </>
+      );
     case 'Completed':
       let completed_date = new Date(item.updated_at);
       let completed_at = completed_date.getFullYear() + "-" +

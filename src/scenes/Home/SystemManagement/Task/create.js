@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { AsyncStorage, Image } from 'react-native';
-import { URL_USER, URL_TASK, MEMBER } from '../../../../config/constants';
+import { URL_USER, URL_TASK, MEMBER, URL_TASK_OLD } from '../../../../config/constants';
 import { SafeAreaView } from 'react-navigation';
 import { StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { Spinner, Layout, Button, Icon, Select } from '@ui-kitten/components';
@@ -22,14 +22,13 @@ export default class CreateScreen extends Component {
 
     super(props);
     this.state = {
-      loading: true,
-      visible: false,
-      start_at: current_datetime,
-      end_at: current_datetime,
-      formatted_date: formatted_date,
-      selected_assignee: {
-        value: ''
-      }
+      loading          : true,
+      visible          : false,
+      start_at         : current_datetime,
+      end_at           : current_datetime,
+      formatted_date   : formatted_date,
+      selected_assignee: { value: '' },
+      selected_old_task: { value: '' },
     };
   }
 
@@ -63,17 +62,41 @@ export default class CreateScreen extends Component {
           });
         }
         this.setState({
-          loading: false,
-          role: role,
           assignees: assignees,
           selected_assignee: assignees[0],
         })
       }).catch((error) => {
         console.error(error);
       });
-    } else {
-      this.setState({ loading: false, role: role });
     }
+    fetch(URL_TASK_OLD, {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
+      },
+    })
+    .then((response) => response.json())
+    .then((responseData) => {
+      var old_tasks = [];
+      // Push members to select
+      if (responseData.data.length > 0) {
+        responseData.data.forEach((task) => {
+          old_tasks.push({
+            value: task.id,
+            text : task.name,
+          })
+        });
+      }
+      this.setState({
+        loading: false,
+        old_tasks: old_tasks,
+        role: role,
+      })
+    }).catch((error) => {
+      console.error(error);
+    });
   }
 
   setSelectedAssignee = (id) => {
@@ -93,6 +116,7 @@ export default class CreateScreen extends Component {
         data.name        = this.state.name;
         data.description = this.state.description;
         data.assignee_id = this.state.selected_assignee.value;
+        data.old_task    = this.state.selected_old_task.value;
     
     var start = this.state.start_at;
     var end   = this.state.end_at;
@@ -206,6 +230,14 @@ export default class CreateScreen extends Component {
               message={this.state.messageEndAt}
               value={this.state.formatted_date}
               onChange={(datetime) => this.setState({end_at: datetime})}
+            />
+            <Select 
+              label='Old Task'
+              placeholder='Select Old Task'
+              data={this.state.old_tasks} 
+              selectedOption={this.state.selected_old_task} 
+              onSelect={(task) => this.setState({selected_old_task: task})}
+              style={{marginBottom: 15 }}
             />
             {this.state.role != MEMBER
               ?

@@ -12,6 +12,7 @@ export const URL_TASK         = API + '/task'
 export const URL_USER_MEMBERS  = URL_USER + '/members'
 export const URL_USER_MANAGERS = URL_USER + '/managers'
 
+export const URL_TASK_OLD      = URL_TASK + '/old'
 export const URL_TASK_APPROVE  = URL_TASK + '/approve'
 export const URL_TASK_REJECT   = URL_TASK + '/reject'
 export const URL_TASK_UPDATE   = URL_TASK + '/update'

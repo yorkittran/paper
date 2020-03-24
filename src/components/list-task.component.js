@@ -13,7 +13,7 @@ export const PaperListStatus = ({ data, navigation, userName }) => {
         return (
           <ListItem
             title={item.name}
-            description={'• ' + item.status}
+            description={item.assignee + ' • ' + item.status}
             descriptionStyle={{color: '#B7771A'}}
             onPress={() => navigation.navigate('Detail', { taskId: item.id })}
             accessory={ForwardIcon}
@@ -23,7 +23,7 @@ export const PaperListStatus = ({ data, navigation, userName }) => {
         return (
           <ListItem
             title={item.name}
-            description={'• ' + item.status}
+            description={item.assignee + ' • ' + item.status}
             descriptionStyle={{color: '#42E5F7'}}
             onPress={() => navigation.navigate('Detail', { taskId: item.id })}
             accessory={ForwardIcon}
@@ -33,7 +33,7 @@ export const PaperListStatus = ({ data, navigation, userName }) => {
         return (
           <ListItem
             title={item.name}
-            description={'• ' + item.status}
+            description={item.assignee + ' • ' + item.status}
             descriptionStyle={{color: '#FF4830'}}
             onPress={() => navigation.navigate('Detail', { taskId: item.id })}
             accessory={ForwardIcon}
@@ -43,7 +43,7 @@ export const PaperListStatus = ({ data, navigation, userName }) => {
         return (
           <ListItem
             title={item.name}
-            description={'• ' + item.status}
+            description={item.assignee + ' • ' + item.status}
             descriptionStyle={{color: '#8F9BB3'}}
             onPress={() => navigation.navigate('Detail', { taskId: item.id })}
             accessory={ForwardIcon}
@@ -53,7 +53,7 @@ export const PaperListStatus = ({ data, navigation, userName }) => {
         return (
           <ListItem
             title={item.name}
-            description={'• ' + item.status}
+            description={item.assignee + ' • ' + item.status}
             descriptionStyle={{color: '#3366FF'}}
             onPress={() => navigation.navigate('Detail', { taskId: item.id, userName: userName })}
             accessory={ForwardIcon}
@@ -63,7 +63,7 @@ export const PaperListStatus = ({ data, navigation, userName }) => {
         return (
           <ListItem
             title={item.name}
-            description={'• ' + item.status}
+            description={item.assignee + ' • ' + item.status}
             descriptionStyle={{color: '#FFBB35'}}
             onPress={() => navigation.navigate('Detail', { taskId: item.id, userName: userName  })}
             accessory={ForwardIcon}
@@ -73,7 +73,7 @@ export const PaperListStatus = ({ data, navigation, userName }) => {
         return (
           <ListItem
             title={item.name}
-            description={'• ' + item.status}
+            description={item.assignee + ' • ' + item.status}
             descriptionStyle={{color: '#7DC914'}}
             onPress={() => navigation.navigate('Detail', { taskId: item.id })}
             accessory={ForwardIcon}
@@ -83,7 +83,7 @@ export const PaperListStatus = ({ data, navigation, userName }) => {
         return (
           <ListItem
             title={item.name}
-            description={'• ' + item.status}
+            description={item.assignee + ' • ' + item.status}
             descriptionStyle={{color: '#FFAB88'}}
             onPress={() => navigation.navigate('Detail', { taskId: item.id })}
             accessory={ForwardIcon}
@@ -93,7 +93,7 @@ export const PaperListStatus = ({ data, navigation, userName }) => {
         return (
           <ListItem
             title={item.name}
-            description={'• ' + item.status}
+            description={item.assignee + ' • ' + item.status}
             descriptionStyle={{color: '#B7181F'}}
             onPress={() => navigation.navigate('Detail', { taskId: item.id })}
             accessory={ForwardIcon}
