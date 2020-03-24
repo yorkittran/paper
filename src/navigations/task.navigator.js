@@ -5,6 +5,7 @@ import DetailScreen from '../scenes/Home/SystemManagement/Task/detail';
 import EditScreen from '../scenes/Home/SystemManagement/Task/edit';
 import CreateScreen from '../scenes/Home/SystemManagement/Task/create';
 import ScanScreen from '../scenes/Home/SystemManagement/Task/scan';
+import CommitScreen from '../scenes/Home/SystemManagement/Task/commit';
 import EvaluateScreen from '../scenes/Home/SystemManagement/Task/evaluate';
 
 const Stack = createStackNavigator();
@@ -17,6 +18,7 @@ const Navigator = () => {
       <Stack.Screen name="Edit" component={EditScreen} />
       <Stack.Screen name="Create" component={CreateScreen} />
       <Stack.Screen name="Scan" component={ScanScreen} />
+      <Stack.Screen name="Commit" component={CommitScreen} />
       <Stack.Screen name="Evaluate" component={EvaluateScreen} />
     </Stack.Navigator>
   );

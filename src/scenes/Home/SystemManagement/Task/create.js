@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import { AsyncStorage } from 'react-native';
+import { AsyncStorage, Image } from 'react-native';
 import { URL_USER, URL_TASK } from '../../../../config/constants';
 import { SafeAreaView } from 'react-navigation';
-import { StyleSheet, ScrollView } from 'react-native';
+import { StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { Spinner, Layout, Button, Icon, Select } from '@ui-kitten/components';
 import { PaperTopNavigation } from '../../../../navigations/top.navigator';
 import { PaperInput } from '../../../../components/input.component';
@@ -77,10 +77,7 @@ export default class CreateScreen extends Component {
   submitCreating = () => AsyncStorage.getItem('token').then((token) => {
     var data = {};
     data.name = this.state.name;
-    data.description_assigned = this.state.description;
-    data.assignee_id = this.state.selected_assignee.value;
-    
-    var start = this.state.start_at;
+    data.description = this.state.desTouchableOpacity
     var end   = this.state.end_at;
     data.start_at =
       start.getFullYear() + "-" +
@@ -116,8 +113,8 @@ export default class CreateScreen extends Component {
           responseData.errors.hasOwnProperty('name')
             ? this.setState({messageName: responseData.errors.name})
             : this.setState({messageName: ''})
-          responseData.errors.hasOwnProperty('description_assigned')
-            ? this.setState({messageDescription: responseData.errors.description_assigned})
+          responseData.errors.hasOwnProperty('description')
+            ? this.setState({messageDescription: responseData.errors.description})
             : this.setState({messageDescription: ''})
         } else {
           this.setState({
@@ -192,7 +189,7 @@ export default class CreateScreen extends Component {
               value={this.state.formatted_date}
               onChange={(datetime) => this.setState({end_at: datetime})}
             />
-            <Layout style={{flexDirection: 'row', alignItems: 'baseline'}}>
+            <Layout style={{flexDirection: 'row'}}>
               <Select 
                 label='Assignee'
                 placeholder='Select Assignee'
@@ -201,7 +198,9 @@ export default class CreateScreen extends Component {
                 onSelect={(user) => this.setState({selected_assignee: user})}
                 style={{marginRight: 20, flexDirection: 'column', flex: 1}}
               />
-              <Icon name='grid-outline' width={50} height={50} fill='#5670A1' style={{flexDirection: 'column'}} onPress={this.scanQR}/>
+              <TouchableOpacity onPress={this.scanQR} style={{marginTop: 15}}>
+                <Image source={require('../../../../assets/qrcodescan.png') } style={{ width: 50, height: 50 }} />
+              </TouchableOpacity>
             </Layout>
             <Button 
               style={styles.button} 

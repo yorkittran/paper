@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { AsyncStorage } from 'react-native';
-import { URL_USER } from '../../../../config/constants';
+import { URL_USER, ADMIN } from '../../../../config/constants';
 import { SafeAreaView } from 'react-navigation';
 import { StyleSheet } from 'react-native';
 import QRCode from 'react-native-qrcode-svg';
@@ -15,7 +15,16 @@ export default class UserDetailScreen extends Component {
       loading: true,
       data: {},
     };
+    this.role = this.retriveRole();
   }
+
+  retriveRole = async () => {
+    try {
+      await AsyncStorage.getItem('role');
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   componentDidMount = () => AsyncStorage.getItem('token').then((token) => {
     fetch(URL_USER + '/' + this.props.route.params.userId, {
@@ -71,14 +80,23 @@ export default class UserDetailScreen extends Component {
     }
     return (
       <SafeAreaView style={{flex: 1, backgroundColor: '#FFFFFF'}}>
-        <PaperTopNavigation
-          title='User Detail'
-          leftIcon='arrow-back'
-          leftScreen='Back'
-          rightIcon='more-vertical'
-          params={{ userId: this.props.route.params.userId }}
-          menu={true}
-          {...this.props}/>
+        {this.state.role == ADMIN 
+          ?
+          <PaperTopNavigation
+            title='User Detail'
+            leftIcon='arrow-back'
+            leftScreen='Back'
+            rightIcon='more-vertical'
+            params={{ userId: this.props.route.params.userId }}
+            menu={true}
+            {...this.props}/>
+          :
+          <PaperTopNavigation
+            title='User Detail'
+            leftIcon='arrow-back'
+            leftScreen='Back'
+            {...this.props}/>
+        }
         <Layout style={styles.mainContainer}>
           <Card header={this.Header} footer={this.Footer}>
             <Layout style={{justifyContent: 'center'}}>

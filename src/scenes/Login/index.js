@@ -13,7 +13,7 @@ export default class LoginScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      email: 'admin@admin.mail',
+      email: 'manager-3@manager.mail',
       password: '123456',
       message: '',
       secureTextEntry: true,
@@ -107,7 +107,7 @@ export default class LoginScreen extends Component {
   render () {
     return (
     <SafeAreaView style={styles.mainContainer}>
-      <KeyboardAvoidingView behavior='padding' keyboardVerticalOffset={100} enabled>
+      <KeyboardAvoidingView behavior='padding' keyboardVerticalOffset={120} enabled>
         <PaperModal 
           onPress={() => this.setState({visible: !this.state.visible})} 
           visible={this.state.visible}
@@ -155,7 +155,7 @@ const styles = StyleSheet.create({
     marginBottom: 30
   },
   button: {
-    paddingHorizontal: 40, 
+    width: '100%',
     paddingVertical: 10, 
     marginTop: 20, 
     flexDirection: 'row-reverse'

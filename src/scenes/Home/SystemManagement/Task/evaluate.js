@@ -23,17 +23,18 @@ export default class EvaluateScreen extends Component {
       {text: 'Average', value: '3'},
       {text: 'Mostly Cover', value: '4'},
       {text: 'Excellent', value: '5'},
-    ]
+    ];
+    this.statusSource = ['6', '7']
   }
 
   submitEvaluating = () => AsyncStorage.getItem('token').then((token) => {
     var data         = {};
         data.comment = this.state.comment;
-        data.mark    = this.state.mark;
-        data.status  = this.state.status;
+        data.mark    = this.state.mark.value;
+        data.status  = this.statusSource[this.state.status];
     
-    fetch(URL_TASK_EVALUATE, {
-      method: 'POST',
+    fetch(URL_TASK_EVALUATE + '/' + this.props.route.params.taskId, {
+      method: 'PUT',
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
@@ -53,8 +54,8 @@ export default class EvaluateScreen extends Component {
           responseData.errors.hasOwnProperty('name')
             ? this.setState({messageName: responseData.errors.name})
             : this.setState({messageName: ''})
-          responseData.errors.hasOwnProperty('description_assigned')
-            ? this.setState({messageDescription: responseData.errors.description_assigned})
+          responseData.errors.hasOwnProperty('description')
+            ? this.setState({messageDescription: responseData.errors.description})
             : this.setState({messageDescription: ''})
         } else {
           this.setState({

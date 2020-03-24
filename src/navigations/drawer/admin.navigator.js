@@ -3,7 +3,7 @@ import { AsyncStorage } from 'react-native';
 import { Actions } from 'react-native-router-flux';
 import { SafeAreaView } from 'react-navigation';
 import { createDrawerNavigator } from '@react-navigation/drawer';
-import { Drawer as UIKittenDrawer, DrawerHeaderFooter, Icon, Button } from '@ui-kitten/components';
+import { Drawer as UIKittenDrawer, DrawerHeaderFooter, Icon, Button, Layout } from '@ui-kitten/components';
 import NotificationScreen from '../../scenes/Home/Home/Notification/list';
 import ProfileScreen from '../../scenes/Home/Home/Profile/detail';
 import TaskNavigator from '../task.navigator';
@@ -82,21 +82,23 @@ const DrawerContent = ({ navigation, state }) => {
   };
 
   return (
-    <SafeAreaView>
-      <UIKittenDrawer
-        data={drawerHome}
-        header={HeaderHome}
-        onSelect={onSelectHome}
-        appearance='noDivider'
-      />
-      <UIKittenDrawer
-        data={drawerSystemManagement}
-        header={HeaderSystemManagement}
-        onSelect={onSelectSystemManagement}
-        appearance='noDivider'
-      />
+    <SafeAreaView style={{flex: 1}}>
+      <Layout>
+        <UIKittenDrawer
+          data={drawerHome}
+          header={HeaderHome}
+          onSelect={onSelectHome}
+          appearance='noDivider'
+        />
+        <UIKittenDrawer
+          data={drawerSystemManagement}
+          header={HeaderSystemManagement}
+          onSelect={onSelectSystemManagement}
+          appearance='noDivider'
+        />
+      </Layout>
       <Button 
-        style={{flexDirection: 'row-reverse', margin: 20}} 
+        style={{flexDirection: 'row-reverse', margin: 20, marginTop: 'auto'}} 
         size='large'
         status='danger' 
         icon={LogoutIcon} 
@@ -107,7 +109,7 @@ const DrawerContent = ({ navigation, state }) => {
 };
 
 export const AdminDrawerNavigator = () => (
-  <Drawer.Navigator drawerContent={props => <DrawerContent {...props}/>} initialRouteName="Task">
+  <Drawer.Navigator drawerContent={props => <DrawerContent {...props}/>} initialRouteName="Task" >
     <Drawer.Screen name='Profile' component={ProfileScreen}/>
     <Drawer.Screen name='Notification' component={NotificationScreen}/>
     <Drawer.Screen name='Task' component={TaskNavigator}/>

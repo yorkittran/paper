@@ -3,12 +3,11 @@ import { AsyncStorage } from 'react-native';
 import { Actions } from 'react-native-router-flux';
 import { SafeAreaView } from 'react-navigation';
 import { createDrawerNavigator } from '@react-navigation/drawer';
-import { Drawer as UIKittenDrawer, DrawerHeaderFooter, Icon, Button } from '@ui-kitten/components';
-import GivenTaskNavigator from '../given-task.navigator';
-import HandoutTaskNavigator from '../handout-task.navigator';
-import CreateTaskNavigator from '../create-task.navigator';
-import ApproveTaskNavigator from '../approve-task.navigator';
-import UsersInGroupNavigator from '../users-in-group.navigator';
+import { Drawer as UIKittenDrawer, DrawerHeaderFooter, Icon, Button, Layout } from '@ui-kitten/components';
+import NotificationScreen from '../../scenes/Home/Home/Notification/list';
+import ProfileScreen from '../../scenes/Home/Home/Profile/detail';
+import TaskNavigator from '../task.navigator';
+import GroupNavigator from '../group.navigator';
 
 const Drawer = createDrawerNavigator();
 
@@ -24,79 +23,76 @@ const deleteToken = async () => {
 
 const DrawerContent = ({ navigation, state }) => {
 
-  const FileTextIcon = () => (
-    <Icon name='file-text-outline'/>
+  const HomeIcon = () => (
+    <Icon name='home-outline'/>
   );
 
-  const PaperPlaneIcon = () => (
-    <Icon name='paper-plane'/>
+  const BellIcon = () => (
+    <Icon name='bell-outline'/>
   );
 
-  const FileAddIcon = () => (
-    <Icon name='file-add-outline'/>
-  );
-  
-  const CheckmarkCircleIcon = () => (
-    <Icon name='checkmark-circle'/>
+  const BookmarkIcon = () => (
+    <Icon name='bookmark-outline'/>
   );
 
-  const PeopleIcon = () => (
-    <Icon name='people-outline'/>
+  const FolderIcon = () => (
+    <Icon name='folder-outline'/>
   );
 
   const LogoutIcon = () => (
     <Icon name='log-out-outline' fill='#FFFFFF'/>
   );
 
-  const HeaderMyTask = () => (
+  const HeaderHome = () => (
     <DrawerHeaderFooter
-      title='MY TASKS'
+      title='HOME'
       titleStyle={{fontWeight: '800', fontSize: 18, marginTop: 20}}
     />
   );
 
-  const HeaderMyGroup = () => (
-    <DrawerHeaderFooter
-      title='MY GROUP'
-      titleStyle={{fontWeight: '800', fontSize: 18, marginTop: 20}}
-    />
-  );
-
-  const drawerMyTask = [
-    { title: 'Given Task', icon: FileTextIcon },
-    { title: 'Handout Task', icon: PaperPlaneIcon },
-    { title: 'Create Task', icon: FileAddIcon },
-    { title: 'Approve Task', icon: CheckmarkCircleIcon  },
+  const drawerHome = [
+    { title: 'Profile', icon: HomeIcon },
+    { title: 'Notification', icon: BellIcon },
   ];
 
-  const drawerMyGroup = [
-    { title: 'Users In Group', icon: PeopleIcon },
-  ];
-
-  const onSelectMyTask = (index) => {
+  const onSelectHome = (index) => {
     navigation.navigate(state.routeNames[index]);
   };
 
-  const onSelectMyGroup = (index) => {
-    navigation.navigate(state.routeNames[index + drawerMyTask.length]);
+  const HeaderManagement = () => (
+    <DrawerHeaderFooter
+      title='MANAGEMENT'
+      titleStyle={{fontWeight: '800', fontSize: 18, marginTop: 20}}
+    />
+  );
+
+  const drawerManagement = [
+    { title: 'Task', icon: BookmarkIcon },
+    { title: 'Group', icon: FolderIcon },
+  ];
+
+  const onSelectManagement = (index) => {
+    navigation.navigate(state.routeNames[index + drawerHome.length]);
   };
 
   return (
-    <SafeAreaView>
-      <UIKittenDrawer
-        data={drawerMyTask}
-        header={HeaderMyTask}
-        onSelect={onSelectMyTask}
-        appearance='noDivider'
-      />
-      <UIKittenDrawer
-        data={drawerMyGroup}
-        header={HeaderMyGroup}
-        onSelect={onSelectMyGroup}
-        appearance='noDivider'
-      />
+    <SafeAreaView style={{flex: 1}}>
+      <Layout>
+        <UIKittenDrawer
+          data={drawerHome}
+          header={HeaderHome}
+          onSelect={onSelectHome}
+          appearance='noDivider'
+        />
+        <UIKittenDrawer
+          data={drawerManagement}
+          header={HeaderManagement}
+          onSelect={onSelectManagement}
+          appearance='noDivider'
+        />
+      </Layout>
       <Button 
-        style={{flexDirection: 'row-reverse', margin: 20}} 
+        style={{flexDirection: 'row-reverse', margin: 20, marginTop: 'auto'}} 
         size='large'
         status='danger' 
         icon={LogoutIcon} 
@@ -107,11 +103,10 @@ const DrawerContent = ({ navigation, state }) => {
 };
 
 export const ManagerDrawerNavigator = () => (
-  <Drawer.Navigator drawerContent={props => <DrawerContent {...props}/>} initialRouteName="UsersInGroup">
-    <Drawer.Screen name='GivenTask' component={GivenTaskNavigator}/>
-    <Drawer.Screen name='HandoutTask' component={HandoutTaskNavigator}/>
-    <Drawer.Screen name='CreateTask' component={CreateTaskNavigator}/>
-    <Drawer.Screen name='ApproveTask' component={ApproveTaskNavigator}/>
-    <Drawer.Screen name='UsersInGroup' component={UsersInGroupNavigator}/>
+  <Drawer.Navigator drawerContent={props => <DrawerContent {...props}/>} initialRouteName="Task">
+    <Drawer.Screen name='Profile' component={ProfileScreen}/>
+    <Drawer.Screen name='Notification' component={NotificationScreen}/>
+    <Drawer.Screen name='Task' component={TaskNavigator}/>
+    <Drawer.Screen name='Group' component={GroupNavigator}/>
   </Drawer.Navigator>
 );

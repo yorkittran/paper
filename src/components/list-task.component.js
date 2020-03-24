@@ -1,7 +1,7 @@
 import React from 'react';
 import { List, ListItem, Icon } from '@ui-kitten/components';
 
-export const PaperListStatus = ({ data, navigation }) => {
+export const PaperListStatus = ({ data, navigation, userName }) => {
 
   const ForwardIcon = () => (
     <Icon name='arrow-ios-forward' width={20} height={20} fill='#8F9BB3'/>
@@ -55,7 +55,7 @@ export const PaperListStatus = ({ data, navigation }) => {
             title={item.name}
             description={'• ' + item.status}
             descriptionStyle={{color: '#3366FF'}}
-            onPress={() => navigation.navigate('Detail', { taskId: item.id })}
+            onPress={() => navigation.navigate('Detail', { taskId: item.id, userName: userName })}
             accessory={ForwardIcon}
           />
         );
@@ -65,7 +65,7 @@ export const PaperListStatus = ({ data, navigation }) => {
             title={item.name}
             description={'• ' + item.status}
             descriptionStyle={{color: '#FFBB35'}}
-            onPress={() => navigation.navigate('Detail', { taskId: item.id })}
+            onPress={() => navigation.navigate('Detail', { taskId: item.id, userName: userName  })}
             accessory={ForwardIcon}
           />
         );

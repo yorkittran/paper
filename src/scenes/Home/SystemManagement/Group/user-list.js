@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { AsyncStorage } from 'react-native';
-import { URL_GROUP } from '../../../../config/constants';
+import { URL_GROUP, ADMIN, URL_USER, MANAGER } from '../../../../config/constants';
 import { SafeAreaView } from 'react-navigation';
 import { StyleSheet } from 'react-native';
 import { PaperTopNavigation } from '../../../../navigations/top.navigator';
@@ -23,27 +23,54 @@ export default class ListScreen extends Component {
 
   FetchData = async () => {
     const token = await AsyncStorage.getItem('token');
-    fetch(URL_GROUP + '/' + this.props.route.params.groupId, {
-      method: 'GET',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + token
-      },
-    })
-    .then((response) => response.json())
-    .then((responseData) => {
-      this.setState(
-        {
-          dataFiltered: responseData.data.users_in_group,
-          loading: false,
-        },() => {
-          this.dataSource = responseData.data.users_in_group;
-        }
-      );
-    }).catch((error) => {
-      console.error(error);
-    });
+    const role = await AsyncStorage.getItem('role');
+    if (role == MANAGER) {
+      fetch(URL_USER, {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + token
+        },
+      })
+      .then((response) => response.json())
+      .then((responseData) => {
+        this.setState(
+          {
+            dataFiltered: responseData.data,
+            loading: false,
+            role: role,
+          },() => {
+            this.dataSource = responseData.data;
+          }
+        );
+      }).catch((error) => {
+        console.error(error);
+      })
+    } else if (role == ADMIN) {
+      fetch(URL_GROUP + '/' + this.props.route.params.groupId, {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + token
+        },
+      })
+      .then((response) => response.json())
+      .then((responseData) => {
+        this.setState(
+          {
+            dataFiltered: responseData.data.users_in_group,
+            loading: false,
+            role: role,
+          },() => {
+            this.dataSource = responseData.data.users_in_group;
+          }
+        );
+      }).catch((error) => {
+        console.error(error);
+      })
+    }
   }
 
   ForwardIcon = () => (
@@ -86,14 +113,20 @@ export default class ListScreen extends Component {
     }
     return (
       <SafeAreaView style={{flex: 1, backgroundColor: '#FFFFFF'}}>
-        <PaperTopNavigation
-          title='List User'
-          leftIcon='arrow-back'
-          leftScreen='Back'
-          rightIcon='edit-2'
-          rightScreen='Edit'
-          params={{ groupId: this.props.route.params.groupId }}
-          {...this.props}/>
+        {this.state.role == ADMIN
+          ?
+          <PaperTopNavigation
+            title='List User'
+            leftIcon='arrow-back'
+            leftScreen='Back'
+            {...this.props}/>
+          :
+          <PaperTopNavigation
+            title='List User'
+            leftIcon='menu'
+            leftScreen='Drawer'
+            {...this.props}/>
+        }
         <Layout style={styles.mainContainer}>
           <Input
             value={this.state.terms}

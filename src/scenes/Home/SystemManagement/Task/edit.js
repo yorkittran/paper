@@ -40,7 +40,7 @@ export default class EditScreen extends Component {
 
       this.setState({
         name           : responseData.data.name,
-        description    : responseData.data.description_assigned,
+        description    : responseData.data.description,
         start_at       : new Date(start_at.setHours(start_at.getHours() - 7)),
         end_at         : new Date(end_at.setHours(end_at.getHours() - 7)),
         formatted_start: responseData.data.start_at,
@@ -101,7 +101,7 @@ export default class EditScreen extends Component {
   submitEditing = () => AsyncStorage.getItem('token').then((token) => {
     var data = {};
     data.name = this.state.name;
-    data.description_assigned = this.state.description;
+    data.description = this.state.description;
     data.assignee_id = this.state.selected_assignee.value;
     
     var start = this.state.start_at;
@@ -140,8 +140,8 @@ export default class EditScreen extends Component {
           responseData.errors.hasOwnProperty('name')
             ? this.setState({messageName: responseData.errors.name})
             : this.setState({messageName: ''})
-          responseData.errors.hasOwnProperty('description_assigned')
-            ? this.setState({messageDescription: responseData.errors.description_assigned})
+          responseData.errors.hasOwnProperty('description')
+            ? this.setState({messageDescription: responseData.errors.description})
             : this.setState({messageDescription: ''})
         } else {
           this.setState({

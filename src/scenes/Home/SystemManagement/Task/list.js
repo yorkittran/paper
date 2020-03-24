@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { AsyncStorage } from 'react-native';
-import { URL_TASK, URL_USER } from '../../../../config/constants';
+import { URL_TASK, URL_USER, MANAGER, MEMBER, MANAGER_VALUE } from '../../../../config/constants';
 import { SafeAreaView, ScrollView } from 'react-navigation';
 import { StyleSheet } from 'react-native';
 import { PaperTopNavigation } from '../../../../navigations/top.navigator';
@@ -13,7 +13,6 @@ export default class ListScreen extends Component {
 
     let statusSource = [
       { text: 'Pending Approval' },
-      { text: 'Approved' },
       { text: 'Rejected' },
       { text: 'Not Started' },
       { text: 'Ongoing' },
@@ -44,6 +43,7 @@ export default class ListScreen extends Component {
 
   FetchData = async () => {
     const token = await AsyncStorage.getItem('token');
+    const role = await AsyncStorage.getItem('role');
     fetch(URL_TASK, {
       method: 'GET',
       headers: {
@@ -58,6 +58,8 @@ export default class ListScreen extends Component {
         {
           dataFiltered: responseData.data,
           loading: false,
+          role: role,
+          userName: responseData.data[0].assignee,
         },() => {
           this.dataSource = responseData.data;
         }
@@ -66,34 +68,40 @@ export default class ListScreen extends Component {
       console.error(error);
     });
 
-    // Get users for autocomplete
-    fetch(URL_USER, {
-      method: 'GET',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + token
-      },
-    })
-    .then((response) => response.json())
-    .then((responseData) => {
-      var users = [];
-      if (responseData.data.length > 0) {
-        responseData.data.forEach((user) => {
-          users.push({
-            value: user.id,
-            title: user.name,
+    if (role != MEMBER) {
+      // Get users for autocomplete
+      fetch(URL_USER + '?include_manager=true', {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + token
+        },
+      })
+      .then((response) => response.json())
+      .then((responseData) => {
+        var users = [];
+        if (responseData.data.length > 0) {
+          responseData.data.forEach((user) => {
+            users.push({
+              title: user.name,
+            });
+            if (user.role == MANAGER_VALUE && role == MANAGER) {
+              this.setState({
+                userName: user.name
+              })
+            }
           });
+        }
+        this.setState({
+          assigneesFiltered: users
+        },() => {
+          this.assigneesSource = users;
         });
-      }
-      this.setState({
-        assignees: users
-      },() => {
-        this.assigneesSource = users;
+      }).catch((error) => {
+        console.error(error);
       });
-    }).catch((error) => {
-      console.error(error);
-    });
+    }
   }
 
   SearchIcon = () => (
@@ -197,14 +205,19 @@ export default class ListScreen extends Component {
                 onSelect={end_date => this.filtered(this.state.assignee, this.state.terms, this.state.status, this.state.start_date, end_date)}
                 icon={this.CalendarIcon}/>
             </Layout>
-            <Autocomplete
-              placeholder='Assignee'
-              value={this.state.terms_assignee}
+            {this.state.role != MEMBER
+              ?
+              <Autocomplete
+                placeholder='Assignee'
+                value={this.state.terms_assignee}
                 size='medium'
                 style={styles.inputFiltered}
-              data={this.state.assigneesFiltered}
-              onSelect={assignee => this.filtered(assignee, this.state.terms, this.state.status, this.state.start_date, this.state.end_date)}
-              onChangeText={terms_assignee => this.filteredAssignee(terms_assignee)}/>
+                data={this.state.assigneesFiltered}
+                onSelect={assignee => this.filtered(assignee, this.state.terms, this.state.status, this.state.start_date, this.state.end_date)}
+                onChangeText={terms_assignee => this.filteredAssignee(terms_assignee)}/>
+              :
+              <></>
+            }
             <Input
               value={this.state.terms}
               size='medium'
@@ -213,7 +226,7 @@ export default class ListScreen extends Component {
               autoCapitalize='none'
               onChangeText={terms => this.filtered(this.state.assignee, terms, this.state.status, this.state.start_date, this.state.end_date)}
               style={styles.inputFiltered}/>
-            <PaperListStatus data={this.state.dataFiltered} navigation={this.props.navigation}/>
+            <PaperListStatus data={this.state.dataFiltered} navigation={this.props.navigation} userName={this.state.userName}/>
           </Layout>
         </ScrollView>
       </SafeAreaView>

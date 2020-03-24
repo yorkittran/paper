@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { AsyncStorage } from 'react-native';
 import { URL_TASK, URL_TASK_REJECT, URL_TASK_APPROVE } from '../../../../config/constants';
 import { SafeAreaView, ScrollView } from 'react-navigation';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Image } from 'react-native';
 import { Card, Text, Spinner, Layout, Button } from '@ui-kitten/components';
 import { PaperTopNavigation } from '../../../../navigations/top.navigator';
 import { PaperModal } from '../../../../components/modal.component';
@@ -12,10 +12,6 @@ const StatusText = ({ item }) => {
     case 'Pending Approval':
       return (
         <Text category='p1' style={{color: '#B7771A'}}>{'• ' + item.status}</Text>
-      );
-    case 'Approved':
-      return (
-        <Text category='p1' style={{color: '#42E5F7'}}>{'• ' + item.status}</Text>
       );
     case 'Rejected':
       return (
@@ -48,8 +44,7 @@ const StatusText = ({ item }) => {
   }
 }
 
-const StatusFooter = ({ item, onReject, onApprove, onDelete, onEdit, onEvaluate }) => {
-
+const StatusFooter = ({ item, userName, onReject, onApprove, onDelete, onEdit, onCommit, onEvaluate }) => {
   switch (item.status) {
     case 'Pending Approval':
       return (
@@ -84,29 +79,47 @@ const StatusFooter = ({ item, onReject, onApprove, onDelete, onEdit, onEvaluate 
         <Button size='medium' appearance='outline' status='info' onPress={onEdit}>EDIT</Button>
       </Layout>
     );
+    case 'Ongoing':
+      if (item.assignee == userName) {
+        return (
+        <Layout style={styles.cardFooter}>
+          <Button style={{marginHorizontal: 10}} size='medium' appearance='outline' status='warning' onPress={onCommit}>COMMIT</Button>
+        </Layout>
+        )
+      } else {
+        return (
+          <></>
+        )
+      }
     case 'Committed':
-      let committed_date = new Date(item.committed_at);
-      let committed_at = committed_date.getFullYear() + "-" +
-        ("0" + (committed_date.getMonth()+1)).slice(-2) + "-" +
-        ("0" + committed_date.getDate()).slice(-2) + " " +
-        ("0" + committed_date.getHours()).slice(-2) + ":" +
-        ("0" + committed_date.getMinutes()).slice(-2) + ":00";
-      return (
-        <>
-          <Layout style={[styles.textRow, {marginHorizontal: 20, marginTop: 20}]}>
-            <Text style={[styles.label, {color: '#FFBB35'}]}>COMMIT MESSAGE</Text>
-            <Text style={[styles.text, {color: '#FFBB35'}]}>{item.approver}</Text>
-          </Layout>
-          <Layout style={[styles.textRow, {marginHorizontal: 20, marginBottom: 20}]}>
-            <Text style={[styles.label, {color: '#FFBB35'}]}>COMMIT AT</Text>
-            <Text style={[styles.text, {color: '#FFBB35'}]}>{committed_at}</Text>
-          </Layout>
-          <Layout style={styles.cardFooter}>
-            <Button size='medium' appearance='outline' status='primary' onPress={onEvaluate}>EVALUATE</Button>
-          </Layout>
-        </>
-      );
-    
+      console.log(userName)
+      if (item.assignee == userName) {
+        return (
+          <>
+            <Layout style={[styles.textRow, {marginHorizontal: 20, marginTop: 20}]}>
+              <Text style={[styles.label, {color: '#FFBB35'}]}>COMMIT MESSAGE</Text>
+              <Text style={[styles.text, {color: '#FFBB35'}]}>{item.commit_message}</Text>
+            </Layout>
+            <Layout style={[styles.textRow, {marginHorizontal: 20}]}>
+              <Text style={[styles.label, {color: '#FFBB35'}]}>COMMIT AT</Text>
+              <Text style={[styles.text, {color: '#FFBB35'}]}>{item.committed_at}</Text>
+            </Layout>
+            <Layout style={[styles.textRow, {marginHorizontal: 20}]}>
+              <Text style={[styles.label, {color: '#FFBB35'}]}>EVIDENCE</Text>
+              {item.attached_file && <Image source={{ uri: item.attached_file }} style={{ width: 160, height: 120 }} />}
+            </Layout>
+            <Layout style={[styles.textRow, {marginHorizontal: 20, marginBottom: 20}]}>
+            </Layout>
+            <Layout style={styles.cardFooter}>
+              <Button size='medium' appearance='outline' status='primary' onPress={onEvaluate}>EVALUATE</Button>
+            </Layout>
+          </>
+        );
+      } else {
+        return (
+          <></>
+        )
+      }
     case 'Completed':
       let completed_date = new Date(item.updated_at);
       let completed_at = completed_date.getFullYear() + "-" +
@@ -169,10 +182,11 @@ export default class DetailScreen extends Component {
       loading: true,
       visible: false,
       data: {},
+      userName: this.props.route.params.userName,
     };
   }
 
-  componentDidMount = () => AsyncStorage.getItem('token').then((token) => {
+  componentDidMount = () => AsyncStorage.getItem('token').then((token) => {   
     fetch(URL_TASK + '/' + this.props.route.params.taskId, {
       method: 'GET',
       headers: {
@@ -286,6 +300,10 @@ export default class DetailScreen extends Component {
     this.props.navigation.navigate('Edit', {taskId: this.props.route.params.taskId})
   }
 
+  onCommit = () => {
+    this.props.navigation.navigate('Commit', {taskId: this.props.route.params.taskId})
+  }
+
   onEvaluate = () => {
     this.props.navigation.navigate('Evaluate', {taskId: this.props.route.params.taskId})
   }
@@ -300,11 +318,13 @@ export default class DetailScreen extends Component {
   Footer = () => (
     <StatusFooter 
       item={this.state.data} 
+      userName={this.state.userName}
       navigation={this.props.navigation} 
       onApprove={this.onApprove}
       onReject={this.onReject}
       onDelete={this.onDelete}
       onEdit={this.onEdit}
+      onCommit={this.onCommit}
       onEvaluate={this.onEvaluate}
     />
   )
@@ -334,7 +354,7 @@ export default class DetailScreen extends Component {
         />
         <ScrollView showsVerticalScrollIndicator={false}>
           <Layout style={styles.mainContainer}>
-            <Card header={this.Header} footer={this.Footer}>
+            <Card header={this.Header} footer={this.Footer} style={{marginVertical: 20}}>
               <Layout style={styles.cardBody}>
                 <Layout style={styles.textRow}>
                   <Text style={styles.label}>NAME</Text>
@@ -342,7 +362,7 @@ export default class DetailScreen extends Component {
                 </Layout>
                 <Layout style={styles.textRow}>
                   <Text style={styles.label}>DESCRIPTION</Text>
-                  <Text style={styles.text}>{this.state.data.description_assigned}</Text>
+                  <Text style={styles.text}>{this.state.data.description}</Text>
                 </Layout>
                 <Layout style={styles.textRow}>
                   <Text style={styles.label}>ASSIGNEE</Text>

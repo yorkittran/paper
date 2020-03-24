@@ -35,7 +35,6 @@ export default class NotificationScreen extends Component {
         data: responseData.data,
         loading: false,
       });
-      console.log(responseData.data)
     }).catch((error) => {
       console.error(error);
     });
