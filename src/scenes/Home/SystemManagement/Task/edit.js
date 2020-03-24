@@ -1,26 +1,33 @@
 import React, { Component } from 'react';
-import { AsyncStorage } from 'react-native';
-import { URL_TASK, URL_TASK_UPDATE, URL_USER } from '../../../../config/constants';
-import { } from '../../../../config/constants';
+import { AsyncStorage, Image } from 'react-native';
+import { URL_USER, URL_TASK, MEMBER, URL_TASK_OLD } from '../../../../config/constants';
 import { SafeAreaView } from 'react-navigation';
-import { StyleSheet, ScrollView } from 'react-native';
+import { StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { Spinner, Layout, Button, Icon, Select } from '@ui-kitten/components';
 import { PaperTopNavigation } from '../../../../navigations/top.navigator';
 import { PaperInput } from '../../../../components/input.component';
 import { PaperModal } from '../../../../components/modal.component';
 import { PaperTimePicker } from '../../../../components/timepicker.component';
 
-export default class EditScreen extends Component {  
+export default class CreateScreen extends Component {  
 
   constructor(props) {
     super(props);
     this.state = {
-      loading: true,
-      visible: false,
+      loading          : true,
+      visible          : false,
+      selected_assignee: { value: '' },
+      selected_old_task: { value: '' },
     };
   }
 
-  componentDidMount = () => AsyncStorage.getItem('token').then((token) => {
+  componentDidMount = () => {
+    this.FetchData();
+  };
+
+  FetchData = async () => {
+    const token = await AsyncStorage.getItem('token');
+    const role = await AsyncStorage.getItem('role');
     // Get Task
     fetch(URL_TASK + "/" + this.props.route.params.taskId, {
       method: 'GET',
@@ -33,10 +40,9 @@ export default class EditScreen extends Component {
     .then((response) => response.json())
     .then((responseData) => {
       let start_timestamp = responseData.data.start_at.split(/[- :]/);
-      let end_timestamp = responseData.data.end_at.split(/[- :]/);
-
-      let start_at = new Date(Date.UTC(start_timestamp[0], start_timestamp[1]-1, start_timestamp[2], start_timestamp[3], start_timestamp[4], start_timestamp[5]));
-      let end_at = new Date(Date.UTC(end_timestamp[0], end_timestamp[1]-1, end_timestamp[2], end_timestamp[3], end_timestamp[4], end_timestamp[5]));
+      let end_timestamp   = responseData.data.end_at.split(/[- :]/);
+      let start_at        = new Date(Date.UTC(start_timestamp[0], start_timestamp[1]-1, start_timestamp[2], start_timestamp[3], start_timestamp[4], start_timestamp[5]));
+      let end_at          = new Date(Date.UTC(end_timestamp[0], end_timestamp[1]-1, end_timestamp[2], end_timestamp[3], end_timestamp[4], end_timestamp[5]));
 
       this.setState({
         name           : responseData.data.name,
@@ -51,8 +57,37 @@ export default class EditScreen extends Component {
       console.error(error);
     });
 
-    // Get info of Groups
-    fetch(URL_USER, {
+    if (role != MEMBER) {
+      // Get info of Groups
+      fetch(URL_USER, {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + token
+        },
+      })
+      .then((response) => response.json())
+      .then((responseData) => {
+        var assignees = [];
+        // Push members to select
+        if (responseData.data.length > 0) {
+          responseData.data.forEach((assignee) => {
+            assignees.push({
+              value: assignee.id,
+              text : assignee.name,
+            })
+          });
+        }
+        this.setState({
+          assignees: assignees,
+          selected_assignee: assignees[0],
+        })
+      }).catch((error) => {
+        console.error(error);
+      });
+    }
+    fetch(URL_TASK_OLD, {
       method: 'GET',
       headers: {
         'Accept': 'application/json',
@@ -62,29 +97,25 @@ export default class EditScreen extends Component {
     })
     .then((response) => response.json())
     .then((responseData) => {
-      var assignees = [];
-      var assignee_index = 0;
+      var old_tasks = [];
       // Push members to select
       if (responseData.data.length > 0) {
-        responseData.data.forEach((assignee, index) => {
-          assignees.push({
-            value: assignee.id,
-            text : assignee.name,
+        responseData.data.forEach((task) => {
+          old_tasks.push({
+            value: task.id,
+            text : task.name,
           })
-          if (assignee.name == this.state.assignee) {
-            assignee_index = index;
-          }
         });
       }
       this.setState({
         loading: false,
-        assignees: assignees,
-        selected_assignee: assignees[assignee_index],
+        old_tasks: old_tasks,
+        role: role,
       })
     }).catch((error) => {
       console.error(error);
     });
-  });
+  }
 
   setSelectedAssignee = (id) => {
     this.state.assignees.forEach((assignee, index) => {
@@ -99,10 +130,13 @@ export default class EditScreen extends Component {
   }
   
   submitEditing = () => AsyncStorage.getItem('token').then((token) => {
-    var data = {};
-    data.name = this.state.name;
-    data.description = this.state.description;
-    data.assignee_id = this.state.selected_assignee.value;
+    var data             = {};
+        data.name        = this.state.name;
+        data.description = this.state.description;
+        data.assignee_id = this.state.selected_assignee.value;
+    if (this.state.selected_old_task.value) {
+      data.old_task = this.state.selected_old_task.value
+    };
     
     var start = this.state.start_at;
     var end   = this.state.end_at;
@@ -119,7 +153,7 @@ export default class EditScreen extends Component {
       ("0" + end.getHours()).slice(-2) + ":" +
       ("0" + end.getMinutes()).slice(-2) + ":00";
 
-    fetch(URL_TASK_UPDATE + "/" + this.props.route.params.taskId, {
+    fetch(URL_TASK, {
       method: 'PUT',
       headers: {
         'Accept': 'application/json',
@@ -136,6 +170,7 @@ export default class EditScreen extends Component {
           visible: !this.state.visible,
         });
         if (responseData.hasOwnProperty('errors')) {
+          console.log(responseData.errors)
           this.setState({validation: false});
           responseData.errors.hasOwnProperty('name')
             ? this.setState({messageName: responseData.errors.name})
@@ -173,7 +208,7 @@ export default class EditScreen extends Component {
     return (
       <SafeAreaView style={{flex: 1, backgroundColor: '#FFFFFF'}}>
         <PaperTopNavigation
-          title='Edit Task'
+          title='Create Task'
           leftIcon='arrow-back'
           leftScreen='Back'
           {...this.props}
@@ -195,7 +230,7 @@ export default class EditScreen extends Component {
               onChangeText={(text) => this.setState({name: text})}
             />
             <PaperInput 
-              lable='Description' end_date
+              lable='Description' 
               placeholder='Description' 
               message={this.state.messageDescription} 
               multiline={true}
@@ -216,21 +251,35 @@ export default class EditScreen extends Component {
               value={this.state.formatted_end}
               onChange={(datetime) => this.setState({end_at: datetime})}
             />
-            <Layout style={{flexDirection: 'row', alignItems: 'baseline'}}>
-              <Select 
-                label='Assignee'
-                placeholder='Select Assignee'
-                data={this.state.assignees} 
-                selectedOption={this.state.selected_assignee} 
-                onSelect={(user) => this.setState({selected_assignee: user})}
-                style={{marginRight: 20, flexDirection: 'column', flex: 1}}
-              />
-              <Icon name='grid-outline' width={50} height={50} fill='#5670A1' style={{flexDirection: 'column'}} onPress={this.scanQR}/>
-            </Layout>
+            <Select 
+              label='Old Task'
+              placeholder='Select Old Task'
+              data={this.state.old_tasks} 
+              selectedOption={this.state.selected_old_task} 
+              onSelect={(task) => this.setState({selected_old_task: task})}
+              style={{marginBottom: 15 }}
+            />
+            {this.state.role != MEMBER
+              ?
+              <Layout style={{flexDirection: 'row'}}>
+                <Select 
+                  label='Assignee'
+                  placeholder='Select Assignee'
+                  data={this.state.assignees} 
+                  selectedOption={this.state.selected_assignee} 
+                  onSelect={(user) => this.setState({selected_assignee: user})}
+                  style={{marginRight: 20, flexDirection: 'column', flex: 1}}
+                />
+                <TouchableOpacity onPress={this.scanQR} style={{marginTop: 15}}>
+                  <Image source={require('../../../../assets/qrcodescan.png')} style={{ width: 50, height: 50 }} />
+                </TouchableOpacity>
+              </Layout>
+              : <></>
+            }
             <Button 
               style={styles.button} 
               size='large'
-              status='info' 
+              status='success' 
               icon={this.EditIcon} 
               onPress={this.submitEditing}
             >EDIT</Button>

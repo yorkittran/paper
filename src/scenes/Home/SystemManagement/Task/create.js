@@ -116,7 +116,9 @@ export default class CreateScreen extends Component {
         data.name        = this.state.name;
         data.description = this.state.description;
         data.assignee_id = this.state.selected_assignee.value;
-        data.old_task    = this.state.selected_old_task.value;
+    if (this.state.selected_old_task.value) {
+      data.old_task = this.state.selelected_old_task.value
+    };
     
     var start = this.state.start_at;
     var end   = this.state.end_at;
