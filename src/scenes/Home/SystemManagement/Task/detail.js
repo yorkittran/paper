@@ -80,6 +80,8 @@ const StatusFooter = ({ item, userName, onReject, onApprove, onDelete, onEdit, o
       </Layout>
     );
     case 'Ongoing':
+      console.log(item.assignee)
+      console.log(userName)
       if (item.assignee == userName) {
         return (
         <Layout style={styles.cardFooter}>
@@ -92,7 +94,6 @@ const StatusFooter = ({ item, userName, onReject, onApprove, onDelete, onEdit, o
         )
       }
     case 'Committed':
-      console.log(userName)
       if (item.assignee == userName) {
         return (
           <>

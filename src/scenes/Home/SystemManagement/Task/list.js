@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { AsyncStorage } from 'react-native';
-import { URL_TASK, URL_USER, MANAGER, MEMBER, MANAGER_VALUE } from '../../../../config/constants';
+import { URL_TASK, URL_USER, MANAGER, MEMBER, MANAGER_VALUE, ADMIN, URL_PROFILE } from '../../../../config/constants';
 import { SafeAreaView, ScrollView } from 'react-navigation';
 import { StyleSheet } from 'react-native';
 import { PaperTopNavigation } from '../../../../navigations/top.navigator';
@@ -58,8 +58,6 @@ export default class ListScreen extends Component {
         {
           dataFiltered: responseData.data,
           loading: false,
-          role: role,
-          userName: responseData.data[0].assignee,
         },() => {
           this.dataSource = responseData.data;
         }
@@ -83,25 +81,29 @@ export default class ListScreen extends Component {
         var users = [];
         if (responseData.data.length > 0) {
           responseData.data.forEach((user) => {
-            users.push({
-              title: user.name,
-            });
-            if (user.role == MANAGER_VALUE && role == MANAGER) {
-              this.setState({
-                userName: user.name
-              })
-            }
+            users.push({ title: user.name });
           });
         }
-        this.setState({
-          assigneesFiltered: users
-        },() => {
-          this.assigneesSource = users;
-        });
+        this.setState({ assigneesFiltered: users },() => { this.assigneesSource = users });
       }).catch((error) => {
         console.error(error);
       });
     }
+
+    fetch(URL_PROFILE, {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
+      },
+    })
+    .then((response) => response.json())
+    .then((responseData) => {
+      this.setState({ userName: responseData.data.name, role: role });
+    }).catch((error) => {
+      console.error(error);
+    });
   }
 
   SearchIcon = () => (

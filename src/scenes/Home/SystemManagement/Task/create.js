@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { AsyncStorage, Image } from 'react-native';
-import { URL_USER, URL_TASK } from '../../../../config/constants';
+import { URL_USER, URL_TASK, MEMBER } from '../../../../config/constants';
 import { SafeAreaView } from 'react-navigation';
 import { StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { Spinner, Layout, Button, Icon, Select } from '@ui-kitten/components';
@@ -27,40 +27,54 @@ export default class CreateScreen extends Component {
       start_at: current_datetime,
       end_at: current_datetime,
       formatted_date: formatted_date,
+      selected_assignee: {
+        value: ''
+      }
     };
   }
 
-  componentDidMount = () => AsyncStorage.getItem('token').then((token) => {
-    // Get info of Groups
-    fetch(URL_USER, {
-      method: 'GET',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + token
-      },
-    })
-    .then((response) => response.json())
-    .then((responseData) => {
-      var assignees = [];
-      // Push members to select
-      if (responseData.data.length > 0) {
-        responseData.data.forEach((assignee) => {
-          assignees.push({
-            value: assignee.id,
-            text : assignee.name,
-          })
-        });
-      }
-      this.setState({
-        loading: false,
-        assignees: assignees,
-        selected_assignee: assignees[0],
+  componentDidMount = () => {
+    this.FetchData();
+  };
+
+  FetchData = async () => {
+    const token = await AsyncStorage.getItem('token');
+    const role = await AsyncStorage.getItem('role');
+    if (role != MEMBER) {
+      // Get info of Groups
+      fetch(URL_USER, {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + token
+        },
       })
-    }).catch((error) => {
-      console.error(error);
-    });
-  });
+      .then((response) => response.json())
+      .then((responseData) => {
+        var assignees = [];
+        // Push members to select
+        if (responseData.data.length > 0) {
+          responseData.data.forEach((assignee) => {
+            assignees.push({
+              value: assignee.id,
+              text : assignee.name,
+            })
+          });
+        }
+        this.setState({
+          loading: false,
+          role: role,
+          assignees: assignees,
+          selected_assignee: assignees[0],
+        })
+      }).catch((error) => {
+        console.error(error);
+      });
+    } else {
+      this.setState({ loading: false, role: role });
+    }
+  }
 
   setSelectedAssignee = (id) => {
     this.state.assignees.forEach((assignee, index) => {
@@ -112,6 +126,7 @@ export default class CreateScreen extends Component {
           visible: !this.state.visible,
         });
         if (responseData.hasOwnProperty('errors')) {
+          console.log(responseData.errors)
           this.setState({validation: false});
           responseData.errors.hasOwnProperty('name')
             ? this.setState({messageName: responseData.errors.name})
@@ -192,19 +207,23 @@ export default class CreateScreen extends Component {
               value={this.state.formatted_date}
               onChange={(datetime) => this.setState({end_at: datetime})}
             />
-            <Layout style={{flexDirection: 'row'}}>
-              <Select 
-                label='Assignee'
-                placeholder='Select Assignee'
-                data={this.state.assignees} 
-                selectedOption={this.state.selected_assignee} 
-                onSelect={(user) => this.setState({selected_assignee: user})}
-                style={{marginRight: 20, flexDirection: 'column', flex: 1}}
-              />
-              <TouchableOpacity onPress={this.scanQR} style={{marginTop: 15}}>
-                <Image source={require('../../../../assets/qrcodescan.png')} style={{ width: 50, height: 50 }} />
-              </TouchableOpacity>
-            </Layout>
+            {this.state.role != MEMBER
+              ?
+              <Layout style={{flexDirection: 'row'}}>
+                <Select 
+                  label='Assignee'
+                  placeholder='Select Assignee'
+                  data={this.state.assignees} 
+                  selectedOption={this.state.selected_assignee} 
+                  onSelect={(user) => this.setState({selected_assignee: user})}
+                  style={{marginRight: 20, flexDirection: 'column', flex: 1}}
+                />
+                <TouchableOpacity onPress={this.scanQR} style={{marginTop: 15}}>
+                  <Image source={require('../../../../assets/qrcodescan.png')} style={{ width: 50, height: 50 }} />
+                </TouchableOpacity>
+              </Layout>
+              : <></>
+            }
             <Button 
               style={styles.button} 
               size='large'
