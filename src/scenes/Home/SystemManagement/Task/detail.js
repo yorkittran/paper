@@ -313,7 +313,11 @@ export default class DetailScreen extends Component {
 
   Header = () => (
     <Layout style={{margin: 20, alignItems: 'center', justifyContent: 'center'}}>
-      <Text category='h5'>{this.state.data.name}</Text>
+      <Text category='h4'>{this.state.data.name}</Text>
+      {this.state.data.old_task
+        ? <Text category='s2' status='danger'>{'Continue from ' + this.state.data.old_task}</Text>
+        : <></>
+      }
       <StatusText item={this.state.data}/>
     </Layout>
   );
