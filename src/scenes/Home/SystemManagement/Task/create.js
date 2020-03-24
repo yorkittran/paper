@@ -75,9 +75,12 @@ export default class CreateScreen extends Component {
   }
   
   submitCreating = () => AsyncStorage.getItem('token').then((token) => {
-    var data = {};
-    data.name = this.state.name;
-    data.description = this.state.desTouchableOpacity
+    var data             = {};
+        data.name        = this.state.name;
+        data.description = this.state.description;
+        data.assignee_id = this.state.selected_assignee.value;
+    
+    var start = this.state.start_at;
     var end   = this.state.end_at;
     data.start_at =
       start.getFullYear() + "-" +
@@ -199,7 +202,7 @@ export default class CreateScreen extends Component {
                 style={{marginRight: 20, flexDirection: 'column', flex: 1}}
               />
               <TouchableOpacity onPress={this.scanQR} style={{marginTop: 15}}>
-                <Image source={require('../../../../assets/qrcodescan.png') } style={{ width: 50, height: 50 }} />
+                <Image source={require('../../../../assets/qrcodescan.png')} style={{ width: 50, height: 50 }} />
               </TouchableOpacity>
             </Layout>
             <Button 
