@@ -7,13 +7,15 @@ import { Layout, Text, Icon, Button } from '@ui-kitten/components';
 import { Actions } from 'react-native-router-flux';
 import { PaperInput } from '../../components/input.component';
 import { PaperModal } from '../../components/modal.component';
+import { Notifications } from 'expo';
+import * as Permissions from 'expo-permissions';
 
 export default class LoginScreen extends Component {
 
   constructor(props) {
     super(props);
     this.state = {
-      email: 'manager-3@manager.mail',
+      email: 'admin@admin.mail',
       password: '123456',
       message: '',
       secureTextEntry: true,
@@ -49,10 +51,23 @@ export default class LoginScreen extends Component {
     }
   }
 
-  onLogin = () => {
-    var data = {};
-    data.email = this.state.email;
-    data.password = this.state.password;
+  registerForPushToken = async () => {
+    const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS);
+    if (status !== 'granted') {
+      alert('You need to grant permission to receive Notifications!');
+      return;
+    }
+    // Get the token that identifies this device
+    let token = await Notifications.getExpoPushTokenAsync();
+    this.setState({ push_token: token });
+  }
+
+  onLogin = async () => {
+    await this.registerForPushToken();
+    var data            = {};
+        data.email      = this.state.email;
+        data.password   = this.state.password;
+        data.push_token = this.state.push_token;
 
     fetch(URL_LOGIN, {
       method: 'POST',

@@ -119,6 +119,9 @@ export default class ListScreen extends Component {
             title='List User'
             leftIcon='arrow-back'
             leftScreen='Back'
+            rightIcon='edit-2'
+            rightScreen='Edit'
+            params={{ groupId: this.props.route.params.groupId }}
             {...this.props}/>
           :
           <PaperTopNavigation

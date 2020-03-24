@@ -106,9 +106,7 @@ const StatusFooter = ({ item, userName, onReject, onApprove, onDelete, onEdit, o
             </Layout>
             <Layout style={[styles.textRow, {marginHorizontal: 20}]}>
               <Text style={[styles.label, {color: '#FFBB35'}]}>EVIDENCE</Text>
-              {item.attached_file && <Image source={{ uri: item.attached_file }} style={{ width: 160, height: 120 }} />}
-            </Layout>
-            <Layout style={[styles.textRow, {marginHorizontal: 20, marginBottom: 20}]}>
+              {item.attached_file && <Image source={{ uri: item.attached_file }} style={styles.image} />}
             </Layout>
             <Layout style={styles.cardFooter}>
               <Button size='medium' appearance='outline' status='primary' onPress={onEvaluate}>EVALUATE</Button>
@@ -137,9 +135,13 @@ const StatusFooter = ({ item, userName, onReject, onApprove, onDelete, onEdit, o
             <Text style={[styles.label, {color: '#7DC914'}]}>COMMENTER</Text>
             <Text style={[styles.text, {color: '#7DC914'}]}>{item.commenter}</Text>
           </Layout>
-          <Layout style={[styles.textRow, {marginHorizontal: 20, marginBottom: 20}]}>
+          <Layout style={[styles.textRow, {marginHorizontal: 20}]}>
             <Text style={[styles.label, {color: '#7DC914'}]}>FINISH AT</Text>
             <Text style={[styles.text, {color: '#7DC914'}]}>{completed_at}</Text>
+          </Layout>
+          <Layout style={[styles.textRow, {marginHorizontal: 20, marginBottom: 20}]}>
+            <Text style={[styles.label, {color: '#7DC914'}]}>EVIDENCE</Text>
+            {item.attached_file && <Image source={{ uri: item.attached_file }} style={styles.image} />}
           </Layout>
         </>
       );
@@ -161,9 +163,13 @@ const StatusFooter = ({ item, userName, onReject, onApprove, onDelete, onEdit, o
             <Text style={[styles.label, {color: '#FFAB88'}]}>COMMENTER</Text>
             <Text style={[styles.text, {color: '#FFAB88'}]}>{item.commenter}</Text>
           </Layout>
-          <Layout style={[styles.textRow, {marginHorizontal: 20, marginBottom: 20}]}>
+          <Layout style={[styles.textRow, {marginHorizontal: 20}]}>
             <Text style={[styles.label, {color: '#FFAB88'}]}>FINISH AT</Text>
             <Text style={[styles.text, {color: '#FFAB88'}]}>{incompleted_at}</Text>
+          </Layout>
+          <Layout style={[styles.textRow, {marginHorizontal: 20, marginBottom: 20}]}>
+            <Text style={[styles.label, {color: '#FFAB88'}]}>EVIDENCE</Text>
+            {item.attached_file && <Image source={{ uri: item.attached_file }} style={styles.image} />}
           </Layout>
         </>
       );
@@ -431,4 +437,9 @@ const styles = StyleSheet.create({
     width: '52%', 
     fontSize: 15
   },
+  image: {
+    width: 160, 
+    height: 120,
+    borderRadius: 10
+  }
 });
