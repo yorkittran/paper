@@ -19,6 +19,9 @@ export default class ListScreen extends Component {
 
   componentDidMount = () => {
     this.FetchData();
+    this.props.navigation.addListener('focus', () => {
+      this.FetchData();
+    });
   };
 
   FetchData = async () => {

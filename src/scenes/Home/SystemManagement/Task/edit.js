@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { AsyncStorage, Image } from 'react-native';
-import { URL_USER, URL_TASK, MEMBER, URL_TASK_OLD } from '../../../../config/constants';
+import { URL_USER, URL_TASK, MEMBER, URL_TASK_OLD, URL_TASK_UPDATE } from '../../../../config/constants';
 import { SafeAreaView } from 'react-navigation';
 import { StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { Spinner, Layout, Button, Icon, Select } from '@ui-kitten/components';
@@ -153,7 +153,7 @@ export default class CreateScreen extends Component {
       ("0" + end.getHours()).slice(-2) + ":" +
       ("0" + end.getMinutes()).slice(-2) + ":00";
 
-    fetch(URL_TASK, {
+    fetch(URL_TASK_UPDATE + '/' + this.props.route.params.taskId, {
       method: 'PUT',
       headers: {
         'Accept': 'application/json',
@@ -208,7 +208,7 @@ export default class CreateScreen extends Component {
     return (
       <SafeAreaView style={{flex: 1, backgroundColor: '#FFFFFF'}}>
         <PaperTopNavigation
-          title='Create Task'
+          title='Edit Task'
           leftIcon='arrow-back'
           leftScreen='Back'
           {...this.props}
@@ -279,7 +279,7 @@ export default class CreateScreen extends Component {
             <Button 
               style={styles.button} 
               size='large'
-              status='success' 
+              status='info' 
               icon={this.EditIcon} 
               onPress={this.submitEditing}
             >EDIT</Button>

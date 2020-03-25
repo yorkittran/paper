@@ -41,7 +41,7 @@ export default class CreateScreen extends Component {
     const role = await AsyncStorage.getItem('role');
     if (role != MEMBER) {
       // Get info of Groups
-      fetch(URL_USER, {
+      fetch(URL_USER + '?include_manager=true', {
         method: 'GET',
         headers: {
           'Accept': 'application/json',
@@ -117,7 +117,7 @@ export default class CreateScreen extends Component {
         data.description = this.state.description;
         data.assignee_id = this.state.selected_assignee.value;
     if (this.state.selected_old_task.value) {
-      data.old_task = this.state.selelected_old_task.value
+      data.old_task = this.state.selected_old_task.value
     };
     
     var start = this.state.start_at;
