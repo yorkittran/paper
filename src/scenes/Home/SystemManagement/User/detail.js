@@ -6,6 +6,7 @@ import { StyleSheet } from 'react-native';
 import QRCode from 'react-native-qrcode-svg';
 import { Card, Text, Spinner, Layout } from '@ui-kitten/components';
 import { PaperTopNavigation } from '../../../../navigations/top.navigator';
+import { PaperModal } from '../../../../components/modal.component';
 
 export default class UserDetailScreen extends Component {  
 
@@ -13,7 +14,8 @@ export default class UserDetailScreen extends Component {
     super(props);
     this.state = {
       loading: true,
-      data: {},
+      visible: false,
+      data   : {},
     };
   }
 
@@ -35,6 +37,27 @@ export default class UserDetailScreen extends Component {
     }).catch((error) => {
       console.error(error);
     });
+  });
+
+  onDelete = () => AsyncStorage.getItem('token').then((token) => {
+    fetch(URL_USER + '/' + this.props.route.params.userId, {
+      method: 'DELETE',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
+      },
+    })
+    .then((response) => response.json())
+    .then((responseData) => {
+      this.setState({
+        message: responseData.message,
+        visible: !this.state.visible,
+        validation: true,
+      });
+    }).catch((error) => {
+      console.error(error);
+    })
   });
 
   Header = () => (
@@ -78,7 +101,14 @@ export default class UserDetailScreen extends Component {
           rightIcon='more-vertical'
           params={{ userId: this.props.route.params.userId }}
           menu={true}
+          onDelete={this.onDelete.bind(this)}
           {...this.props}/>
+        <PaperModal 
+          onPress={() => this.setState({visible: !this.state.visible})} 
+          visible={this.state.visible}
+          message={this.state.message}
+          validation={this.state.validation}
+          navigation={this.props.navigation}/>
         <Layout style={styles.mainContainer}>
           <Card header={this.Header} footer={this.Footer}>
             <Layout style={{justifyContent: 'center'}}>

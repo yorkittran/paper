@@ -1,7 +1,7 @@
 import React from 'react';
 import { Icon, TopNavigation, TopNavigationAction, OverflowMenu} from '@ui-kitten/components';
 
-export const PaperTopNavigation = ({ navigation, menu, params, leftIcon, leftScreen, rightIcon, rightScreen, title }) => {
+export const PaperTopNavigation = ({ navigation, menu, params, leftIcon, leftScreen, rightIcon, rightScreen, title, onDelete }) => {
 
   const [menuVisible, setMenuVisible] = React.useState(false);
 
@@ -15,6 +15,7 @@ export const PaperTopNavigation = ({ navigation, menu, params, leftIcon, leftScr
       navigation.navigate('Edit', params);
     } else {
       // Delete
+      onDelete();
     }
 
     setMenuVisible(false);

@@ -5,6 +5,7 @@ import { SafeAreaView } from 'react-navigation';
 import { StyleSheet } from 'react-native';
 import { PaperTopNavigation } from '../../../../navigations/top.navigator';
 import { Icon, Input, List, ListItem, Spinner, Layout } from '@ui-kitten/components';
+import { PaperModal } from '../../../../components/modal.component';
 
 export default class ListScreen extends Component {  
 
@@ -12,7 +13,8 @@ export default class ListScreen extends Component {
     super(props);
     this.state = {
       loading: true,
-      terms: '',
+      visible: false,
+      terms  : '',
     };
     this.dataSource = [];
   }
@@ -76,6 +78,27 @@ export default class ListScreen extends Component {
     }
   }
 
+  onDelete = () => AsyncStorage.getItem('token').then((token) => {
+    fetch(URL_GROUP + '/' + this.props.route.params.groupId, {
+      method: 'DELETE',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
+      },
+    })
+    .then((response) => response.json())
+    .then((responseData) => {
+      this.setState({
+        message: responseData.message,
+        visible: !this.state.visible,
+        validation: true,
+      });
+    }).catch((error) => {
+      console.error(error);
+    })
+  });
+
   ForwardIcon = () => (
     <Icon name='arrow-ios-forward' width={20} height={20} fill='#8F9BB3'/>
   );
@@ -122,9 +145,10 @@ export default class ListScreen extends Component {
             title='List User'
             leftIcon='arrow-back'
             leftScreen='Back'
-            rightIcon='edit-2'
-            rightScreen='Edit'
+            rightIcon='more-vertical'
             params={{ groupId: this.props.route.params.groupId }}
+            menu={true}
+            onDelete={this.onDelete.bind(this)}
             {...this.props}/>
           :
           <PaperTopNavigation
@@ -133,6 +157,12 @@ export default class ListScreen extends Component {
             leftScreen='Drawer'
             {...this.props}/>
         }
+        <PaperModal 
+          onPress={() => this.setState({visible: !this.state.visible})} 
+          visible={this.state.visible}
+          message={this.state.message}
+          validation={this.state.validation}
+          navigation={this.props.navigation}/>
         <Layout style={styles.mainContainer}>
           <Input
             value={this.state.terms}
