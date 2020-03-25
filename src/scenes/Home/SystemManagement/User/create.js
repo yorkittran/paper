@@ -14,17 +14,14 @@ export default class UserCreateScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      loading: true,
       visible: false,
       role: {
         text: MEMBER,
         value: MEMBER_VALUE,
-      }
+      },
+      password: '123456',
+      password_confirmation: '123456'
     };
-  }
-
-  componentDidMount = () => {
-    this.setState({loading: false})
   }
 
   submitCreating = () => AsyncStorage.getItem('token').then((token) => {
@@ -84,13 +81,6 @@ export default class UserCreateScreen extends Component {
   );
 
   render() {
-    if (this.state.loading) {
-      return (
-        <SafeAreaView style={styles.loadingContainer}>
-          <Spinner size='giant'/>
-        </SafeAreaView>
-      );
-    }
     return (
       <SafeAreaView style={{flex: 1, backgroundColor: '#FFFFFF'}}>
         <PaperTopNavigation
@@ -124,18 +114,20 @@ export default class UserCreateScreen extends Component {
             lable='Email' 
             placeholder='Email' 
             message={this.state.messageEmail} 
-            value={this.state.email} 
+            value={this.state.email}
             onChangeText={(text) => this.setState({email: text})}/>
           <PaperInput 
             lable='Password' 
             placeholder='Password' 
             message={this.state.messagePassword} 
+            value={this.state.password}
             parentSecureTextEntry={true} 
             onChangeText={(text) => this.setState({password: text})}/>
           <PaperInput 
             lable='Confirm Password' 
             placeholder='Confirm Password' 
             message={this.state.messageConfirmPassword} 
+            value={this.state.password_confirmation}
             parentSecureTextEntry={true} 
             onChangeText={(text) => this.setState({password_confirmation: text})}/>
           <Button 

@@ -170,7 +170,6 @@ export default class CreateScreen extends Component {
           visible: !this.state.visible,
         });
         if (responseData.hasOwnProperty('errors')) {
-          console.log(responseData.errors)
           this.setState({validation: false});
           responseData.errors.hasOwnProperty('name')
             ? this.setState({messageName: responseData.errors.name})

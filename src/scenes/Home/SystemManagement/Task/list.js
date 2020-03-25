@@ -163,7 +163,7 @@ export default class ListScreen extends Component {
     });
 
     if (terms == '') {
-      this.filtered({title: ''}, this.state.terms, this.state.status, this.state.start_date, this.stateend_date)
+      this.filtered({title: ''}, this.state.terms, this.state.status, this.state.start_date, this.state.end_date)
     }
   };
 

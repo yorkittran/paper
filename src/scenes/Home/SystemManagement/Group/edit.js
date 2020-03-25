@@ -17,6 +17,7 @@ export default class EditScreen extends Component {
       loading: true,
       visible: false,
     };
+    this.list_members = [];
   }
 
   componentDidMount = () => {
@@ -24,11 +25,12 @@ export default class EditScreen extends Component {
   };
 
   FetchData = async () => {
-    const token = await AsyncStorage.getItem('token');
-    var list_members  = [];
+    const token              = await AsyncStorage.getItem('token');
+    var   members_selected   = [];
+    var   members_availabled = [];
 
     // Get info of Group
-    fetch(URL_GROUP + '/' + this.props.route.params.groupId, {
+    await fetch(URL_GROUP + '/' + this.props.route.params.groupId, {
       method: 'GET',
       headers: {
         'Accept': 'application/json',
@@ -40,26 +42,24 @@ export default class EditScreen extends Component {
     .then((responseData) => {
       // Push members to select
       if (responseData.data.users_in_group.length > 0) {
-        responseData.data.users_in_group.forEach((member) => {
-          list_members.push({
+        responseData.data.users_in_group.forEach(member => {
+          members_selected.push({
             value: member.id,
             text : member.name,
           })
         });
       }
-      var selected_members = list_members;
       this.setState({
-        name            : responseData.data.name,
-        list_members    : list_members,
-        manager         : responseData.data.manager_name,
-        selected_members: selected_members,
+        name   : responseData.data.name,
+        manager: responseData.data.manager_name,
+        selected_members: members_selected,
       });
     }).catch((error) => {
       console.error(error);
     });
 
     // Get list of member not belong to any group
-    fetch(URL_USER_MEMBERS, {
+    await fetch(URL_USER_MEMBERS, {
       method: 'GET',
       headers: {
         'Accept': 'application/json',
@@ -70,7 +70,6 @@ export default class EditScreen extends Component {
     .then((response) => response.json())
     .then((responseData) => {
       // Push member not belong to any group to select
-      var members_availabled = [];
       if (responseData.data.length > 0) {
         responseData.data.forEach((member) => {
           members_availabled.push({
@@ -79,20 +78,19 @@ export default class EditScreen extends Component {
           });
         });
       }
-      this.setState({
-        list_members: list_members.concat(members_availabled),
+      this.setState({ 
         loading: false,
-      });
+        list_members: members_selected.concat(members_availabled),
+      })
     }).catch((error) => {
       console.error(error);
     });
   }
 
   submitEditing = () => AsyncStorage.getItem('token').then((token) => {
-    var data = {};
-    data.name = this.state.name;
-    data.manager_id = this.state.selected_manager.value;
-    data.selected_members = [];
+    var data                  = {};
+        data.name             = this.state.name;
+        data.selected_members = [];
     this.state.selected_members.forEach((member) => {
       data.selected_members.push(member.value);
     });
@@ -108,6 +106,7 @@ export default class EditScreen extends Component {
     })
     .then((response) => response.json())
     .then((responseData) => {
+      console.log(responseData)
       if (responseData.hasOwnProperty('message')) {
         this.setState({
           message: responseData.message,
@@ -120,6 +119,7 @@ export default class EditScreen extends Component {
             ? this.setState({messageName: responseData.errors.name})
             : this.setState({messageName: ''})
         } else {
+          console.log('success')
           this.setState({validation: true})
         }
       }
