@@ -9,7 +9,7 @@ import { PaperInput } from '../../../../components/input.component';
 import { PaperModal } from '../../../../components/modal.component';
 import { PaperTimePicker } from '../../../../components/timepicker.component';
 
-export default class CreateScreen extends Component {  
+export default class EditScreen extends Component {  
 
   constructor(props) {
     super(props);
@@ -43,7 +43,6 @@ export default class CreateScreen extends Component {
       let end_timestamp   = responseData.data.end_at.split(/[- :]/);
       let start_at        = new Date(Date.UTC(start_timestamp[0], start_timestamp[1]-1, start_timestamp[2], start_timestamp[3], start_timestamp[4], start_timestamp[5]));
       let end_at          = new Date(Date.UTC(end_timestamp[0], end_timestamp[1]-1, end_timestamp[2], end_timestamp[3], end_timestamp[4], end_timestamp[5]));
-
       this.setState({
         name           : responseData.data.name,
         description    : responseData.data.description,
@@ -70,18 +69,22 @@ export default class CreateScreen extends Component {
       .then((response) => response.json())
       .then((responseData) => {
         var assignees = [];
+        var assignee_index  = 0;
         // Push members to select
         if (responseData.data.length > 0) {
-          responseData.data.forEach((assignee) => {
+          responseData.data.forEach((assignee, index) => {
             assignees.push({
               value: assignee.id,
               text : assignee.name,
-            })
+            });
+            if (assignee.name == this.state.assignee) {
+              assignee_index = index;
+            }
           });
         }
         this.setState({
           assignees: assignees,
-          selected_assignee: assignees[0],
+          selected_assignee: assignees[assignee_index],
         })
       }).catch((error) => {
         console.error(error);
