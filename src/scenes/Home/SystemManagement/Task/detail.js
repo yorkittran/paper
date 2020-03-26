@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { AsyncStorage } from 'react-native';
-import { URL_TASK, URL_TASK_REJECT, URL_TASK_APPROVE } from '../../../../config/constants';
+import { URL_TASK, URL_TASK_REJECT, URL_TASK_APPROVE, MEMBER } from '../../../../config/constants';
 import { SafeAreaView, ScrollView } from 'react-navigation';
 import { StyleSheet, Image } from 'react-native';
 import { Card, Text, Spinner, Layout, Button } from '@ui-kitten/components';
@@ -44,7 +44,7 @@ const StatusText = ({ item }) => {
   }
 }
 
-const StatusFooter = ({ item, userName, onReject, onApprove, onDelete, onEdit, onCommit, onEvaluate }) => {
+const StatusFooter = ({ item, userName, onReject, onApprove, onDelete, onEdit, onCommit, onEvaluate, role }) => {
   switch (item.status) {
     case 'Pending Approval':
       return (
@@ -73,12 +73,18 @@ const StatusFooter = ({ item, userName, onReject, onApprove, onDelete, onEdit, o
         </>
       );
     case 'Not Started':
-      return (
-      <Layout style={styles.cardFooter}>
-        <Button style={{marginHorizontal: 10}} size='medium' appearance='outline' status='danger' onPress={onDelete}>DELETE</Button>
-        <Button size='medium' appearance='outline' status='info' onPress={onEdit}>EDIT</Button>
-      </Layout>
-    );
+      if (item.assigner == userName || role != MEMBER) {
+        return (
+          <Layout style={styles.cardFooter}>
+            <Button style={{marginHorizontal: 10}} size='medium' appearance='outline' status='danger' onPress={onDelete}>DELETE</Button>
+            <Button size='medium' appearance='outline' status='info' onPress={onEdit}>EDIT</Button>
+          </Layout>
+        );
+      } else {
+        return (
+          <></>
+        )
+      }
     case 'Ongoing':
       if (item.assignee == userName) {
         return (
@@ -127,6 +133,10 @@ const StatusFooter = ({ item, userName, onReject, onApprove, onDelete, onEdit, o
           <Layout style={[styles.textRow, {marginHorizontal: 20, marginTop: 20}]}>
             <Text style={[styles.label, {color: '#7DC914'}]}>COMMENT</Text>
             <Text style={[styles.text, {color: '#7DC914'}]}>{item.comment}</Text>
+          </Layout>
+          <Layout style={[styles.textRow, {marginHorizontal: 20}]}>
+            <Text style={[styles.label, {color: '#7DC914'}]}>MARK</Text>
+            <Text style={[styles.text, {color: '#7DC914'}]}>{item.mark}</Text>
           </Layout>
           <Layout style={[styles.textRow, {marginHorizontal: 20}]}>
             <Text style={[styles.label, {color: '#7DC914'}]}>COMMENTER</Text>
@@ -189,7 +199,10 @@ export default class DetailScreen extends Component {
     };
   }
 
-  componentDidMount = () => AsyncStorage.getItem('token').then((token) => {   
+  componentDidMount = async () => {   
+    const token = await AsyncStorage.getItem('token');
+    const role = await AsyncStorage.getItem('role');
+    this.setState({ role: role });
     fetch(URL_TASK + '/' + this.props.route.params.taskId, {
       method: 'GET',
       headers: {
@@ -216,7 +229,7 @@ export default class DetailScreen extends Component {
     }).catch((error) => {
       console.error(error);
     });
-  });
+  };
 
   onReject = () => AsyncStorage.getItem('token').then((token) => {
     fetch(URL_TASK_REJECT + '/' + this.props.route.params.taskId, {
@@ -333,6 +346,7 @@ export default class DetailScreen extends Component {
       onEdit={this.onEdit}
       onCommit={this.onCommit}
       onEvaluate={this.onEvaluate}
+      role={this.state.role}
     />
   )
 

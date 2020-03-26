@@ -184,56 +184,54 @@ export default class ListScreen extends Component {
           rightIcon='plus'
           rightScreen='Create'
           {...this.props}/>
-        <ScrollView showsVerticalScrollIndicator={false}>
-          <Layout style={styles.mainContainer}>
-            <Select 
-              placeholder='Select Status'
-              data={this.statusSource} 
-              multiSelect={true}
+        <Layout style={styles.mainContainer}>
+          <Select 
+            placeholder='Select Status'
+            data={this.statusSource} 
+            multiSelect={true}
+            size='medium'
+            selectedOption={this.state.status} 
+            onSelect={status => this.filtered(this.state.assignee, this.state.terms, status, this.state.start_date, this.state.end_date)}
+            style={styles.inputFiltered}/>
+          <Layout style={{flexDirection: 'row', marginTop: '1%', justifyContent: 'space-between'}}>
+            <Datepicker
+              placeholder='From Date'
               size='medium'
-              selectedOption={this.state.status} 
-              onSelect={status => this.filtered(this.state.assignee, this.state.terms, status, this.state.start_date, this.state.end_date)}
-              style={styles.inputFiltered}/>
-            <Layout style={{flexDirection: 'row', marginTop: '1%', justifyContent: 'space-between'}}>
-              <Datepicker
-                placeholder='From Date'
-                size='medium'
-                style={[styles.inputFiltered, {width: '45%' ,marginRight: '0%', paddingRight: '1%'}]}
-                date={this.state.start_date}
-                onSelect={start_date => this.filtered(this.state.assignee, this.state.terms, this.state.status, start_date, this.state.end_date)}
-                icon={this.CalendarIcon}/>
-              <Datepicker
-                placeholder='To Date'
-                size='medium'
-                style={[styles.inputFiltered, {width: '45%', marginLeft: '0%', paddingLeft: '1%'}]}
-                date={this.state.end_date}
-                onSelect={end_date => this.filtered(this.state.assignee, this.state.terms, this.state.status, this.state.start_date, end_date)}
-                icon={this.CalendarIcon}/>
-            </Layout>
-            {this.state.role != MEMBER
-              ?
-              <Autocomplete
-                placeholder='Assignee'
-                value={this.state.terms_assignee}
-                size='medium'
-                style={styles.inputFiltered}
-                data={this.state.assigneesFiltered}
-                onSelect={assignee => this.filtered(assignee, this.state.terms, this.state.status, this.state.start_date, this.state.end_date)}
-                onChangeText={terms_assignee => this.filteredAssignee(terms_assignee)}/>
-              :
-              <></>
-            }
-            <Input
-              value={this.state.terms}
+              style={[styles.inputFiltered, {width: '45%' ,marginRight: '0%', paddingRight: '1%'}]}
+              date={this.state.start_date}
+              onSelect={start_date => this.filtered(this.state.assignee, this.state.terms, this.state.status, start_date, this.state.end_date)}
+              icon={this.CalendarIcon}/>
+            <Datepicker
+              placeholder='To Date'
               size='medium'
-              placeholder='Search...'
-              icon={this.SearchIcon}
-              autoCapitalize='none'
-              onChangeText={terms => this.filtered(this.state.assignee, terms, this.state.status, this.state.start_date, this.state.end_date)}
-              style={styles.inputFiltered}/>
-            <PaperListStatus data={this.state.dataFiltered} navigation={this.props.navigation} userName={this.state.userName}/>
+              style={[styles.inputFiltered, {width: '45%', marginLeft: '0%', paddingLeft: '1%'}]}
+              date={this.state.end_date}
+              onSelect={end_date => this.filtered(this.state.assignee, this.state.terms, this.state.status, this.state.start_date, end_date)}
+              icon={this.CalendarIcon}/>
           </Layout>
-        </ScrollView>
+          {this.state.role != MEMBER
+            ?
+            <Autocomplete
+              placeholder='Assignee'
+              value={this.state.terms_assignee}
+              size='medium'
+              style={styles.inputFiltered}
+              data={this.state.assigneesFiltered}
+              onSelect={assignee => this.filtered(assignee, this.state.terms, this.state.status, this.state.start_date, this.state.end_date)}
+              onChangeText={terms_assignee => this.filteredAssignee(terms_assignee)}/>
+            :
+            <></>
+          }
+          <Input
+            value={this.state.terms}
+            size='medium'
+            placeholder='Search...'
+            icon={this.SearchIcon}
+            autoCapitalize='none'
+            onChangeText={terms => this.filtered(this.state.assignee, terms, this.state.status, this.state.start_date, this.state.end_date)}
+            style={styles.inputFiltered}/>
+          <PaperListStatus data={this.state.dataFiltered} navigation={this.props.navigation} userName={this.state.userName}/>
+        </Layout>
       </SafeAreaView>
     );
   }

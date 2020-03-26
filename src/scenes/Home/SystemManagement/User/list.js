@@ -125,6 +125,6 @@ const styles = StyleSheet.create({
   },
   inputSearch: {
     marginHorizontal: '5%',
-    marginTop: '2%',
+    marginVertical: '2%',
   },
 });

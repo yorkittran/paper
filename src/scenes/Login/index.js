@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { AsyncStorage } from 'react-native';
+import { AsyncStorage, Image } from 'react-native';
 import { URL_LOGIN } from '../../config/constants';
 import { SafeAreaView } from 'react-navigation';
 import { StyleSheet, KeyboardAvoidingView } from 'react-native';
@@ -15,7 +15,7 @@ export default class LoginScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      email: 'admin@admin.mail',
+      email: 'admin@paper.com',
       password: '123456',
       message: '',
       secureTextEntry: true,
@@ -122,7 +122,7 @@ export default class LoginScreen extends Component {
   render () {
     return (
     <SafeAreaView style={styles.mainContainer}>
-      <KeyboardAvoidingView behavior='padding' keyboardVerticalOffset={120} enabled>
+      <KeyboardAvoidingView behavior='padding' keyboardVerticalOffset={100} enabled>
         <PaperModal 
           onPress={() => this.setState({visible: !this.state.visible})} 
           visible={this.state.visible}
@@ -130,7 +130,7 @@ export default class LoginScreen extends Component {
           validation={this.state.validation}
         />
         <Layout style={styles.container}>
-          <Icon name='paper-plane-outline' width={100} height={100} fill='#151A30' style={{marginBottom: 10}}/>
+          <Image source={require('../../../assets/icon.png')} style={{ width: 100, height: 100, marginBottom: 20 }} />
           <Text category='h1' style={{marginBottom: 30, color: '#151A30'}}>Log in to Paper</Text>
           <PaperInput 
             lable='Email' 
@@ -147,7 +147,7 @@ export default class LoginScreen extends Component {
             onChangeText={(text) => this.setState({password: text})}/>
           <Button 
             style={styles.button} 
-            size='large'
+            size='giant'
             status='primary'
             icon={this.LoginIcon} 
             onPress={this.onLogin}>LOGIN</Button>
