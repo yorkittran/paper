@@ -7,13 +7,23 @@ import { Drawer as UIKittenDrawer, DrawerHeaderFooter, Icon, Button, Layout } fr
 import NotificationScreen from '../../scenes/Home/Home/Notification/list';
 import ProfileScreen from '../../scenes/Home/Home/Profile/detail';
 import TaskNavigator from '../task.navigator';
+import { URL_LOGOUT } from '../../config/constants';
 
 const Drawer = createDrawerNavigator();
 
 const deleteToken = async () => {
   try {
+    const token = await AsyncStorage.getItem('token');
     await AsyncStorage.removeItem('token');
     await AsyncStorage.removeItem('role');
+    fetch(URL_LOGOUT, {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
+      },
+    });
     Actions.login();
   } catch (error) {
     console.error(error);
