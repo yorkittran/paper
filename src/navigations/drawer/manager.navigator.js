@@ -17,14 +17,14 @@ const deleteToken = async () => {
     const token = await AsyncStorage.getItem('token');
     await AsyncStorage.removeItem('token');
     await AsyncStorage.removeItem('role');
-    fetch(URL_LOGOUT, {
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + token
-      },
-    });
+    // fetch(URL_LOGOUT, {
+    //   method: 'POST',
+    //   headers: {
+    //     'Accept': 'application/json',
+    //     'Content-Type': 'application/json',
+    //     'Authorization': 'Bearer ' + token
+    //   },
+    // });
     Actions.login();
   } catch (error) {
     console.error(error);
