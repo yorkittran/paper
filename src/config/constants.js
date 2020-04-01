@@ -1,4 +1,4 @@
-export const API = 'http://192.168.1.152:231/api'
+export const API = 'http://3.86.190.53:231/api'
 
 export const URL_LOGIN  = API + '/login'
 export const URL_LOGOUT = API + '/logout'
